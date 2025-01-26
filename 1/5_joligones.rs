@@ -7,11 +7,11 @@ fn main() {
 
 struct Settings {
     np: u32, // # elementary steps, i.e. resolution
-    k: u32,  // # vertices
-    cx: f32, // x-coordinate of the circle C on which the vertices are
-    cy: f32, // y-coordinate of the circle C on which the vertices are
-    r: f32,  // radius of the circle on which the vertices are
-    ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
+    k: u32,  // # segments
+    an: f32, // angle of two consecutive segments
+    ra: f32, // ratio of the lengths of two consecutive segments
+    aa: f32, // angle of the first segment with horizontal
+    rr: f32, // length of the first segment
     color: Srgb<u8>,
 }
 
@@ -33,24 +33,24 @@ fn model(app: &App) -> Model {
 
     // constants
     let np = 480;
-    let cx = np as f32 / 2.0;
-    let cy = np as f32 / 2.0;
 
     // parameters
-    let k = 3;
-    let r = np as f32 * 0.45;
-    let ad = 0 as f32;
+    let k = 200;
+    let an = 15.0 * f32::PI() / 31.0;
+    let ra = 0.98;
+    let aa = 0.0;
+    let rr = 0.80 * np as f32;
     let color = rgb(random(), random(), random());
 
     Model {
         egui,
         settings: Settings {
             np,
-            cx,
-            cy,
             k,
-            r,
-            ad,
+            an,
+            ra,
+            aa,
+            rr,
             color,
         },
     }
@@ -65,15 +65,21 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
     egui::Window::new("settings").show(&ctx, |ui| {
         ui.label("k:");
-        ui.add(egui::Slider::new(&mut settings.k, 3..=20));
+        ui.add(egui::Slider::new(&mut settings.k, 1..=2500));
 
-        let mut r_multiplier = settings.r / settings.np as f32;
-        ui.label("r multiplier:");
-        ui.add(egui::Slider::new(&mut r_multiplier, 0.0..=1.0));
-        settings.r = r_multiplier * settings.np as f32;
+        ui.label("an:");
+        ui.add(egui::Slider::new(&mut settings.an, 0.0..=f32::PI()));
 
-        ui.label("ad:");
-        ui.add(egui::Slider::new(&mut settings.ad, 0.0..=f32::PI()));
+        ui.label("ra:");
+        ui.add(egui::Slider::new(&mut settings.ra, 0.0..=1.0));
+
+        ui.label("aa:");
+        ui.add(egui::Slider::new(&mut settings.aa, 0.0..=f32::PI()));
+
+        let mut rr_multiplier = settings.rr / settings.np as f32;
+        ui.label("rr multiplier:");
+        ui.add(egui::Slider::new(&mut rr_multiplier, 0.0..=1.0));
+        settings.rr = rr_multiplier * settings.np as f32;
 
         let clicked = ui.button("random color").clicked();
         if clicked {
@@ -95,17 +101,26 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     let point_weight = 2.0;
 
+    let mut aa = settings.aa;
+    let mut rr = settings.rr;
+
+    let mut x = (settings.np as f32 - settings.rr) / 2.0;
+    let mut y = 0.0;
+
     let mut points = vec![];
     for i in 0..settings.k {
-        let x = settings.cx
-            + settings.r * f32::cos((2.0 * i as f32 * f32::PI()) / settings.k as f32 + settings.ad);
-        let y = settings.cy
-            + settings.r * f32::sin((2.0 * i as f32 * f32::PI()) / settings.k as f32 + settings.ad);
+        x += rr * f32::cos(aa);
+        y += rr * f32::sin(aa);
+
         let (x, y) = (x - 250.0, y - 250.0);
         let point = pt2(x, y);
         points.push(point);
+
+        aa += settings.an;
+        rr *= settings.ra;
+
         if i > 0 {
-            let prev_point = points.get(i as usize - 1).unwrap();
+            let prev_point = points.get((i - 1) as usize).unwrap();
             draw.line()
                 .start(*prev_point)
                 .end(point)
@@ -113,12 +128,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
                 .weight(point_weight);
         }
     }
-
-    draw.line()
-        .start(*points.last().unwrap())
-        .end(*points.first().unwrap())
-        .color(settings.color)
-        .weight(point_weight);
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();

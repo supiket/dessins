@@ -6,13 +6,13 @@ fn main() {
 }
 
 struct Settings {
-    np: u32,
-    k: u32,
-    h: u32,
-    cx: f32,
-    cy: f32,
-    r: f32,
-    ad: f32,
+    np: u32, // # elementary steps, i.e. resolution
+    k: u32,  // # vertices
+    h: u32,  // # vertices to skip (clockwise) before connecting two dots
+    cx: f32, // x-coordinate of the circle C on which the vertices are
+    cy: f32, // y-coordinate of the circle C on which the vertices are
+    r: f32,  // radius of the circle C on which the vertices are
+    ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
     color: Srgb<u8>,
 }
 
@@ -32,25 +32,29 @@ fn model(app: &App) -> Model {
 
     let egui = Egui::from_window(&window);
 
+    // constants
     let np = 480;
-    let k = 5;
-    let h = 3;
     let cx = np as f32 / 2.0;
     let cy = np as f32 / 2.0;
+
+    // parameters
+    let k = 5;
+    let h = 3;
     let r = np as f32 * 0.45;
     let ad = f32::PI() / 2.0;
+    let color = rgb(random(), random(), random());
 
     Model {
         egui,
         settings: Settings {
             np,
-            k,
-            h,
             cx,
             cy,
+            k,
+            h,
             r,
             ad,
-            color: WHITE,
+            color,
         },
     }
 }
@@ -62,7 +66,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
     egui.set_elapsed_time(update.since_start);
     let ctx = egui.begin_frame();
 
-    egui::Window::new("Settings").show(&ctx, |ui| {
+    egui::Window::new("settings").show(&ctx, |ui| {
         ui.label("k:");
         ui.add(egui::Slider::new(&mut settings.k, 5..=100));
 
@@ -77,7 +81,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.label("ad:");
         ui.add(egui::Slider::new(&mut settings.ad, 0.0..=f32::PI()));
 
-        let clicked = ui.button("Random color").clicked();
+        let clicked = ui.button("random color").clicked();
         if clicked {
             settings.color = rgb(random(), random(), random());
         }
@@ -95,7 +99,6 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
 
-    let point_color = settings.color;
     let point_weight = 2.0;
 
     let mut points = vec![];
@@ -120,20 +123,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
             draw.line()
                 .start(*prev_point)
                 .end(point)
-                .color(point_color)
+                .color(settings.color)
                 .weight(point_weight);
         }
     }
 
-    if settings.k > 1 {
-        let last_point = points.get(settings.k as usize - 1).unwrap();
-        let first_point = points.get(0).unwrap();
-        draw.line()
-            .start(*last_point)
-            .end(*first_point)
-            .color(point_color)
-            .weight(point_weight);
-    }
+    draw.line()
+        .start(*points.last().unwrap())
+        .end(*points.first().unwrap())
+        .color(settings.color)
+        .weight(point_weight);
 
     draw.to_frame(app, &frame).unwrap();
     model.egui.draw_to_frame(&frame).unwrap();
