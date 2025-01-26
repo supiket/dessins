@@ -8,6 +8,7 @@ fn main() {
 struct Settings {
     np: u32,
     k: u32,
+    h: u32,
     cx: f32,
     cy: f32,
     r: f32,
@@ -32,17 +33,19 @@ fn model(app: &App) -> Model {
     let egui = Egui::from_window(&window);
 
     let np = 480;
-    let k = 3;
+    let k = 5;
+    let h = 3;
     let cx = np as f32 / 2.0;
     let cy = np as f32 / 2.0;
     let r = np as f32 * 0.45;
-    let ad = 0 as f32;
+    let ad = f32::PI() / 2.0;
 
     Model {
         egui,
         settings: Settings {
             np,
             k,
+            h,
             cx,
             cy,
             r,
@@ -61,7 +64,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
     egui::Window::new("Settings").show(&ctx, |ui| {
         ui.label("k:");
-        ui.add(egui::Slider::new(&mut settings.k, 3..=20));
+        ui.add(egui::Slider::new(&mut settings.k, 5..=100));
+
+        ui.label("h:");
+        ui.add(egui::Slider::new(&mut settings.h, 3..=50));
 
         let mut r_multiplier = settings.r / settings.np as f32;
         ui.label("r multiplier:");
@@ -95,9 +101,17 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let mut points = vec![];
     for i in 0..settings.k {
         let x = settings.cx
-            + settings.r * f32::cos((2.0 * i as f32 * f32::PI()) / settings.k as f32 + settings.ad);
+            + settings.r
+                * f32::cos(
+                    (2.0 * i as f32 * settings.h as f32 * f32::PI()) / settings.k as f32
+                        + settings.ad,
+                );
         let y = settings.cy
-            + settings.r * f32::sin((2.0 * i as f32 * f32::PI()) / settings.k as f32 + settings.ad);
+            + settings.r
+                * f32::sin(
+                    (2.0 * i as f32 * settings.h as f32 * f32::PI()) / settings.k as f32
+                        + settings.ad,
+                );
         let (x, y) = (x - 250.0, y - 250.0);
         let point = pt2(x, y);
         points.push(point);
