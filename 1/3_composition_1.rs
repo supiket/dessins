@@ -8,8 +8,6 @@ fn main() {
 struct Settings {
     np: u32, // # elementary steps, i.e. resolution
     k1: u32, // # stars
-    dx: f32, // x-coordinate of the circle C on which the centers of stars are
-    dy: f32, // y-coordinate of the circle C on which the centers of stars are
     r1: f32, // radius of the circle on which the centers of stars are
     a1: f32, // angle (in radians) of the vector CS with horizontal, where S is the center of the first star
     k: u32,  // # vertices of stars
@@ -37,8 +35,6 @@ fn model(app: &App) -> Model {
 
     // constants
     let np = 480;
-    let dx = np as f32 / 2.0;
-    let dy = np as f32 / 2.0;
 
     // parameters
     let k1 = 5;
@@ -55,8 +51,6 @@ fn model(app: &App) -> Model {
         settings: Settings {
             np,
             k1,
-            dx,
-            dy,
             r1,
             a1,
             k,
@@ -79,10 +73,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.label("k1:");
         ui.add(egui::Slider::new(&mut settings.k1, 1..=100));
 
-        let mut r1_multiplier = settings.r1 / settings.np as f32;
-        ui.label("r1 multiplier:");
-        ui.add(egui::Slider::new(&mut r1_multiplier, 0.0..=1.0));
-        settings.r1 = r1_multiplier * settings.np as f32;
+        let mut r1 = settings.r1 / settings.np as f32;
+        ui.label("r1:");
+        ui.add(egui::Slider::new(&mut r1, 0.0..=1.0).suffix(format!("np (={})", settings.np)));
+        settings.r1 = r1 * settings.np as f32;
 
         ui.label("a1:");
         ui.add(egui::Slider::new(&mut settings.a1, 0.0..=f32::PI()));
@@ -93,13 +87,15 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.label("h:");
         ui.add(egui::Slider::new(&mut settings.h, 1..=50));
 
-        let mut r_multiplier = settings.r / settings.np as f32;
-        ui.label("r multiplier:");
-        ui.add(egui::Slider::new(&mut r_multiplier, 0.0..=1.0));
-        settings.r = r_multiplier * settings.np as f32;
+        let mut r = settings.r / settings.np as f32;
+        ui.label("r:");
+        ui.add(egui::Slider::new(&mut r, 0.0..=1.0).suffix(format!("np (={})", settings.np)));
+        settings.r = r * settings.np as f32;
 
+        let mut ad = settings.ad / f32::PI();
         ui.label("ad:");
-        ui.add(egui::Slider::new(&mut settings.ad, 0.0..=f32::PI()));
+        ui.add(egui::Slider::new(&mut ad, -1.0..=1.00).suffix("π"));
+        settings.ad = ad * f32::PI();
 
         let clicked = ui.button("random color").clicked();
         if clicked {
@@ -122,37 +118,32 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let point_weight = 2.0;
 
     for i in 0..settings.k1 {
-        let cx = settings.dx
-            + settings.r1 * f32::cos(2.0 * f32::PI() * i as f32 / settings.k1 as f32 + settings.a1);
-        let cy = settings.dy
-            + settings.r1 * f32::sin(2.0 * f32::PI() * i as f32 / settings.k1 as f32 + settings.a1);
+        let angle = 2.0 * f32::PI() * i as f32 / settings.k1 as f32 + settings.a1;
+        let cx = settings.r1 * f32::cos(angle);
+        let cy = settings.r1 * f32::sin(angle);
 
         let mut points = vec![];
+
         for j in 0..settings.k {
-            let x = cx
-                + settings.r
-                    * f32::cos(
-                        2.0 * j as f32 * settings.h as f32 * f32::PI() / settings.k as f32
-                            + settings.ad,
-                    );
-            let y = cy
-                + settings.r
-                    * f32::sin(
-                        2.0 * j as f32 * settings.h as f32 * f32::PI() / settings.k as f32
-                            + settings.ad,
-                    );
-            let (x, y) = (x - 250.0, y - 250.0);
+            let angle =
+                2.0 * j as f32 * settings.h as f32 * f32::PI() / settings.k as f32 + settings.ad;
+            let x = cx + settings.r * f32::cos(angle);
+            let y = cy + settings.r * f32::sin(angle);
+
             let point = pt2(x, y);
-            points.push(point);
-            if j > 0 {
-                let prev_point = points.get((j - 1) as usize).unwrap();
+            let last_point = points.last();
+
+            if let Some(prev_point) = last_point {
                 draw.line()
                     .start(*prev_point)
                     .end(point)
                     .color(settings.color)
                     .weight(point_weight);
             }
+
+            points.push(point);
         }
+
         draw.line()
             .start(*points.last().unwrap())
             .end(*points.first().unwrap())

@@ -67,8 +67,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.label("k:");
         ui.add(egui::Slider::new(&mut settings.k, 1..=2500));
 
+        let mut an = settings.an / f32::PI();
         ui.label("an:");
-        ui.add(egui::Slider::new(&mut settings.an, 0.0..=f32::PI()));
+        ui.add(egui::Slider::new(&mut an, -1.0..=1.00).suffix("π"));
+        settings.an = an * f32::PI();
 
         ui.label("ra:");
         ui.add(egui::Slider::new(&mut settings.ra, 0.0..=1.0));
@@ -76,10 +78,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.label("aa:");
         ui.add(egui::Slider::new(&mut settings.aa, 0.0..=f32::PI()));
 
-        let mut rr_multiplier = settings.rr / settings.np as f32;
-        ui.label("rr multiplier:");
-        ui.add(egui::Slider::new(&mut rr_multiplier, 0.0..=1.0));
-        settings.rr = rr_multiplier * settings.np as f32;
+        let mut rr = settings.rr / settings.np as f32;
+        ui.label("rr:");
+        ui.add(egui::Slider::new(&mut rr, 0.0..=1.0).suffix(format!("np(={})", settings.np)));
+        settings.rr = rr * settings.np as f32;
 
         let clicked = ui.button("random color").clicked();
         if clicked {
@@ -97,36 +99,55 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let settings = &model.settings;
 
     let draw = app.draw();
+    let (w, h) = app.window_rect().w_h();
     draw.background().color(BLACK);
 
     let point_weight = 2.0;
 
-    let mut aa = settings.aa;
-    let mut rr = settings.rr;
+    let mut current_length = settings.rr;
+    let mut current_pos = pt2(-w / 4.0, -h / 4.0);
+    let mut points = vec![current_pos];
 
-    let mut x = (settings.np as f32 - settings.rr) / 2.0;
-    let mut y = 0.0;
+    let mut min_x = 0.0;
+    let mut max_x = 0.0;
+    let mut min_y = 0.0;
+    let mut max_y = 0.0;
 
-    let mut points = vec![];
     for i in 0..settings.k {
-        x += rr * f32::cos(aa);
-        y += rr * f32::sin(aa);
+        let angle = settings.aa + i as f32 * settings.an;
 
-        let (x, y) = (x - 250.0, y - 250.0);
-        let point = pt2(x, y);
+        let dx = current_length * f32::cos(angle);
+        let dy = current_length * f32::sin(angle);
+        let point = pt2(current_pos.x + dx, current_pos.y + dy);
+
+        // update bounds
+        min_x = min_x.min(point.x);
+        max_x = max_x.max(point.x);
+        min_y = min_y.min(point.y);
+        max_y = max_y.max(point.y);
+
         points.push(point);
+        current_pos = point;
+        current_length *= settings.ra;
+    }
 
-        aa += settings.an;
-        rr *= settings.ra;
+    // calculate center offset
+    let center_offset_x = (min_x + max_x) / 2.0;
+    let center_offset_y = (min_y + max_y) / 2.0;
 
-        if i > 0 {
-            let prev_point = points.get((i - 1) as usize).unwrap();
-            draw.line()
-                .start(*prev_point)
-                .end(point)
-                .color(settings.color)
-                .weight(point_weight);
-        }
+    // draw centered segments
+    for i in 0..points.len() - 1 {
+        let start = pt2(points[i].x - center_offset_x, points[i].y - center_offset_y);
+        let end = pt2(
+            points[i + 1].x - center_offset_x,
+            points[i + 1].y - center_offset_y,
+        );
+
+        draw.line()
+            .start(start)
+            .end(end)
+            .color(settings.color)
+            .weight(point_weight);
     }
 
     draw.to_frame(app, &frame).unwrap();

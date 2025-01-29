@@ -28,6 +28,22 @@ path = "1/5_joligones.rs"
 name = "2-1-1"
 path = "2/1_1_cheval.rs"
 
+[[bin]]
+name = "2-1-2"
+path = "2/1_2_cheval.rs"
+
+[[bin]]
+name = "2-1-3"
+path = "2/1_3_cheval.rs"
+
+[[bin]]
+name = "2-1-4"
+path = "2/1_4_cheval.rs"
+
+[[bin]]
+name = "2-1-5"
+path = "2/1_5_cheval.rs"
+
 [dependencies]
 nannou = "0.19"
 nannou_egui = "0.19.0"

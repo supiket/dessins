@@ -8,8 +8,6 @@ fn main() {
 struct Settings {
     np: u32, // # elementary steps, i.e. resolution
     k: u32,  // # vertices
-    cx: f32, // x-coordinate of the circle C on which the vertices are
-    cy: f32, // y-coordinate of the circle C on which the vertices are
     r: f32,  // radius of the circle on which the vertices are
     ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
     color: Srgb<u8>,
@@ -33,8 +31,6 @@ fn model(app: &App) -> Model {
 
     // constants
     let np = 480;
-    let cx = np as f32 / 2.0;
-    let cy = np as f32 / 2.0;
 
     // parameters
     let k = 3;
@@ -46,8 +42,6 @@ fn model(app: &App) -> Model {
         egui,
         settings: Settings {
             np,
-            cx,
-            cy,
             k,
             r,
             ad,
@@ -67,13 +61,15 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         ui.label("k:");
         ui.add(egui::Slider::new(&mut settings.k, 3..=20));
 
-        let mut r_multiplier = settings.r / settings.np as f32;
-        ui.label("r multiplier:");
-        ui.add(egui::Slider::new(&mut r_multiplier, 0.0..=1.0));
-        settings.r = r_multiplier * settings.np as f32;
+        let mut r = settings.r / settings.np as f32;
+        ui.label("r:");
+        ui.add(egui::Slider::new(&mut r, 0.0..=1.0).suffix(format!("np (={})", settings.np)));
+        settings.r = r * settings.np as f32;
 
+        let mut ad = settings.ad / f32::PI();
         ui.label("ad:");
-        ui.add(egui::Slider::new(&mut settings.ad, 0.0..=f32::PI()));
+        ui.add(egui::Slider::new(&mut ad, -1.0..=1.00).suffix("π"));
+        settings.ad = ad * f32::PI();
 
         let clicked = ui.button("random color").clicked();
         if clicked {
@@ -94,24 +90,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(BLACK);
 
     let point_weight = 2.0;
-
     let mut points = vec![];
+
     for i in 0..settings.k {
-        let x = settings.cx
-            + settings.r * f32::cos((2.0 * i as f32 * f32::PI()) / settings.k as f32 + settings.ad);
-        let y = settings.cy
-            + settings.r * f32::sin((2.0 * i as f32 * f32::PI()) / settings.k as f32 + settings.ad);
-        let (x, y) = (x - 250.0, y - 250.0);
+        let angle = (2.0 * i as f32 * f32::PI()) / settings.k as f32 + settings.ad;
+        let x = settings.r * f32::cos(angle);
+        let y = settings.r * f32::sin(angle);
+
         let point = pt2(x, y);
-        points.push(point);
-        if i > 0 {
-            let prev_point = points.get(i as usize - 1).unwrap();
+        let last_point = points.last();
+
+        if let Some(prev_point) = last_point {
             draw.line()
                 .start(*prev_point)
                 .end(point)
                 .color(settings.color)
                 .weight(point_weight);
         }
+
+        points.push(point);
     }
 
     draw.line()

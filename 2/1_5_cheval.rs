@@ -8,6 +8,7 @@ fn main() {
 struct Settings {
     np: u32,          // # elementary steps, i.e. resolution
     points: Vec<u32>, // points creating the horse figure
+    count: u32,       // # repetitions of pattern
     color: Srgb<u8>,
 }
 
@@ -24,6 +25,9 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
     let window = app.window(window_id).unwrap();
+
+    let rect = app.window_rect();
+    app.new_window().size(rect.w() as u32, rect.h() as u32 * 2);
 
     let egui = Egui::from_window(&window);
 
@@ -43,13 +47,19 @@ fn model(app: &App) -> Model {
         19, 22, 21, 1000, 22, 19, 21, 20, 1000, 13, 34, 15, 35, 16, 34, 16, 33, 1000, 15, 35, 15,
         34, 16, 34, 15, 34, 15, 35, 1000, 24, 12, 26, 10, 19, 5, 19, 3, 1000, 28, 22, 25, 22, 2000,
     ];
+    let count = 6;
 
     // parameters
     let color = rgb(random(), random(), random());
 
     Model {
         egui,
-        settings: Settings { np, points, color },
+        settings: Settings {
+            np,
+            points,
+            count,
+            color,
+        },
     }
 }
 
@@ -80,44 +90,52 @@ fn view(app: &App, model: &Model, frame: Frame) {
     draw.background().color(BLACK);
 
     let point_weight = 2.0;
+    let np = settings.np as f32;
 
-    let mut end_line = true;
-    let mut points_index = 0;
-    let mut points = vec![];
+    for i in 0..settings.count {
+        for j in 0..pow(2, i as usize) {
+            let mut points_index = 0;
+            let mut points = vec![];
+            let mut end_line = true;
 
-    loop {
-        let mut a = settings.points[points_index];
-        points_index += 1;
-        if a == 2000 {
-            break;
-        }
-        if a == 1000 {
-            a = settings.points[points_index];
-            points_index += 1;
-            end_line = true;
-        }
-        let a = a as i32 - 20; // -20 for hardcoded value to cartesian
-        let b = settings.points[points_index] as i32 - 20;
-        points_index += 1;
+            let r = pow(0.5, i as usize);
 
-        let x = settings.np as f32 * a as f32 / 40.0;
-        let y = settings.np as f32 * b as f32 / 40.0;
+            loop {
+                let mut a = settings.points[points_index];
+                points_index += 1;
+                if a == 2000 {
+                    break;
+                }
+                if a == 1000 {
+                    a = settings.points[points_index];
+                    points_index += 1;
+                    end_line = true;
+                }
+                let b = settings.points[points_index];
+                points_index += 1;
+                let (a, b) = (a as f32, b as f32);
 
-        let point = pt2(x, y);
-        let last_point = points.last();
+                let x = (j as f32 + a / 40.0) * np * r - 0.5 * np;
+                let y = (2.0 - 2.0 * r) * np + b / 40.0 * np * r - 0.5 * np;
+                let (x, y) = (x * 0.5, y * 0.5);
 
-        if let Some(prev_point) = last_point {
-            if !end_line {
-                draw.line()
-                    .start(*prev_point)
-                    .end(point)
-                    .color(settings.color)
-                    .weight(point_weight);
+                let point = pt2(x, y);
+                let last_point = points.last();
+
+                if let Some(prev_point) = last_point {
+                    if !end_line {
+                        draw.line()
+                            .start(*prev_point)
+                            .end(point)
+                            .color(settings.color)
+                            .weight(point_weight);
+                    }
+                }
+
+                points.push(point);
+                end_line = false;
             }
         }
-
-        points.push(point);
-        end_line = false;
     }
 
     draw.to_frame(app, &frame).unwrap();
