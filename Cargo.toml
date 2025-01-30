@@ -64,6 +64,30 @@ path = "2/1_9_cheval.rs"
 name = "2-1-10"
 path = "2/1_10_cheval.rs"
 
+[[bin]]
+name = "2-2-1-1"
+path = "2/2_1_1_lion.rs"
+
+[[bin]]
+name = "2-2-1-2"
+path = "2/2_1_2_lion.rs"
+
+[[bin]]
+name = "2-2-2-1"
+path = "2/2_2_1_oiseaux_poissons.rs"
+
+[[bin]]
+name = "2-2-2-2"
+path = "2/2_2_2_oiseaux_poissons.rs"
+
+[[bin]]
+name = "2-2-3-1"
+path = "2/2_3_1_smurf.rs"
+
+[[bin]]
+name = "2-2-3-2"
+path = "2/2_3_2_smurf.rs"
+
 [dependencies]
 nannou = "0.19"
 nannou_egui = "0.19.0"
