@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["bikem <bengisuozaydin@gmail.com>"]
 edition = "2021"
 
+[lib]
+name = "common"
+path = "src/lib.rs"
+
 [[bin]]
 name = "1-1"
 path = "1/1_polygones_reguliers.rs"

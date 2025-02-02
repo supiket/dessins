@@ -1,9 +1,6 @@
+use common::draw_exact;
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
-
-fn main() {
-    nannou::app(model).update(update).run();
-}
 
 struct Settings {
     np: u32, // # elementary steps, i.e. resolution
@@ -12,13 +9,18 @@ struct Settings {
     ra: f32, // ratio of the lengths of two consecutive segments
     aa: f32, // angle of the first segment with horizontal
     rr: f32, // length of the first segment
+    initial_pos: Point2,
     color: Srgb<u8>,
 }
 
 struct Model {
     settings: Settings,
+    points: Points,
     egui: Egui,
 }
+
+type Points = Shape;
+type Shape = Vec<Point2>;
 
 fn model(app: &App) -> Model {
     let window_id = app
@@ -28,85 +30,111 @@ fn model(app: &App) -> Model {
         .build()
         .unwrap();
     let window = app.window(window_id).unwrap();
-
     let egui = Egui::from_window(&window);
 
-    // constants
     let np = 480;
-
-    // parameters
-    let k = 200;
-    let an = 15.0 * f32::PI() / 31.0;
-    let ra = 0.98;
-    let aa = 0.0;
-    let rr = 0.80 * np as f32;
-    let color = rgb(random(), random(), random());
+    let (w, h) = window.rect().w_h();
 
     Model {
         egui,
         settings: Settings {
             np,
-            k,
-            an,
-            ra,
-            aa,
-            rr,
-            color,
+            k: 200,
+            an: 15.0 * PI / 31.0,
+            ra: 0.98,
+            aa: 0_f32,
+            rr: 0.80 * np as f32,
+            initial_pos: pt2(-w / 4.0, -h / 4.0),
+            color: rgb(random(), random(), random()),
         },
+        points: Default::default(),
     }
 }
 
 fn update(_app: &App, model: &mut Model, update: Update) {
-    let egui = &mut model.egui;
-    let settings = &mut model.settings;
+    let mut recalculate = false;
 
-    egui.set_elapsed_time(update.since_start);
-    let ctx = egui.begin_frame();
+    {
+        model.egui.set_elapsed_time(update.since_start);
+        let ctx = model.egui.begin_frame();
 
-    egui::Window::new("settings").show(&ctx, |ui| {
-        ui.label("k:");
-        ui.add(egui::Slider::new(&mut settings.k, 1..=2500));
+        egui::Window::new("settings").show(&ctx, |ui| {
+            ui.label("k:");
+            if ui
+                .add(egui::Slider::new(&mut model.settings.k, 1..=2500))
+                .changed()
+            {
+                recalculate = true;
+            }
 
-        let mut an = settings.an / f32::PI();
-        ui.label("an:");
-        ui.add(egui::Slider::new(&mut an, -1.0..=1.00).suffix("π"));
-        settings.an = an * f32::PI();
+            let mut an = model.settings.an / PI;
+            ui.label("an:");
+            if ui
+                .add(egui::Slider::new(&mut an, -1.0..=1.00).suffix("π"))
+                .changed()
+            {
+                recalculate = true;
+            }
+            model.settings.an = an * PI;
 
-        ui.label("ra:");
-        ui.add(egui::Slider::new(&mut settings.ra, 0.0..=1.0));
+            ui.label("ra:");
+            if ui
+                .add(egui::Slider::new(&mut model.settings.ra, 0.0..=1.0))
+                .changed()
+            {
+                recalculate = true;
+            }
 
-        ui.label("aa:");
-        ui.add(egui::Slider::new(&mut settings.aa, 0.0..=f32::PI()));
+            ui.label("aa:");
+            if ui
+                .add(egui::Slider::new(&mut model.settings.aa, 0.0..=PI))
+                .changed()
+            {
+                recalculate = true;
+            }
 
-        let mut rr = settings.rr / settings.np as f32;
-        ui.label("rr:");
-        ui.add(egui::Slider::new(&mut rr, 0.0..=1.0).suffix(format!("np(={})", settings.np)));
-        settings.rr = rr * settings.np as f32;
+            let mut rr = model.settings.rr / model.settings.np as f32;
+            ui.label("rr:");
+            if ui
+                .add(
+                    egui::Slider::new(&mut rr, 0.0..=1.0)
+                        .suffix(format!("np(={})", model.settings.np)),
+                )
+                .changed()
+            {
+                recalculate = true;
+            }
+            model.settings.rr = rr * model.settings.np as f32;
 
-        let clicked = ui.button("random color").clicked();
-        if clicked {
-            settings.color = rgb(random(), random(), random());
-        }
-    });
-}
+            let clicked = ui.button("random color").clicked();
+            if clicked {
+                model.settings.color = rgb(random(), random(), random());
+            }
+        });
+    }
 
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    // Let egui handle things like keyboard and mouse input.
-    model.egui.handle_raw_event(event);
+    if recalculate || model.points.is_empty() {
+        calculate_points(&model.settings, &mut model.points);
+    }
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
-    let settings = &model.settings;
-
     let draw = app.draw();
-    let (w, h) = app.window_rect().w_h();
     draw.background().color(BLACK);
 
-    let point_weight = 2.0;
+    draw_exact(&draw, model.settings.color, &model.points);
+
+    draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();
+}
+
+fn calculate_points(settings: &Settings, points: &mut Points) {
+    *points = vec![];
+    let _points: Vec<Point2> = vec![];
 
     let mut current_length = settings.rr;
-    let mut current_pos = pt2(-w / 4.0, -h / 4.0);
-    let mut points = vec![current_pos];
+    let mut current_pos = settings.initial_pos;
+    let mut _points = vec![current_pos];
 
     let mut min_x = 0.0;
     let mut max_x = 0.0;
@@ -126,7 +154,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
         min_y = min_y.min(point.y);
         max_y = max_y.max(point.y);
 
-        points.push(point);
+        _points.push(point);
         current_pos = point;
         current_length *= settings.ra;
     }
@@ -135,21 +163,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
     let center_offset_x = (min_x + max_x) / 2.0;
     let center_offset_y = (min_y + max_y) / 2.0;
 
-    // draw centered segments
-    for i in 0..points.len() - 1 {
-        let start = pt2(points[i].x - center_offset_x, points[i].y - center_offset_y);
-        let end = pt2(
-            points[i + 1].x - center_offset_x,
-            points[i + 1].y - center_offset_y,
-        );
-
-        draw.line()
-            .start(start)
-            .end(end)
-            .color(settings.color)
-            .weight(point_weight);
+    // make segments centered
+    for point in _points {
+        points.push(point - pt2(center_offset_x, center_offset_y));
     }
+}
 
-    draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
+}
+
+fn main() {
+    nannou::app(model).update(update).run();
 }
