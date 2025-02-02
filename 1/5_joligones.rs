@@ -1,9 +1,8 @@
-use common::draw_exact;
+use common::{draw_exact, ui_color, NP};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 
 struct Settings {
-    np: u32, // # elementary steps, i.e. resolution
     k: u32,  // # segments
     an: f32, // angle of two consecutive segments
     ra: f32, // ratio of the lengths of two consecutive segments
@@ -32,18 +31,16 @@ fn model(app: &App) -> Model {
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
 
-    let np = 480;
     let (w, h) = window.rect().w_h();
 
     Model {
         egui,
         settings: Settings {
-            np,
             k: 200,
             an: 15.0 * PI / 31.0,
             ra: 0.98,
             aa: 0_f32,
-            rr: 0.80 * np as f32,
+            rr: 0.80 * NP as f32,
             initial_pos: pt2(-w / 4.0, -h / 4.0),
             color: rgb(random(), random(), random()),
         },
@@ -93,22 +90,18 @@ fn update(_app: &App, model: &mut Model, update: Update) {
                 recalculate = true;
             }
 
-            let mut rr = model.settings.rr / model.settings.np as f32;
+            let mut rr = model.settings.rr / NP as f32;
             ui.label("rr:");
             if ui
-                .add(
-                    egui::Slider::new(&mut rr, 0.0..=1.0)
-                        .suffix(format!("np(={})", model.settings.np)),
-                )
+                .add(egui::Slider::new(&mut rr, 0.0..=1.0).suffix(format!("np(={})", NP)))
                 .changed()
             {
                 recalculate = true;
             }
-            model.settings.rr = rr * model.settings.np as f32;
+            model.settings.rr = rr * NP as f32;
 
-            let clicked = ui.button("random color").clicked();
-            if clicked {
-                model.settings.color = rgb(random(), random(), random());
+            if let Some(color) = ui_color(ui) {
+                model.settings.color = color;
             }
         });
     }
@@ -146,7 +139,8 @@ fn calculate_points(settings: &Settings, points: &mut Points) {
 
         let dx = current_length * f32::cos(angle);
         let dy = current_length * f32::sin(angle);
-        let point = pt2(current_pos.x + dx, current_pos.y + dy);
+        let d = pt2(dx, dy);
+        let point = current_pos + d;
 
         // update bounds
         min_x = min_x.min(point.x);

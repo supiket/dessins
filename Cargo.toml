@@ -120,14 +120,6 @@ path = "3/1_6_dragons.rs"
 name = "3-1-7"
 path = "3/1_7_dragons.rs"
 
-[[bin]]
-name = "3-1-8"
-path = "3/1_8_dragons.rs"
-
-[[bin]]
-name = "3-1-9"
-path = "3/1_9_dragons.rs"
-
 [dependencies]
 nannou = "0.19"
 nannou_egui = "0.19.0"

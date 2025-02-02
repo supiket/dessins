@@ -1,10 +1,11 @@
-use common::draw_exact;
+use common::{
+    chapter_2::{Action, DessinShape, LION},
+    draw_exact, ui_color, NP,
+};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 
 struct Settings {
-    np: u32,          // # elementary steps, i.e. resolution
-    points: Vec<f32>, // points creating the lion figure
     color: Srgb<u8>,
 }
 
@@ -30,22 +31,6 @@ fn model(app: &App) -> Model {
     Model {
         egui,
         settings: Settings {
-            np: 480,
-            points: vec![
-                1000.0, -2.5, 0.0, -2.0, 1.0, -1.0, 2.0, 0.0, 7.0, 1.0, 7.0, 2.0, 8.0, 2.0, 11.0,
-                3.0, 14.0, 3.5, 13.5, 2.5, 11.0, 2.5, 9.0, 1000.0, 3.5, 13.5, 4.0, 13.0, 3.0, 11.0,
-                3.0, 9.0, 3.0, 11.0, 4.0, 13.0, 5.0, 12.0, 3.5, 11.0, 3.5, 9.0, 3.5, 11.0, 5.0,
-                12.0, 5.0, 11.0, 4.0, 10.0, 4.0, 9.0, 8.0, 9.0, 7.0, 11.0, 8.0, 13.0, 10.0, 14.0,
-                12.0, 13.0, 13.0, 11.0, 12.0, 11.0, 11.0, 10.0, 12.0, 8.0, 13.0, 7.0, 14.0, 2.0,
-                15.0, 2.0, 16.0, 1.0, 16.0, 0.0, 12.0, 0.0, 12.0, 2.0, 11.0, 5.0, 11.5, 6.0, 11.0,
-                5.0, 9.0, 3.0, 9.0, 2.0, 10.0, 1.0, 10.0, 0.0, 6.0, 0.0, 7.0, 2.0, 8.0, 6.0, 7.0,
-                2.0, 6.0, 4.0, 4.0, 5.0, 5.0, 7.0, 4.0, 8.0, 5.0, 7.0, 4.0, 5.0, 2.0, 4.0, 1.0,
-                2.0, 2.0, 2.0, 3.0, 1.0, 2.5, 0.0, -2.5, 0.0, 1000.0, 6.0, 4.0, 7.5, 3.5, 1000.0,
-                12.0, 11.0, 10.0, 10.5, 9.0, 10.5, 1000.0, 12.5, 12.0, 12.0, 12.0, 11.0, 11.5,
-                12.0, 12.0, 12.0, 12.5, 11.5, 12.5, 10.5, 13.0, 10.0, 13.0, 10.0, 13.5, 10.5, 13.5,
-                10.5, 13.0, 11.5, 12.5, 12.0, 12.5, 12.0, 13.0, 1000.0, 7.5, 12.0, 8.5, 12.0, 8.5,
-                11.5, 2000.0,
-            ],
             color: rgb(random(), random(), random()),
         },
         points: Default::default(),
@@ -58,15 +43,14 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            let clicked = ui.button("random color").clicked();
-            if clicked {
-                model.settings.color = rgb(random(), random(), random());
+            if let Some(color) = ui_color(ui) {
+                model.settings.color = color;
             }
         });
     }
 
     if model.points.is_empty() {
-        calculate_points(&model.settings, &mut model.points);
+        calculate_points(&mut model.points);
     }
 }
 
@@ -83,30 +67,21 @@ fn view(app: &App, model: &Model, frame: Frame) {
     model.egui.draw_to_frame(&frame).unwrap();
 }
 
-fn calculate_points(settings: &Settings, points: &mut Points) {
+fn calculate_points(points: &mut Points) {
     *points = vec![vec![]];
 
-    let mut points_index = 0;
-    let mut polyline_index = 0;
+    let mut lion = DessinShape::new(LION);
 
-    loop {
-        let mut a = settings.points[points_index];
-        points_index += 1;
-        if a == 2000.0 {
-            break;
+    while let Action::Continue(read_point, newline) = lion.calculate_point() {
+        if newline {
+            points.push(vec![])
         }
-        if a == 1000.0 {
-            a = settings.points[points_index];
-            points_index += 1;
-            polyline_index += 1;
-            points.push(vec![]);
-        }
-        let b = settings.points[points_index];
-        points_index += 1;
 
-        let x = settings.np as f32 * (a - 7.5) / 25.0;
-        let y = settings.np as f32 * (b - 7.5) / 25.0;
-        points[polyline_index as usize].push(pt2(x, y));
+        let x = NP as f32 * (read_point.x - 7.5) / 25.0;
+        let y = NP as f32 * (read_point.y - 7.5) / 25.0;
+        let point = pt2(x, y);
+
+        points[lion.line_index].push(point);
     }
 }
 

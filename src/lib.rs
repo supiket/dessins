@@ -1,10 +1,20 @@
-use nannou::{color::Srgb, geom::Point2, Draw};
+use nannou::{
+    color::{rgb, Srgb},
+    geom::Point2,
+    rand::random,
+    Draw,
+};
+use nannou_egui::egui::Ui;
 
-pub const NP: usize = 480;
-pub const WEIGHT: f32 = 2.0;
+pub mod chapter_1;
+pub mod chapter_2;
+pub mod chapter_3;
+
+pub const NP: usize = 480; // # elementary steps, i.e. resolution
+pub const WEIGHT: f32 = 2.0; // point weight
 
 pub fn draw_closed(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
-    draw_exact(draw, color, &points);
+    draw_exact(draw, color, points);
 
     // close curve
     let last = points.last().unwrap();
@@ -30,5 +40,14 @@ pub fn draw_exact(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
             .end(end)
             .color(color)
             .weight(WEIGHT);
+    }
+}
+
+pub fn ui_color(ui: &mut Ui) -> Option<Srgb<u8>> {
+    let clicked = ui.button("random color").clicked();
+    if clicked {
+        Some(rgb(random(), random(), random()))
+    } else {
+        None
     }
 }
