@@ -10,9 +10,10 @@ pub mod chapter_1;
 pub mod chapter_2;
 pub mod chapter_3;
 pub mod chapter_4;
+pub mod chapter_5;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
-pub const WEIGHT: f32 = 2.0; // point weight
+pub const WEIGHT: f32 = 1.0; // point weight
 
 pub fn draw_closed(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
     draw_exact(draw, color, points);
