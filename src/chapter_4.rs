@@ -1,7 +1,6 @@
-use crate::NP;
+use crate::{add_float_slider, add_float_slider_np, add_float_slider_pi};
 use nannou::geom::{pt2, Point2};
 use nannou_egui::{egui, egui::Ui};
-use std::f32::consts::PI;
 
 pub struct FractalSettings {
     pub n: usize,
@@ -44,54 +43,15 @@ impl FractalSettings {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("fractal n:");
-        if ui.add(egui::Slider::new(&mut self.n, 3..=20)).changed() {
-            recalculate = true;
-        }
+        ui.label("fractal n");
+        recalculate |= ui.add(egui::Slider::new(&mut self.n, 3..=20)).changed();
 
-        ui.label("fractal k:");
-        if ui.add(egui::Slider::new(&mut self.k, 2..=12)).changed() {
-            recalculate = true;
-        }
+        ui.label("fractal k");
+        recalculate |= ui.add(egui::Slider::new(&mut self.k, 2..=12)).changed();
 
-        ui.label("fractal ra:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.ra, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-
-        ui.label("fractal ll:");
-        let mut ll = self.ll / NP as f32;
-        if ui
-            .add(
-                egui::Slider::new(&mut ll, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix(format!("np (={})", NP)),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.ll = ll * NP as f32;
-
-        ui.label("fractal aa:");
-        let mut aa = self.aa / PI;
-        if ui
-            .add(
-                egui::Slider::new(&mut aa, -2.0..=2.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix("π"),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.aa = aa * PI;
+        recalculate |= add_float_slider(ui, "fractal ra", &mut self.ra, 0.0..=1.0)
+            | add_float_slider_np(ui, "fractal ll", &mut self.ll, 0.0..=1.0)
+            | add_float_slider_pi(ui, "fractal aa", &mut self.aa, -2.0..=2.0);
 
         recalculate
     }

@@ -1,4 +1,4 @@
-use crate::NP;
+use crate::{add_float_slider, add_float_slider_np};
 use nannou_egui::{egui, egui::Ui};
 
 pub struct OrbitalCurveSettings {
@@ -14,59 +14,24 @@ impl OrbitalCurveSettings {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("curve n:");
-        if ui
+        ui.label("curve n");
+        recalculate |= ui
             .add(egui::Slider::new(&mut self.n, 1000..=6000))
-            .changed()
-        {
-            recalculate = true;
-        }
+            .changed();
 
-        ui.label("curve t1:");
-        if ui.add(egui::Slider::new(&mut self.t1, 1..=600)).changed() {
-            recalculate = true;
-        }
+        ui.label("curve t1");
+        recalculate |= ui.add(egui::Slider::new(&mut self.t1, 1..=600)).changed();
 
-        ui.label("curve t2:");
-        if ui.add(egui::Slider::new(&mut self.t2, 1..=600)).changed() {
-            recalculate = true;
-        }
+        ui.label("curve t2");
+        recalculate |= ui.add(egui::Slider::new(&mut self.t2, 1..=600)).changed();
 
-        ui.label("curve r1:");
-        let mut r1 = self.r1 / NP as f32;
-        if ui
-            .add(
-                egui::Slider::new(&mut r1, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix(format!("np (={})", NP)),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.r1 = r1 * NP as f32;
+        recalculate |= add_float_slider_np(ui, "curve r1", &mut self.r1, 0.0..=1.0);
 
-        ui.label("curve k1:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.k1, 1..=4)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        ui.label("curve k1");
+        recalculate |= ui.add(egui::Slider::new(&mut self.k1, 1..=4)).changed();
 
-        ui.label("curve k2:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.k2, 1..=4)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        ui.label("curve k2");
+        recalculate |= ui.add(egui::Slider::new(&mut self.k2, 1..=4)).changed();
 
         recalculate
     }
@@ -88,107 +53,27 @@ impl RotatingCurveSettings {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("curve n:");
-        if ui
+        ui.label("curve n");
+        recalculate |= ui
             .add(egui::Slider::new(&mut self.n, 1000..=6000))
-            .changed()
-        {
-            recalculate = true;
-        }
+            .changed();
 
-        ui.label("curve t1:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.t1, 0.5..=600.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        recalculate |= add_float_slider(ui, "curve t1", &mut self.t1, 0.5..=600.0)
+            | add_float_slider(ui, "curve t2", &mut self.t2, 0.5..=600.0)
+            | add_float_slider_np(ui, "curve r1", &mut self.r1, 0.0..=1.0)
+            | add_float_slider_np(ui, "curve r2", &mut self.r2, 0.0..=1.0);
 
-        ui.label("curve t2:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.t2, 0.5..=600.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        ui.label("curve k1");
+        recalculate |= ui.add(egui::Slider::new(&mut self.k1, 1..=4)).changed();
 
-        ui.label("curve r1:");
-        let mut r1 = self.r1 / NP as f32;
-        if ui
-            .add(
-                egui::Slider::new(&mut r1, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix(format!("np (={})", NP)),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.r1 = r1 * NP as f32;
+        ui.label("curve k2");
+        recalculate |= ui.add(egui::Slider::new(&mut self.k2, 1..=4)).changed();
 
-        ui.label("curve k1:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.k1, 1..=4)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        ui.label("curve h1");
+        recalculate |= ui.add(egui::Slider::new(&mut self.h1, 1..=4)).changed();
 
-        ui.label("curve k2:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.k2, 1..=4)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-
-        ui.label("curve r2:");
-        let mut r2 = self.r2 / NP as f32;
-        if ui
-            .add(
-                egui::Slider::new(&mut r2, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix(format!("np (={})", NP)),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.r2 = r2 * NP as f32;
-
-        ui.label("curve h1:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.h1, 1..=4)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-
-        ui.label("curve h2:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.h2, 1..=4)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        ui.label("curve h2");
+        recalculate |= ui.add(egui::Slider::new(&mut self.h2, 1..=4)).changed();
 
         recalculate
     }
@@ -205,46 +90,16 @@ impl SpiralCurveSettings {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("curve n:");
-        if ui
+        ui.label("curve n");
+        recalculate |= ui
             .add(egui::Slider::new(&mut self.n, 1000..=9000))
-            .changed()
-        {
-            recalculate = true;
-        }
+            .changed();
 
-        ui.label("curve t:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.t, 40..=60)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        ui.label("curve t");
+        recalculate |= ui.add(egui::Slider::new(&mut self.t, 40..=60)).changed();
 
-        ui.label("curve r:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.r, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-
-        ui.label("curve l:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.l, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        recalculate |= add_float_slider(ui, "curve r", &mut self.r, 0.0..=1.0)
+            | add_float_slider(ui, "curve l", &mut self.l, 0.0..=1.0);
 
         recalculate
     }

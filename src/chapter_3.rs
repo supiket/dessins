@@ -1,3 +1,4 @@
+use crate::add_float_slider_pi;
 use nannou::geom::{pt2, Point2};
 use nannou_egui::{egui, egui::Ui};
 use std::f32::consts::PI;
@@ -66,10 +67,8 @@ impl DragonSettings {
     pub fn ui_n(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("dragon n:");
-        if ui.add(egui::Slider::new(&mut self.n, 2..=14)).changed() {
-            recalculate = true;
-        }
+        ui.label("dragon n");
+        recalculate |= ui.add(egui::Slider::new(&mut self.n, 2..=14)).changed();
 
         recalculate
     }
@@ -77,19 +76,7 @@ impl DragonSettings {
     pub fn ui_a0(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("dragon a0:");
-        let mut a0 = self.a0 / PI;
-        if ui
-            .add(
-                egui::Slider::new(&mut a0, -2.0..=2.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix("π"),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.a0 = a0 * PI;
+        recalculate |= add_float_slider_pi(ui, "dragon a0", &mut self.a0, -2.0..=2.0);
 
         recalculate
     }

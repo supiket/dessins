@@ -1,4 +1,6 @@
-use common::{draw_exact, ui_color, NP};
+use common::{
+    add_float_slider, add_float_slider_np, add_float_slider_pi, draw_exact, ui_color, NP,
+};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 
@@ -56,49 +58,15 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            ui.label("k:");
-            if ui
+            ui.label("k");
+            recalculate |= ui
                 .add(egui::Slider::new(&mut model.settings.k, 1..=2500))
-                .changed()
-            {
-                recalculate = true;
-            }
+                .changed();
 
-            let mut an = model.settings.an / PI;
-            ui.label("an:");
-            if ui
-                .add(egui::Slider::new(&mut an, -1.0..=1.00).suffix("π"))
-                .changed()
-            {
-                recalculate = true;
-            }
-            model.settings.an = an * PI;
-
-            ui.label("ra:");
-            if ui
-                .add(egui::Slider::new(&mut model.settings.ra, 0.0..=1.0))
-                .changed()
-            {
-                recalculate = true;
-            }
-
-            ui.label("aa:");
-            if ui
-                .add(egui::Slider::new(&mut model.settings.aa, 0.0..=PI))
-                .changed()
-            {
-                recalculate = true;
-            }
-
-            let mut rr = model.settings.rr / NP as f32;
-            ui.label("rr:");
-            if ui
-                .add(egui::Slider::new(&mut rr, 0.0..=1.0).suffix(format!("np(={})", NP)))
-                .changed()
-            {
-                recalculate = true;
-            }
-            model.settings.rr = rr * NP as f32;
+            recalculate |= add_float_slider_pi(ui, "an", &mut model.settings.an, -1.0..=1.0)
+                | add_float_slider(ui, "ra", &mut model.settings.ra, 0.0..=1.0)
+                | add_float_slider_pi(ui, "aa", &mut model.settings.aa, 0.0..=1.0)
+                | add_float_slider_np(ui, "rr", &mut model.settings.rr, 0.0..=1.0);
 
             if let Some(color) = ui_color(ui) {
                 model.settings.color = color;

@@ -1,4 +1,4 @@
-use crate::NP;
+use crate::{add_float_slider, add_float_slider_np, add_float_slider_pi};
 use nannou::prelude::*;
 use nannou_egui::{egui, egui::Ui};
 
@@ -20,38 +20,11 @@ impl PolygonSettings {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("polygon k:");
-        if ui.add(egui::Slider::new(&mut self.k, 3..=20)).changed() {
-            recalculate = true;
-        }
+        ui.label("polygon k");
+        recalculate |= ui.add(egui::Slider::new(&mut self.k, 3..=20)).changed();
 
-        ui.label("polygon r:");
-        let mut r = self.r / NP as f32;
-        if ui
-            .add(
-                egui::Slider::new(&mut r, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix(format!("np (={})", NP)),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.r = r * NP as f32;
-
-        ui.label("polygon ad:");
-        let mut ad = self.ad / PI;
-        if ui
-            .add(
-                egui::Slider::new(&mut ad, -1.0..=1.00)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix("π"),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.ad = ad * PI;
+        recalculate |= add_float_slider_np(ui, "polygon r", &mut self.r, 0.0..=1.0)
+            | add_float_slider_pi(ui, "polygon ad", &mut self.ad, -1.0..=1.0);
 
         recalculate
     }
@@ -76,43 +49,14 @@ impl StarSettings {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("star k:");
-        if ui.add(egui::Slider::new(&mut self.k, 5..=100)).changed() {
-            recalculate = true;
-        }
+        ui.label("star k");
+        recalculate |= ui.add(egui::Slider::new(&mut self.k, 5..=100)).changed();
 
-        ui.label("star h:");
-        if ui.add(egui::Slider::new(&mut self.h, 3..=50)).changed() {
-            recalculate = true;
-        }
+        ui.label("star h");
+        recalculate |= ui.add(egui::Slider::new(&mut self.h, 3..=50)).changed();
 
-        ui.label("star r:");
-        let mut r = self.r / NP as f32;
-        if ui
-            .add(
-                egui::Slider::new(&mut r, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix(format!("np(={})", NP)),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.r = r * NP as f32;
-
-        ui.label("star ad:");
-        let mut ad = self.ad / PI;
-        if ui
-            .add(
-                egui::Slider::new(&mut ad, -1.0..=1.00)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix("π"),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.ad = ad * PI;
+        recalculate |= add_float_slider_np(ui, "star r", &mut self.r, 0.0..=1.0)
+            | add_float_slider_pi(ui, "star ad", &mut self.ad, -1.0..=1.0);
 
         recalculate
     }
@@ -146,41 +90,9 @@ impl JolygonSettings {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
-        ui.label("jolygon an:");
-        let mut an = self.an / PI;
-        if ui
-            .add(
-                egui::Slider::new(&mut an, -1.0..=1.00)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok())
-                    .suffix("π"),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-        self.an = an * PI;
-
-        ui.label("jolygon ra:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.ra, 0.0..=1.0)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
-
-        ui.label("jolygon aa:");
-        if ui
-            .add(
-                egui::Slider::new(&mut self.aa, 0.0..=PI)
-                    .custom_parser(|str| evalexpr::eval_float(str).ok()),
-            )
-            .changed()
-        {
-            recalculate = true;
-        }
+        recalculate |= add_float_slider_pi(ui, "jolygon an", &mut self.an, -1.0..=1.0)
+            | add_float_slider(ui, "jolygon ra", &mut self.ra, 0.0..=1.0)
+            | add_float_slider_pi(ui, "jolygon aa", &mut self.aa, 0.0..=1.0);
 
         recalculate
     }
