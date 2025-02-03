@@ -9,6 +9,7 @@ use nannou_egui::egui::Ui;
 pub mod chapter_1;
 pub mod chapter_2;
 pub mod chapter_3;
+pub mod chapter_4;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
 pub const WEIGHT: f32 = 2.0; // point weight

@@ -77,10 +77,14 @@ impl DragonSettings {
     pub fn ui_a0(&mut self, ui: &mut Ui) -> bool {
         let mut recalculate = false;
 
+        ui.label("dragon a0:");
         let mut a0 = self.a0 / PI;
-        ui.label("polygon a0:");
         if ui
-            .add(egui::Slider::new(&mut a0, -2.0..=2.0).suffix("π"))
+            .add(
+                egui::Slider::new(&mut a0, -2.0..=2.0)
+                    .custom_parser(|str| evalexpr::eval_float(str).ok())
+                    .suffix("π"),
+            )
             .changed()
         {
             recalculate = true;

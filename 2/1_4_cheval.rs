@@ -80,8 +80,8 @@ fn calculate_points(settings: &Settings, points: &mut Points) {
         let mut horse = DessinShape::new(HORSE);
 
         let an = 2.0 * i as f32 * PI / 6.0 + PI / 12.0;
-        let co = f32::cos(an);
-        let si = f32::sin(an);
+        let co = an.cos();
+        let si = an.sin();
         let r = pow(0.87, i as usize);
 
         while let Action::Continue(read_point, newline) = horse.calculate_point() {

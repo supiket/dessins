@@ -98,8 +98,8 @@ fn calculate_points(points: &mut Points) {
                 let di = di / NP as f32 * 3.0;
                 let di = di / (1.0 + di) * NP as f32 * 0.65;
 
-                let x = di * f32::cos(an);
-                let y = di * f32::sin(an);
+                let x = di * an.cos();
+                let y = di * an.sin();
 
                 let point = pt2(x, y);
 

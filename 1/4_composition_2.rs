@@ -72,7 +72,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
 
             ui.label("rr:");
             if ui
-                .add(egui::Slider::new(&mut model.settings.rr, 0.0..=1.0))
+                .add(
+                    egui::Slider::new(&mut model.settings.rr, 0.0..=1.0)
+                        .custom_parser(|str| evalexpr::eval_float(str).ok()),
+                )
                 .changed()
             {
                 recalculate = true;

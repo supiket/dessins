@@ -137,8 +137,8 @@ fn calculate_points(settings: &Settings, points: &mut Points) {
     for i in 0..settings.k {
         let angle = settings.aa + i as f32 * settings.an;
 
-        let dx = current_length * f32::cos(angle);
-        let dy = current_length * f32::sin(angle);
+        let dx = current_length * angle.cos();
+        let dy = current_length * angle.sin();
         let d = pt2(dx, dy);
         let point = current_pos + d;
 
