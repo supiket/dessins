@@ -1,9 +1,9 @@
-use common::{chapter_5::OrbitalCurveSettings, draw_exact, ui_color, NP};
+use common::{chapter_5::SpiralCurveSettings, draw_exact, ui_color, NP};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 
 struct Settings {
-    curve: OrbitalCurveSettings,
+    curve: SpiralCurveSettings,
     color: Srgb<u8>,
 }
 
@@ -28,13 +28,11 @@ fn model(app: &App) -> Model {
     Model {
         egui,
         settings: Settings {
-            curve: OrbitalCurveSettings {
-                n: 5000,
-                t1: 2,
-                t2: 250,
-                r1: NP as f32 * 0.35,
-                k1: 1,
-                k2: 2,
+            curve: SpiralCurveSettings {
+                n: 2000,
+                t: 40,
+                r: 0.8,
+                l: 0.1,
             },
             color: rgb(random(), random(), random()),
         },
@@ -80,20 +78,27 @@ fn calculate_points(model: &mut Model) {
 
     let np = NP as f32;
     let n = model.settings.curve.n as f32;
-    let t1 = model.settings.curve.t1 as f32;
-    let t2 = model.settings.curve.t2 as f32;
-    let r1 = model.settings.curve.r1;
-    let k1 = model.settings.curve.k1 as f32;
-    let k2 = model.settings.curve.k2 as f32;
+    let t = model.settings.curve.t as f32;
+    let r = model.settings.curve.r;
+    let l = model.settings.curve.l;
 
     for i in 0..=model.settings.curve.n {
         let i = i as f32;
-        let r2 = np * 0.15 * (0.5 + 0.5 * (2.0 * PI * i / n).cos());
-        let a1 = 2.0 * PI * i / n * t1;
-        let a2 = 2.0 * PI * i / n * t2;
 
-        let x = r1 * (k1 * a1).cos() + r2 * a2.cos();
-        let y = 1.4 * (r1 * (k2 * a1).sin() + r2 * a2.sin());
+        let rr = l.powf(i / n);
+        let an = 2.0 * PI * i / n;
+
+        let x = rr * (t * an).cos();
+        let y = rr * r * (t * an).sin();
+
+        let co = an.cos();
+        let si = an.sin();
+
+        let xx = x * co - y * si;
+        let yy = x * si + y * co;
+
+        let x = xx * np / 2.0;
+        let y = yy * np / 2.0;
 
         model.points.push(pt2(x, y));
     }

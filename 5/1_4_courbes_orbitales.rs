@@ -82,7 +82,7 @@ fn calculate_points(model: &mut Model) {
     let n = model.settings.curve.n as f32;
     let t1 = model.settings.curve.t1 as f32;
     let t2 = model.settings.curve.t2 as f32;
-    let r1 = model.settings.curve.r1 as f32;
+    let r1 = model.settings.curve.r1;
     let k1 = model.settings.curve.k1 as f32;
     let k2 = model.settings.curve.k2 as f32;
 

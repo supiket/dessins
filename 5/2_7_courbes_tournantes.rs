@@ -1,9 +1,9 @@
-use common::{chapter_5::OrbitalCurveSettings, draw_exact, ui_color, NP};
+use common::{chapter_5::RotatingCurveSettings, draw_exact, ui_color, NP};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 
 struct Settings {
-    curve: OrbitalCurveSettings,
+    curve: RotatingCurveSettings,
     color: Srgb<u8>,
 }
 
@@ -28,13 +28,16 @@ fn model(app: &App) -> Model {
     Model {
         egui,
         settings: Settings {
-            curve: OrbitalCurveSettings {
-                n: 5000,
-                t1: 2,
-                t2: 250,
-                r1: NP as f32 * 0.35,
+            curve: RotatingCurveSettings {
+                n: 3000,
+                t1: 1.0,
+                t2: 100.0,
+                r1: NP as f32 / 3.0,
                 k1: 1,
                 k2: 2,
+                r2: NP as f32 / 8.0,
+                h1: 1,
+                h2: 2,
             },
             color: rgb(random(), random(), random()),
         },
@@ -78,22 +81,28 @@ fn view(app: &App, model: &Model, frame: Frame) {
 fn calculate_points(model: &mut Model) {
     model.points = vec![];
 
-    let np = NP as f32;
     let n = model.settings.curve.n as f32;
-    let t1 = model.settings.curve.t1 as f32;
-    let t2 = model.settings.curve.t2 as f32;
+    let t1 = model.settings.curve.t1;
+    let t2 = model.settings.curve.t2;
     let r1 = model.settings.curve.r1;
     let k1 = model.settings.curve.k1 as f32;
     let k2 = model.settings.curve.k2 as f32;
+    let r2 = model.settings.curve.r2;
+    let h1 = model.settings.curve.h1 as f32;
+    let h2 = model.settings.curve.h2 as f32;
 
     for i in 0..=model.settings.curve.n {
         let i = i as f32;
-        let r2 = np * 0.15 * (0.5 + 0.5 * (2.0 * PI * i / n).cos());
-        let a1 = 2.0 * PI * i / n * t1;
-        let a2 = 2.0 * PI * i / n * t2;
 
-        let x = r1 * (k1 * a1).cos() + r2 * a2.cos();
-        let y = 1.4 * (r1 * (k2 * a1).sin() + r2 * a2.sin());
+        let s = (8.0 * PI * i / n).cos() * 0.4 + 0.6;
+        let an = 2.0 * PI * i / n;
+        let c1 = (h1 * an * t1).cos();
+        let s1 = (h2 * an * t1).sin();
+        let c2 = s * (k1 * an * t2).cos();
+        let s2 = s * (k2 * an * t2).sin();
+
+        let x = r1 * c1 + r2 * (c1 * c2 - s1 * s2);
+        let y = r1 * s1 + r2 * (s1 * c2 + c1 * s2);
 
         model.points.push(pt2(x, y));
     }
