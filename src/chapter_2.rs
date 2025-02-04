@@ -1,4 +1,10 @@
-use nannou::geom::{pt2, Point2};
+use crate::{draw_exact, ui_color, Shapes};
+use nannou::prelude::*;
+use nannou::{
+    color::Srgb,
+    geom::{pt2, Point2},
+};
+use nannou_egui::{egui, Egui};
 
 pub const HORSE: &[f32] = &[
     1000.0, 10.0, 10.0, 8.0, 12.0, 9.0, 16.0, 12.0, 17.0, 13.0, 18.0, 14.0, 20.0, 1000.0, 13.0,
@@ -73,7 +79,14 @@ pub const SMURF: &[f32] = &[
     44.0, 36.0, 44.0, 32.0, 2000.0,
 ];
 
-pub struct DessinShape {
+pub struct Model {
+    pub calculate_shapes: Box<dyn Fn() -> Shapes>,
+    egui: Egui,
+    points: Shapes,
+    color: Srgb<u8>,
+}
+
+pub struct DesignShape {
     pub points: Vec<f32>,
     pub points_index: usize,
     pub line_index: usize,
@@ -84,7 +97,7 @@ pub enum Action {
     Break,
 }
 
-impl DessinShape {
+impl DesignShape {
     pub fn new(points: &[f32]) -> Self {
         Self {
             points: points.to_vec(),
@@ -113,4 +126,58 @@ impl DessinShape {
 
         Action::Continue(point, newline)
     }
+}
+
+pub fn model(calculate_shapes: Box<dyn Fn() -> Shapes>, app: &App) -> Model {
+    let window_id = app
+        .new_window()
+        .view(view)
+        .raw_event(raw_window_event)
+        .build()
+        .unwrap();
+    let window = app.window(window_id).unwrap();
+    let egui = Egui::from_window(&window);
+
+    Model {
+        calculate_shapes,
+        egui,
+        points: Default::default(),
+        color: rgb(random(), random(), random()),
+    }
+}
+
+pub fn update(_app: &App, model: &mut Model, update: Update) {
+    {
+        model.egui.set_elapsed_time(update.since_start);
+        let ctx = model.egui.begin_frame();
+
+        egui::Window::new("settings").show(&ctx, |ui| {
+            if let Some(color) = ui_color(ui) {
+                model.color = color;
+            }
+        });
+    }
+
+    if model.points.is_empty() {
+        model.points = (model.calculate_shapes)();
+    }
+}
+
+fn view(app: &App, model: &Model, frame: Frame) {
+    let draw = app.draw();
+    draw.background().color(BLACK);
+
+    model.points.iter().for_each(|shape| {
+        shape
+            .iter()
+            .for_each(|line| draw_exact(&draw, model.color, line.as_slice()))
+    });
+
+    draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();
+}
+
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    // let egui handle things like keyboard and mouse input.
+    model.egui.handle_raw_event(event);
 }

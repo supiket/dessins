@@ -1,4 +1,4 @@
-use crate::{add_float_slider_np, add_number_slider, WEIGHT};
+use crate::{add_float_slider_np, add_number_slider, Line, WEIGHT};
 use nannou::{
     color::Srgb,
     geom::{pt2, Point2},
@@ -14,11 +14,11 @@ pub struct BipartiteSettings {
     pub d: Point2,
 }
 
-pub type OuterPoints = Vec<Point2>;
-pub type InnerPoints = Vec<Point2>;
+pub type OuterLine = Line;
+pub type InnerLine = Line;
 
 impl BipartiteSettings {
-    pub fn calculate_points(&self) -> (OuterPoints, InnerPoints) {
+    pub fn calculate_points(&self) -> (OuterLine, InnerLine) {
         let mut outer = vec![];
         let mut inner = vec![];
 

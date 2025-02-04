@@ -16,6 +16,10 @@ pub mod chapter_6;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
 pub const WEIGHT: f32 = 1.0; // point weight
+                             //
+pub type Shapes = Vec<Shape>;
+pub type Shape = Vec<Line>;
+pub type Line = Vec<Point2>;
 
 pub fn draw_closed(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
     draw_exact(draw, color, points);

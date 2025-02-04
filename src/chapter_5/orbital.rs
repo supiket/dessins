@@ -1,4 +1,4 @@
-use crate::{add_float_slider_np, add_number_slider, draw_exact, ui_color};
+use crate::{add_float_slider_np, add_number_slider, draw_exact, ui_color, Line};
 use nannou::prelude::*;
 use nannou_egui::{
     egui::{self, Ui},
@@ -29,10 +29,8 @@ pub struct Settings {
 pub struct Model {
     settings: Settings,
     egui: Egui,
-    points: Points,
+    points: Line,
 }
-
-pub type Points = Vec<Point2>;
 
 pub fn model(curve: CurveSettings, app: &App) -> Model {
     let window_id = app
@@ -95,7 +93,7 @@ impl CurveSettings {
             || add_number_slider(ui, "curve k2", &mut self.k2, 1..=4)
     }
 
-    pub fn calculate_points(&self) -> Vec<Point2> {
+    pub fn calculate_points(&self) -> Line {
         let mut points = vec![];
 
         let n = self.n as f32;

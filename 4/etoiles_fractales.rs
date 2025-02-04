@@ -1,4 +1,4 @@
-use common::{chapter_4::FractalSettings, draw_closed, ui_color, NP};
+use common::{chapter_4::FractalSettings, draw_closed, ui_color, Line, NP};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
 
@@ -10,10 +10,8 @@ struct Settings {
 struct Model {
     settings: Settings,
     egui: Egui,
-    points: Points,
+    points: Line,
 }
-
-type Points = Vec<Point2>;
 
 fn model(app: &App) -> Model {
     let window_id = app

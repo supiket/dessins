@@ -1,80 +1,83 @@
-use crate::{add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider};
+use crate::{draw_closed, ui_color, Shapes};
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
+use nannou_egui::{
+    egui::{self, Ui},
+    Egui,
+};
 
-#[derive(Clone)]
-pub struct PolygonSettings {
-    pub k: u32,  // # vertices
-    pub r: f32,  // radius of the circle on which the vertices are
-    pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
+pub mod jolygon;
+pub mod polygon;
+pub mod star;
+
+pub struct Model<S> {
+    settings: S,
+    calculate_shapes: Box<dyn Fn(&S) -> Shapes>,
+    points: Shapes,
+    pub egui: Egui,
+    color: Srgb<u8>,
 }
 
-pub fn calculate_polygon(settings: &PolygonSettings, i: u32) -> Point2 {
-    let angle = (2.0 * i as f32 * PI) / settings.k as f32 + settings.ad;
-    let x = settings.r * angle.cos();
-    let y = settings.r * angle.sin();
-    pt2(x, y)
-}
+pub fn model<S>(calculate_shapes: Box<dyn Fn(&S) -> Shapes>, settings: S, app: &App) -> Model<S>
+where
+    S: 'static,
+{
+    let window_id = app
+        .new_window()
+        .view(view::<S>)
+        .raw_event(raw_window_event::<S>)
+        .build()
+        .unwrap();
+    let window = app.window(window_id).unwrap();
+    let egui = Egui::from_window(&window);
 
-impl PolygonSettings {
-    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        add_number_slider(ui, "polygon k", &mut self.k, 3..=20)
-            || add_float_slider_np(ui, "polygon r", &mut self.r, 0.0..=1.0)
-            || add_float_slider_pi(ui, "polygon ad", &mut self.ad, -1.0..=1.0)
+    Model {
+        egui,
+        calculate_shapes,
+        settings,
+        color: rgb(random(), random(), random()),
+        points: Default::default(),
     }
 }
 
-#[derive(Clone)]
-pub struct StarSettings {
-    pub k: u32,  // # vertices
-    pub h: u32,  // # vertices to skip (clockwise) before connecting two dots
-    pub r: f32,  // radius of the circle C on which the vertices are
-    pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
-}
+pub fn update<S>(model: &mut Model<S>, update: Update, elements: impl Fn(&mut S, &mut Ui) -> bool) {
+    let mut recalculate = false;
 
-pub fn calculate_stars(settings: &StarSettings, i: u32) -> Point2 {
-    let angle = (2.0 * i as f32 * settings.h as f32 * PI) / settings.k as f32 + settings.ad;
-    let x = settings.r * angle.cos();
-    let y = settings.r * angle.cos();
-    pt2(x, y)
-}
+    {
+        model.egui.set_elapsed_time(update.since_start);
+        let ctx = model.egui.begin_frame();
 
-impl StarSettings {
-    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        add_number_slider(ui, "star k", &mut self.k, 5..=100)
-            || add_number_slider(ui, "star h", &mut self.h, 3..=50)
-            || add_float_slider_np(ui, "star r", &mut self.r, 0.0..=1.0)
-            || add_float_slider_pi(ui, "star ad", &mut self.ad, -1.0..=1.0)
+        egui::Window::new("settings").show(&ctx, |ui| {
+            recalculate = (elements)(&mut model.settings, ui);
+
+            if let Some(color) = ui_color(ui) {
+                model.color = color;
+            }
+        });
+    }
+
+    if recalculate || model.points.is_empty() {
+        model.points = (model.calculate_shapes)(&model.settings);
     }
 }
 
-pub struct JolygonSettings {
-    pub an: f32, // angle of two consecutive segments
-    pub ra: f32, // ratio of the lengths of two consecutive segments
-    pub aa: f32, // angle of the first segment with horizontal
+fn view<Settings>(app: &App, model: &Model<Settings>, frame: Frame) {
+    let draw = app.draw();
+    draw.background().color(BLACK);
+
+    model.points.iter().for_each(|shape| {
+        shape
+            .iter()
+            .for_each(|line| draw_closed(&draw, model.color, line))
+    });
+
+    draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();
 }
 
-pub fn calculate_jolygon(
-    settings: &JolygonSettings,
-    i: u32,
-    ref_len: f32,
-    ref_pos: Point2,
-) -> Point2 {
-    let angle = settings.aa + i as f32 * settings.an;
-
-    let dx = ref_len * angle.cos();
-    let dy = ref_len * angle.sin();
-
-    let x = ref_pos.x + dx;
-    let y = ref_pos.y + dy;
-
-    pt2(x, y)
-}
-
-impl JolygonSettings {
-    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        add_float_slider_pi(ui, "jolygon an", &mut self.an, -1.0..=1.0)
-            || add_float_slider(ui, "jolygon ra", &mut self.ra, 0.0..=1.0)
-            || add_float_slider_pi(ui, "jolygon aa", &mut self.aa, 0.0..=1.0)
-    }
+fn raw_window_event<S>(
+    _app: &App,
+    model: &mut Model<S>,
+    event: &nannou::winit::event::WindowEvent,
+) {
+    model.egui.handle_raw_event(event);
 }

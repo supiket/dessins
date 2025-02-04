@@ -1,5 +1,5 @@
 use common::{
-    chapter_6::{BipartiteSettings, InnerPoints, OuterPoints},
+    chapter_6::{BipartiteSettings, InnerLine, OuterLine},
     ui_color, NP,
 };
 use nannou::prelude::*;
@@ -13,10 +13,8 @@ struct Settings {
 struct Model {
     settings: Settings,
     egui: Egui,
-    points: Points,
+    points: (OuterLine, InnerLine),
 }
-
-type Points = (OuterPoints, InnerPoints);
 
 fn model(app: &App) -> Model {
     let window_id = app

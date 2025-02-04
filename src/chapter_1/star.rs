@@ -1,0 +1,27 @@
+use crate::{add_float_slider_np, add_float_slider_pi, add_number_slider};
+use nannou::prelude::*;
+use nannou_egui::egui::Ui;
+
+#[derive(Clone)]
+pub struct StarSettings {
+    pub k: u32,  // # vertices
+    pub h: u32,  // # vertices to skip (clockwise) before connecting two dots
+    pub r: f32,  // radius of the circle C on which the vertices are
+    pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
+}
+
+pub fn calculate_stars(settings: &StarSettings, i: u32) -> Point2 {
+    let angle = (2.0 * i as f32 * settings.h as f32 * PI) / settings.k as f32 + settings.ad;
+    let x = settings.r * angle.cos();
+    let y = settings.r * angle.cos();
+    pt2(x, y)
+}
+
+impl StarSettings {
+    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
+        add_number_slider(ui, "star k", &mut self.k, 5..=100)
+            || add_number_slider(ui, "star h", &mut self.h, 3..=50)
+            || add_float_slider_np(ui, "star r", &mut self.r, 0.0..=1.0)
+            || add_float_slider_pi(ui, "star ad", &mut self.ad, -1.0..=1.0)
+    }
+}

@@ -1,9 +1,10 @@
 use common::{
-    add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider, draw_exact,
-    ui_color, NP,
+    add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider,
+    chapter_1::{self, Model},
+    Shapes, NP,
 };
 use nannou::prelude::*;
-use nannou_egui::{self, egui, Egui};
+use nannou_egui::{self, egui::Ui};
 
 struct Settings {
     k: u32,  // # segments
@@ -12,87 +13,39 @@ struct Settings {
     aa: f32, // angle of the first segment with horizontal
     rr: f32, // length of the first segment
     initial_pos: Point2,
-    color: Srgb<u8>,
 }
 
-struct Model {
-    settings: Settings,
-    points: Points,
-    egui: Egui,
+fn model(app: &App) -> Model<Settings> {
+    let (w, h) = app.window_rect().w_h();
+
+    let settings = Settings {
+        k: 200,
+        an: 15.0 * PI / 31.0,
+        ra: 0.98,
+        aa: 0_f32,
+        rr: 0.80 * NP as f32,
+        initial_pos: pt2(-w / 4.0, -h / 4.0),
+    };
+
+    chapter_1::model(Box::new(calculate_shapes), settings, app)
 }
 
-type Points = Shape;
-type Shape = Vec<Point2>;
-
-fn model(app: &App) -> Model {
-    let window_id = app
-        .new_window()
-        .view(view)
-        .raw_event(raw_window_event)
-        .build()
-        .unwrap();
-    let window = app.window(window_id).unwrap();
-    let egui = Egui::from_window(&window);
-
-    let (w, h) = window.rect().w_h();
-
-    Model {
-        egui,
-        settings: Settings {
-            k: 200,
-            an: 15.0 * PI / 31.0,
-            ra: 0.98,
-            aa: 0_f32,
-            rr: 0.80 * NP as f32,
-            initial_pos: pt2(-w / 4.0, -h / 4.0),
-            color: rgb(random(), random(), random()),
-        },
-        points: Default::default(),
-    }
+fn ui_elements(settings: &mut Settings, ui: &mut Ui) -> bool {
+    add_number_slider(ui, "k", &mut settings.k, 1..=2500)
+        || add_float_slider_pi(ui, "an", &mut settings.an, -1.0..=1.0)
+        || add_float_slider(ui, "ra", &mut settings.ra, 0.0..=1.0)
+        || add_float_slider_pi(ui, "aa", &mut settings.aa, 0.0..=1.0)
+        || add_float_slider_np(ui, "rr", &mut settings.rr, 0.0..=1.0)
 }
 
-fn update(_app: &App, model: &mut Model, update: Update) {
-    let mut recalculate = false;
-
-    {
-        model.egui.set_elapsed_time(update.since_start);
-        let ctx = model.egui.begin_frame();
-
-        egui::Window::new("settings").show(&ctx, |ui| {
-            recalculate = add_number_slider(ui, "k", &mut model.settings.k, 1..=2500)
-                || add_float_slider_pi(ui, "an", &mut model.settings.an, -1.0..=1.0)
-                || add_float_slider(ui, "ra", &mut model.settings.ra, 0.0..=1.0)
-                || add_float_slider_pi(ui, "aa", &mut model.settings.aa, 0.0..=1.0)
-                || add_float_slider_np(ui, "rr", &mut model.settings.rr, 0.0..=1.0);
-
-            if let Some(color) = ui_color(ui) {
-                model.settings.color = color;
-            }
-        });
-    }
-
-    if recalculate || model.points.is_empty() {
-        calculate_points(&model.settings, &mut model.points);
-    }
+fn update(_app: &App, model: &mut Model<Settings>, update: Update) {
+    chapter_1::update(model, update, ui_elements);
 }
 
-fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
-    draw.background().color(BLACK);
-
-    draw_exact(&draw, model.settings.color, &model.points);
-
-    draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
-}
-
-fn calculate_points(settings: &Settings, points: &mut Points) {
-    *points = vec![];
-    let _points: Vec<Point2> = vec![];
-
+fn calculate_shapes(settings: &Settings) -> Shapes {
     let mut current_length = settings.rr;
     let mut current_pos = settings.initial_pos;
-    let mut _points = vec![current_pos];
+    let mut line = vec![current_pos];
 
     let mut min_x = 0.0;
     let mut max_x = 0.0;
@@ -113,7 +66,7 @@ fn calculate_points(settings: &Settings, points: &mut Points) {
         min_y = min_y.min(point.y);
         max_y = max_y.max(point.y);
 
-        _points.push(point);
+        line.push(point);
         current_pos = point;
         current_length *= settings.ra;
     }
@@ -123,13 +76,11 @@ fn calculate_points(settings: &Settings, points: &mut Points) {
     let center_offset_y = (min_y + max_y) / 2.0;
 
     // make segments centered
-    for point in _points {
-        points.push(point - pt2(center_offset_x, center_offset_y));
+    for point in &mut line {
+        *point -= pt2(center_offset_x, center_offset_y);
     }
-}
 
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);
+    vec![vec![line]]
 }
 
 fn main() {
