@@ -1,5 +1,5 @@
 use common::{
-    add_float_slider,
+    add_float_slider, add_number_slider,
     chapter_1::{calculate_polygon, calculate_stars, PolygonSettings, StarSettings},
     draw_closed, ui_color, NP,
 };
@@ -63,16 +63,10 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            ui.label("n");
-            recalculate |= ui
-                .add(egui::Slider::new(&mut model.settings.n, 1..=100))
-                .changed();
-
-            recalculate |= add_float_slider(ui, "rr", &mut model.settings.rr, 0.0..=1.0);
-
-            recalculate |= model.settings.polygon.ui_elements(ui);
-
-            recalculate |= model.settings.star.ui_elements(ui);
+            recalculate = add_number_slider(ui, "n", &mut model.settings.n, 1..=100)
+                || add_float_slider(ui, "rr", &mut model.settings.rr, 0.0..=1.0)
+                || model.settings.polygon.ui_elements(ui)
+                || model.settings.star.ui_elements(ui);
 
             if let Some(color) = ui_color(ui) {
                 model.settings.color = color;

@@ -46,12 +46,13 @@ fn model(app: &App) -> Model {
 
 fn update(_app: &App, model: &mut Model, update: Update) {
     let mut recalculate = false;
+
     {
         model.egui.set_elapsed_time(update.since_start);
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            recalculate |= model.settings.bipartite.ui_elements(ui);
+            recalculate = model.settings.bipartite.ui_elements(ui);
 
             if let Some(color) = ui_color(ui) {
                 model.settings.color = color;

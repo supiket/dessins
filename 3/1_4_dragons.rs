@@ -49,13 +49,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            if model.settings.dragon.ui_n(ui) {
-                recalculate = true;
-            }
-
-            if model.settings.dragon.ui_a0(ui) {
-                recalculate = true;
-            }
+            recalculate = model.settings.dragon.ui_n(ui) || model.settings.dragon.ui_a0(ui);
 
             if let Some(color) = ui_color(ui) {
                 model.settings.color = color;
@@ -81,8 +75,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
 fn calculate_points(model: &mut Model) {
     model.settings.dragon.l0 =
         NP as f32 / (2.0_f32.sqrt().powf(model.settings.dragon.n as f32)) * 0.9;
-    let mut rules = vec![0; model.settings.dragon.n + 1];
-    for i in (0..=model.settings.dragon.n).step_by(4) {
+    let mut rules = vec![0; model.settings.dragon.n as usize + 1];
+    for i in (0..=model.settings.dragon.n as usize).step_by(4) {
         rules[i] = 1;
         if i + 1 < rules.len() {
             rules[i + 1] = 1;

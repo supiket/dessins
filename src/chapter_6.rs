@@ -1,13 +1,13 @@
-use crate::{add_float_slider_np, WEIGHT};
+use crate::{add_float_slider_np, add_number_slider, WEIGHT};
 use nannou::{
     color::Srgb,
     geom::{pt2, Point2},
     Draw,
 };
-use nannou_egui::egui::{self, Ui};
+use nannou_egui::egui::Ui;
 
 pub struct BipartiteSettings {
-    pub n: usize,
+    pub n: u32,
     pub a: Point2,
     pub b: Point2,
     pub c: Point2,
@@ -61,21 +61,15 @@ impl BipartiteSettings {
     }
 
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        let mut recalculate = false;
-
-        ui.label("bipartite n");
-        recalculate |= ui.add(egui::Slider::new(&mut self.n, 10..=20)).changed();
-
         let range = -0.9..=0.9;
-        recalculate |= add_float_slider_np(ui, "bipartite a.x", &mut self.a.x, range.clone())
+        add_number_slider(ui, "bipartite n", &mut self.n, 10..=20)
+            || add_float_slider_np(ui, "bipartite a.x", &mut self.a.x, range.clone())
             || add_float_slider_np(ui, "bipartite a.y", &mut self.a.y, range.clone())
             || add_float_slider_np(ui, "bipartite b.x", &mut self.b.x, range.clone())
             || add_float_slider_np(ui, "bipartite b.y", &mut self.b.y, range.clone())
             || add_float_slider_np(ui, "bipartite c.x", &mut self.c.x, range.clone())
             || add_float_slider_np(ui, "bipartite c.y", &mut self.c.y, range.clone())
             || add_float_slider_np(ui, "bipartite d.x", &mut self.d.x, range.clone())
-            || add_float_slider_np(ui, "bipartite d.y", &mut self.d.y, range.clone());
-
-        recalculate
+            || add_float_slider_np(ui, "bipartite d.y", &mut self.d.y, range.clone())
     }
 }

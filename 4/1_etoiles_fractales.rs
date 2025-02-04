@@ -49,9 +49,7 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            if model.settings.fractal.ui_elements(ui) {
-                recalculate = true;
-            }
+            recalculate = model.settings.fractal.ui_elements(ui);
 
             if let Some(color) = ui_color(ui) {
                 model.settings.color = color;

@@ -1,10 +1,10 @@
-use crate::{add_float_slider, add_float_slider_np, add_float_slider_pi};
+use crate::{add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider};
 use nannou::geom::{pt2, Point2};
-use nannou_egui::{egui, egui::Ui};
+use nannou_egui::egui::Ui;
 
 pub struct FractalSettings {
-    pub n: usize,
-    pub k: usize,
+    pub n: u32,
+    pub k: u32,
     pub ra: f32,
     pub ll: f32,
     pub aa: f32,
@@ -17,7 +17,7 @@ impl FractalSettings {
         let mut p0 = p0;
         let mut a0 = a0;
 
-        let nn = self.n * (self.n - 1).pow(self.k as u32 - 1) - 1;
+        let nn = self.n * (self.n - 1).pow(self.k - 1) - 1;
 
         for i in 0..=nn {
             let mut i1 = i;
@@ -41,18 +41,10 @@ impl FractalSettings {
     }
 
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        let mut recalculate = false;
-
-        ui.label("fractal n");
-        recalculate |= ui.add(egui::Slider::new(&mut self.n, 3..=20)).changed();
-
-        ui.label("fractal k");
-        recalculate |= ui.add(egui::Slider::new(&mut self.k, 2..=12)).changed();
-
-        recalculate |= add_float_slider(ui, "fractal ra", &mut self.ra, 0.0..=1.0)
-            | add_float_slider_np(ui, "fractal ll", &mut self.ll, 0.0..=1.0)
-            | add_float_slider_pi(ui, "fractal aa", &mut self.aa, -2.0..=2.0);
-
-        recalculate
+        add_number_slider(ui, "fractal n", &mut self.n, 3..=20)
+            || add_number_slider(ui, "fractal k", &mut self.k, 2..=12)
+            || add_float_slider(ui, "fractal ra", &mut self.ra, 0.0..=1.0)
+            || add_float_slider_np(ui, "fractal ll", &mut self.ll, 0.0..=1.0)
+            || add_float_slider_pi(ui, "fractal aa", &mut self.aa, -2.0..=2.0)
     }
 }

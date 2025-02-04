@@ -1,5 +1,6 @@
 use common::{
-    add_float_slider, add_float_slider_np, add_float_slider_pi, draw_exact, ui_color, NP,
+    add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider, draw_exact,
+    ui_color, NP,
 };
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
@@ -58,15 +59,11 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            ui.label("k");
-            recalculate |= ui
-                .add(egui::Slider::new(&mut model.settings.k, 1..=2500))
-                .changed();
-
-            recalculate |= add_float_slider_pi(ui, "an", &mut model.settings.an, -1.0..=1.0)
-                | add_float_slider(ui, "ra", &mut model.settings.ra, 0.0..=1.0)
-                | add_float_slider_pi(ui, "aa", &mut model.settings.aa, 0.0..=1.0)
-                | add_float_slider_np(ui, "rr", &mut model.settings.rr, 0.0..=1.0);
+            recalculate = add_number_slider(ui, "k", &mut model.settings.k, 1..=2500)
+                || add_float_slider_pi(ui, "an", &mut model.settings.an, -1.0..=1.0)
+                || add_float_slider(ui, "ra", &mut model.settings.ra, 0.0..=1.0)
+                || add_float_slider_pi(ui, "aa", &mut model.settings.aa, 0.0..=1.0)
+                || add_float_slider_np(ui, "rr", &mut model.settings.rr, 0.0..=1.0);
 
             if let Some(color) = ui_color(ui) {
                 model.settings.color = color;

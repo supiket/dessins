@@ -56,24 +56,27 @@ pub fn ui_color(ui: &mut Ui) -> Option<Srgb<u8>> {
     }
 }
 
+pub fn add_number_slider(
+    ui: &mut Ui,
+    label: &str,
+    value: &mut u32,
+    range: RangeInclusive<u32>,
+) -> bool {
+    ui.label(label);
+    ui.add(egui::Slider::new(&mut *value, range)).changed()
+}
+
 pub fn add_float_slider(
     ui: &mut Ui,
     label: &str,
     value: &mut f32,
     range: RangeInclusive<f32>,
 ) -> bool {
-    let mut recalculate = false;
-
     ui.label(label);
-
-    recalculate |= ui
-        .add(
-            egui::Slider::new(&mut *value, range)
-                .custom_parser(|str| evalexpr::eval_float(str).ok()),
-        )
-        .changed();
-
-    recalculate
+    ui.add(
+        egui::Slider::new(&mut *value, range).custom_parser(|str| evalexpr::eval_float(str).ok()),
+    )
+    .changed()
 }
 
 pub fn add_float_slider_np(
@@ -82,12 +85,10 @@ pub fn add_float_slider_np(
     value: &mut f32,
     range: RangeInclusive<f32>,
 ) -> bool {
-    let mut recalculate = false;
-
     ui.label(label);
     let mut val = *value / NP as f32;
 
-    recalculate |= ui
+    let recalculate = ui
         .add(
             egui::Slider::new(&mut val, range)
                 .custom_parser(|str| evalexpr::eval_float(str).ok())
@@ -106,12 +107,10 @@ pub fn add_float_slider_pi(
     value: &mut f32,
     range: RangeInclusive<f32>,
 ) -> bool {
-    let mut recalculate = false;
-
     ui.label(label);
     let mut val = *value / PI;
 
-    recalculate |= ui
+    let recalculate = ui
         .add(
             egui::Slider::new(&mut val, range)
                 .custom_parser(|str| evalexpr::eval_float(str).ok())
