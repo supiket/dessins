@@ -1,6 +1,14 @@
-use common::{chapter_5::SpiralCurveSettings, draw_exact, ui_color, NP};
+use common::{add_float_slider, add_number_slider, draw_exact, ui_color, NP};
 use nannou::prelude::*;
 use nannou_egui::{self, egui, Egui};
+
+struct SpiralCurveSettings {
+    pub n: u32, // # segments
+    pub t: u32, // # times the planet turns around the sun
+    pub r: f32, // flattening parameter of the ellipse
+    pub l: f32, // decrease factor beween the first ellipse traveled and the last
+    pub an_factor: f32,
+}
 
 struct Settings {
     curve: SpiralCurveSettings,
@@ -33,6 +41,7 @@ fn model(app: &App) -> Model {
                 t: 40,
                 r: 0.8,
                 l: 0.1,
+                an_factor: 1.0,
             },
             color: rgb(random(), random(), random()),
         },
@@ -48,7 +57,17 @@ fn update(_app: &App, model: &mut Model, update: Update) {
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("settings").show(&ctx, |ui| {
-            recalculate = model.settings.curve.ui_elements(ui);
+            recalculate =
+                add_number_slider(ui, "curve n", &mut model.settings.curve.n, 1000..=9000)
+                    || add_number_slider(ui, "curve y", &mut model.settings.curve.n, 40..=60)
+                    || add_float_slider(ui, "curve r", &mut model.settings.curve.r, 0.0..=1.0)
+                    || add_float_slider(ui, "curve l", &mut model.settings.curve.l, 0.0..=1.0)
+                    || add_float_slider(
+                        ui,
+                        "curve an factor",
+                        &mut model.settings.curve.an_factor,
+                        1.0..=4.0,
+                    );
 
             if let Some(color) = ui_color(ui) {
                 model.settings.color = color;
@@ -79,12 +98,13 @@ fn calculate_points(model: &mut Model) {
     let t = model.settings.curve.t as f32;
     let r = model.settings.curve.r;
     let l = model.settings.curve.l;
+    let an_factor = model.settings.curve.an_factor;
 
     for i in 0..=model.settings.curve.n {
         let i = i as f32;
 
         let rr = l.powf(i / n);
-        let an = 2.0 * PI * i / n;
+        let an = 2.0 * PI * i / n * an_factor;
 
         let x = rr * (t * an).cos();
         let y = rr * r * (t * an).sin();

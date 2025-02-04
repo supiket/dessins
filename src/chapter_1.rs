@@ -48,7 +48,6 @@ impl StarSettings {
     }
 }
 
-#[derive(Clone)]
 pub struct JolygonSettings {
     pub an: f32, // angle of two consecutive segments
     pub ra: f32, // ratio of the lengths of two consecutive segments

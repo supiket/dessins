@@ -201,20 +201,8 @@ name = "5-2-10"
 path = "5/2_10_courbes_tournantes.rs"
 
 [[bin]]
-name = "5-3-1"
-path = "5/3_1_courbes_spirales.rs"
-
-[[bin]]
-name = "5-3-2"
-path = "5/3_2_courbes_spirales.rs"
-
-[[bin]]
-name = "5-3-3"
-path = "5/3_3_courbes_spirales.rs"
-
-[[bin]]
-name = "5-3-4"
-path = "5/3_4_courbes_spirales.rs"
+name = "5-3"
+path = "5/3_courbes_spirales.rs"
 
 [[bin]]
 name = "6-1"
