@@ -1,11 +1,12 @@
 use common::{
-    chapter_5::orbital::{self, CurveSettings, Model, R2Params},
-    NP,
+    self,
+    chapter_5::orbital::{self, CurveParams, R2Params},
+    Model, NP,
 };
 use nannou::prelude::*;
 
-fn model(app: &App) -> Model {
-    let curve = CurveSettings {
+fn model(app: &App) -> Model<CurveParams> {
+    let curve = CurveParams {
         n: 6000,
         t1: 1,
         t2: 300,
@@ -15,8 +16,9 @@ fn model(app: &App) -> Model {
         r2_eq: Box::new(r2),
     };
 
-    orbital::model(curve, app)
+    common::model(Box::new(CurveParams::calculate_shapes), curve, app)
 }
+
 fn r2(params: R2Params) -> f32 {
     NP as f32 * 0.2 * (0.5 + 0.5 * (2.0 * params.i * PI / 10.0).cos())
 }

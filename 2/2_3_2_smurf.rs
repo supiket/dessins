@@ -1,44 +1,41 @@
 use common::{
-    chapter_2::{self, Action, DesignShape, Model, SMURF},
-    Shape, Shapes, NP,
+    chapter_2::{self, Action, DesignShape, SMURF},
+    Model, NoParams, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 
-fn model(app: &App) -> Model {
+fn model(app: &App) -> Model<NoParams> {
     chapter_2::model(Box::new(calculate_shapes), app)
 }
 
-fn calculate_shapes() -> Shapes {
-    let mut shapes = vec![];
+fn calculate_shapes(_params: &NoParams) -> Shapes {
+    let mut shapes = Shapes::new();
 
-    for i in 0..7 {
-        shapes.push(calculate_shape(i));
+    for i in 0..=6 {
+        let mut shape = Shape::new();
+        let mut segment = Segment::new();
+
+        let mut smurf = DesignShape::new(SMURF);
+
+        let k = (0.5).pow(i) as f32;
+
+        while let Action::Continue(read_point, newsegment) = smurf.calculate_point() {
+            if newsegment {
+                shape.push(segment);
+                segment = Segment::new();
+            }
+
+            let x = NP as f32 / 100.0 * read_point.x * k + 0.5 * NP as f32 - NP as f32 * k;
+            let y = NP as f32 / 100.0 * read_point.y * k - 0.5 * NP as f32;
+            let point = pt2(x, y);
+
+            segment.push(point);
+        }
+
+        shapes.push(shape);
     }
 
     shapes
-}
-
-fn calculate_shape(i: i32) -> Shape {
-    let mut shape = vec![vec![]];
-
-    let mut smurf = DesignShape::new(SMURF);
-
-    let k = (0.5).pow(i) as f32;
-
-    while let Action::Continue(read_point, newline) = smurf.calculate_point() {
-        if newline {
-            shape.push(vec![])
-        }
-
-        let x = NP as f32 / 100.0 * read_point.x * k + 0.5 * NP as f32 - NP as f32 * k;
-        let y = NP as f32 / 100.0 * read_point.y * k - 0.5 * NP as f32;
-
-        let point = pt2(x, y);
-
-        shape[smurf.line_index].push(point);
-    }
-
-    shape
 }
 
 fn main() {

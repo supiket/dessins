@@ -1,36 +1,36 @@
 use common::{
-    chapter_2::{self, Action, DesignShape, Model, BIRD_FISH},
-    Shape, Shapes, NP,
+    chapter_2::{self, Action, DesignShape, BIRD_FISH},
+    Model, NoParams, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 
-fn model(app: &App) -> Model {
+fn model(app: &App) -> Model<NoParams> {
     chapter_2::model(Box::new(calculate_shapes), app)
 }
 
-fn calculate_shapes() -> Shapes {
-    vec![calculate_shape()]
-}
-
-fn calculate_shape() -> Shape {
-    let mut shape = vec![vec![]];
+fn calculate_shapes(_params: &NoParams) -> Shapes {
+    let mut shapes = Shapes::new();
+    let mut shape = Shape::new();
+    let mut segment = Segment::new();
 
     let mut bird_fish = DesignShape::new(BIRD_FISH);
 
-    while let Action::Continue(read_point, newline) = bird_fish.calculate_point() {
-        if newline {
-            shape.push(vec![])
+    while let Action::Continue(read_point, newsegment) = bird_fish.calculate_point() {
+        if newsegment {
+            shape.push(segment);
+            segment = Segment::new();
         }
 
         let x = NP as f32 * (read_point.x + 0.5) / 15.0;
         let y = NP as f32 * (read_point.y + 0.5) / 15.0;
-
         let point = pt2(x, y);
 
-        shape[bird_fish.line_index].push(point);
+        segment.push(point);
     }
 
-    shape
+    shapes.push(shape);
+
+    shapes
 }
 
 fn main() {

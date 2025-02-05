@@ -1,47 +1,44 @@
 use common::{
-    chapter_1::{
-        self,
-        polygon::{calculate_polygon, PolygonSettings},
-        Model,
-    },
-    Shapes, NP,
+    self,
+    chapter_1::polygon::{calculate_polygon, PolygonParams},
+    Model, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 use nannou_egui::{self, egui::Ui};
 
-struct Settings {
-    polygon: PolygonSettings,
-}
-
-fn model(app: &App) -> Model<Settings> {
-    let settings = Settings {
-        polygon: PolygonSettings {
-            k: 3,
-            r: NP as f32 * 0.45,
-            ad: 0_f32,
-        },
+fn model(app: &App) -> Model<PolygonParams> {
+    let params = PolygonParams {
+        k: 3,
+        r: NP as f32 * 0.45,
+        ad: 0_f32,
     };
 
-    chapter_1::model(Box::new(calculate_shapes), settings, app)
+    common::model(Box::new(calculate_shapes), params, app)
 }
 
-fn ui_elements(settings: &mut Settings, ui: &mut Ui) -> bool {
-    settings.polygon.ui_elements(ui)
+fn update(_app: &App, model: &mut Model<PolygonParams>, update: Update) {
+    common::update(model, update, ui_elements);
 }
 
-fn update(_app: &App, model: &mut Model<Settings>, update: Update) {
-    chapter_1::update(model, update, ui_elements);
-}
+fn calculate_shapes(params: &PolygonParams) -> Shapes {
+    let mut shapes = Shapes::new();
+    let mut shape = Shape::new();
+    let mut segment = Segment::new();
 
-fn calculate_shapes(settings: &Settings) -> Shapes {
-    let mut line = vec![];
-
-    for i in 0..settings.polygon.k {
-        let point = calculate_polygon(&settings.polygon, i);
-        line.push(point);
+    for i in 0..params.k {
+        let point = calculate_polygon(params, i);
+        segment.push(point);
     }
 
-    vec![vec![line]]
+    segment.push(segment[0]);
+
+    shape.push(segment);
+    shapes.push(shape);
+    shapes
+}
+
+fn ui_elements(params: &mut PolygonParams, ui: &mut Ui) -> bool {
+    params.ui_elements(ui)
 }
 
 fn main() {

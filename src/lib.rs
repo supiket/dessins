@@ -1,10 +1,8 @@
-use nannou::{
-    color::{rgb, Srgb},
-    geom::Point2,
-    rand::random,
-    Draw,
+use nannou::prelude::*;
+use nannou_egui::{
+    egui::{self, Ui},
+    Egui,
 };
-use nannou_egui::egui::{self, Ui};
 use std::{f32::consts::PI, ops::RangeInclusive};
 
 pub mod chapter_1;
@@ -12,29 +10,25 @@ pub mod chapter_2;
 pub mod chapter_3;
 pub mod chapter_4;
 pub mod chapter_5;
-pub mod chapter_6;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
 pub const WEIGHT: f32 = 1.0; // point weight
-                             //
+
 pub type Shapes = Vec<Shape>;
-pub type Shape = Vec<Line>;
-pub type Line = Vec<Point2>;
+pub type Shape = Vec<Segment>;
+pub type Segment = Vec<Point2>;
 
-pub fn draw_closed(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
-    draw_exact(draw, color, points);
-
-    // close curve
-    let last = points.last().unwrap();
-    let first = points.first().unwrap();
-    draw.line()
-        .start(*last)
-        .end(*first)
-        .color(color)
-        .weight(WEIGHT);
+pub struct Model<P> {
+    pub params: P,
+    pub calculate_shapes: Box<dyn Fn(&P) -> Shapes>,
+    pub points: Shapes,
+    pub egui: Egui,
+    pub color: Srgb<u8>,
 }
 
-pub fn draw_exact(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
+pub struct NoParams();
+
+pub fn draw_segment(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
     if points.len() < 2 {
         return;
     }
@@ -48,6 +42,64 @@ pub fn draw_exact(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
             .end(end)
             .color(color)
             .weight(WEIGHT);
+    }
+}
+
+pub fn model<P: 'static>(
+    calculate_shapes: Box<dyn Fn(&P) -> Shapes>,
+    params: P,
+    app: &App,
+) -> Model<P> {
+    let window_id = app
+        .new_window()
+        .view(view::<P>)
+        .raw_event(raw_window_event::<P>)
+        .build()
+        .unwrap();
+    let window = app.window(window_id).unwrap();
+    let egui = Egui::from_window(&window);
+
+    Model {
+        calculate_shapes,
+        egui,
+        params,
+        points: Default::default(),
+        color: rgb(random(), random(), random()),
+    }
+}
+
+fn view<P>(app: &App, model: &Model<P>, frame: Frame) {
+    let draw = app.draw();
+    draw.background().color(BLACK);
+
+    model.points.iter().for_each(|shape| {
+        shape
+            .iter()
+            .for_each(|segment| draw_segment(&draw, model.color, segment))
+    });
+
+    draw.to_frame(app, &frame).unwrap();
+    model.egui.draw_to_frame(&frame).unwrap();
+}
+
+pub fn update<P>(model: &mut Model<P>, update: Update, elements: impl Fn(&mut P, &mut Ui) -> bool) {
+    let mut recalculate = false;
+
+    {
+        model.egui.set_elapsed_time(update.since_start);
+        let ctx = model.egui.begin_frame();
+
+        egui::Window::new("params").show(&ctx, |ui| {
+            recalculate = (elements)(&mut model.params, ui);
+
+            if let Some(color) = ui_color(ui) {
+                model.color = color;
+            }
+        });
+    }
+
+    if recalculate || model.points.is_empty() {
+        model.points = (model.calculate_shapes)(&model.params);
     }
 }
 
@@ -125,4 +177,16 @@ pub fn add_float_slider_pi(
     *value = val * PI;
 
     recalculate
+}
+
+pub fn no_ui_elements(_params: &mut NoParams, _ui: &mut Ui) -> bool {
+    false
+}
+
+fn raw_window_event<P>(
+    _app: &App,
+    model: &mut Model<P>,
+    event: &nannou::winit::event::WindowEvent,
+) {
+    model.egui.handle_raw_event(event);
 }

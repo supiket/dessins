@@ -1,10 +1,5 @@
-use crate::{draw_exact, ui_color, Shapes};
+use crate::{no_ui_elements, Model, NoParams, Shapes};
 use nannou::prelude::*;
-use nannou::{
-    color::Srgb,
-    geom::{pt2, Point2},
-};
-use nannou_egui::{egui, Egui};
 
 pub const HORSE: &[f32] = &[
     1000.0, 10.0, 10.0, 8.0, 12.0, 9.0, 16.0, 12.0, 17.0, 13.0, 18.0, 14.0, 20.0, 1000.0, 13.0,
@@ -79,17 +74,9 @@ pub const SMURF: &[f32] = &[
     44.0, 36.0, 44.0, 32.0, 2000.0,
 ];
 
-pub struct Model {
-    pub calculate_shapes: Box<dyn Fn() -> Shapes>,
-    egui: Egui,
-    points: Shapes,
-    color: Srgb<u8>,
-}
-
 pub struct DesignShape {
-    pub points: Vec<f32>,
-    pub points_index: usize,
-    pub line_index: usize,
+    pub data: Vec<f32>,
+    pub data_index: usize,
 }
 
 pub enum Action {
@@ -97,87 +84,39 @@ pub enum Action {
     Break,
 }
 
+pub fn model(calculate_shapes: Box<dyn Fn(&NoParams) -> Shapes>, app: &App) -> Model<NoParams> {
+    crate::model(calculate_shapes, NoParams(), app)
+}
+
+pub fn update(_app: &App, model: &mut Model<NoParams>, update: Update) {
+    crate::update(model, update, no_ui_elements);
+}
+
 impl DesignShape {
-    pub fn new(points: &[f32]) -> Self {
+    pub fn new(data: &[f32]) -> Self {
         Self {
-            points: points.to_vec(),
-            points_index: 0,
-            line_index: 0,
+            data: data.to_vec(),
+            data_index: 0,
         }
     }
 
     pub fn calculate_point(&mut self) -> Action {
-        let mut newline = false;
+        let mut new_segment = false;
 
-        let mut a = self.points[self.points_index];
-        self.points_index += 1;
+        let mut a = self.data[self.data_index];
+        self.data_index += 1;
         if a == 2000.0 {
             return Action::Break;
         }
         if a == 1000.0 {
-            a = self.points[self.points_index];
-            self.points_index += 1;
-            self.line_index += 1;
-            newline = true;
+            a = self.data[self.data_index];
+            self.data_index += 1;
+            new_segment = true;
         }
-        let b = self.points[self.points_index];
+        let b = self.data[self.data_index];
         let point = pt2(a, b);
-        self.points_index += 1;
+        self.data_index += 1;
 
-        Action::Continue(point, newline)
+        Action::Continue(point, new_segment)
     }
-}
-
-pub fn model(calculate_shapes: Box<dyn Fn() -> Shapes>, app: &App) -> Model {
-    let window_id = app
-        .new_window()
-        .view(view)
-        .raw_event(raw_window_event)
-        .build()
-        .unwrap();
-    let window = app.window(window_id).unwrap();
-    let egui = Egui::from_window(&window);
-
-    Model {
-        calculate_shapes,
-        egui,
-        points: Default::default(),
-        color: rgb(random(), random(), random()),
-    }
-}
-
-pub fn update(_app: &App, model: &mut Model, update: Update) {
-    {
-        model.egui.set_elapsed_time(update.since_start);
-        let ctx = model.egui.begin_frame();
-
-        egui::Window::new("settings").show(&ctx, |ui| {
-            if let Some(color) = ui_color(ui) {
-                model.color = color;
-            }
-        });
-    }
-
-    if model.points.is_empty() {
-        model.points = (model.calculate_shapes)();
-    }
-}
-
-fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
-    draw.background().color(BLACK);
-
-    model.points.iter().for_each(|shape| {
-        shape
-            .iter()
-            .for_each(|line| draw_exact(&draw, model.color, line.as_slice()))
-    });
-
-    draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
-}
-
-fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    // let egui handle things like keyboard and mouse input.
-    model.egui.handle_raw_event(event);
 }

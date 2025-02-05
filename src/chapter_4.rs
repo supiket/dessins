@@ -1,21 +1,32 @@
-use crate::{add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider};
-use nannou::geom::{pt2, Point2};
+use crate::{
+    add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider, Model, Segment,
+    Shape, Shapes,
+};
+use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 
-pub struct FractalSettings {
+pub struct FractalParams {
     pub n: u32,
     pub k: u32,
     pub ra: f32,
     pub ll: f32,
     pub aa: f32,
+    pub p0: Point2,
+    pub a0: f32,
 }
 
-impl FractalSettings {
-    pub fn calculate_points(&self, p0: Point2, a0: f32) -> Vec<Point2> {
-        let mut points = vec![];
+pub fn update(_app: &App, model: &mut Model<FractalParams>, update: Update) {
+    crate::update(model, update, FractalParams::ui_elements);
+}
 
-        let mut p0 = p0;
-        let mut a0 = a0;
+impl FractalParams {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
+        let mut segment = Segment::new();
+
+        let mut p0 = self.p0;
+        let mut a0 = self.a0;
 
         let nn = self.n * (self.n - 1).pow(self.k - 1) - 1;
 
@@ -33,11 +44,14 @@ impl FractalSettings {
 
             let point = p0 + pt2(l0 * a0.cos(), l0 * a0.sin());
 
-            points.push(point);
+            segment.push(point);
             p0 = point;
         }
 
-        points
+        shape.push(segment);
+        shapes.push(shape);
+
+        shapes
     }
 
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {

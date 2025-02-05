@@ -1,59 +1,50 @@
 use common::{
-    add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider,
-    chapter_1::{self, Model},
-    Shapes, NP,
+    self, add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider, Model,
+    Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 use nannou_egui::{self, egui::Ui};
 
-struct Settings {
+struct Params {
     k: u32,  // # segments
     an: f32, // angle of two consecutive segments
     ra: f32, // ratio of the lengths of two consecutive segments
     aa: f32, // angle of the first segment with horizontal
     rr: f32, // length of the first segment
-    initial_pos: Point2,
 }
 
-fn model(app: &App) -> Model<Settings> {
-    let (w, h) = app.window_rect().w_h();
-
-    let settings = Settings {
+fn model(app: &App) -> Model<Params> {
+    let params = Params {
         k: 200,
         an: 15.0 * PI / 31.0,
         ra: 0.98,
         aa: 0_f32,
         rr: 0.80 * NP as f32,
-        initial_pos: pt2(-w / 4.0, -h / 4.0),
     };
 
-    chapter_1::model(Box::new(calculate_shapes), settings, app)
+    common::model(Box::new(calculate_shapes), params, app)
 }
 
-fn ui_elements(settings: &mut Settings, ui: &mut Ui) -> bool {
-    add_number_slider(ui, "k", &mut settings.k, 1..=2500)
-        || add_float_slider_pi(ui, "an", &mut settings.an, -1.0..=1.0)
-        || add_float_slider(ui, "ra", &mut settings.ra, 0.0..=1.0)
-        || add_float_slider_pi(ui, "aa", &mut settings.aa, 0.0..=1.0)
-        || add_float_slider_np(ui, "rr", &mut settings.rr, 0.0..=1.0)
+fn update(_app: &App, model: &mut Model<Params>, update: Update) {
+    common::update(model, update, ui_elements);
 }
 
-fn update(_app: &App, model: &mut Model<Settings>, update: Update) {
-    chapter_1::update(model, update, ui_elements);
-}
+fn calculate_shapes(params: &Params) -> Shapes {
+    let mut shapes = Shapes::new();
+    let mut shape = Shape::new();
+    let mut segment = Segment::new();
 
-fn calculate_shapes(settings: &Settings) -> Shapes {
-    let mut current_length = settings.rr;
-    let mut current_pos = settings.initial_pos;
-    let mut line = vec![current_pos];
+    let mut current_length = params.rr;
+    let mut current_pos = pt2(0.0, 0.0);
+    segment.push(current_pos);
 
     let mut min_x = 0.0;
     let mut max_x = 0.0;
     let mut min_y = 0.0;
     let mut max_y = 0.0;
 
-    for i in 0..settings.k {
-        let angle = settings.aa + i as f32 * settings.an;
+    for i in 0..params.k {
+        let angle = params.aa + i as f32 * params.an;
 
         let dx = current_length * angle.cos();
         let dy = current_length * angle.sin();
@@ -66,9 +57,9 @@ fn calculate_shapes(settings: &Settings) -> Shapes {
         min_y = min_y.min(point.y);
         max_y = max_y.max(point.y);
 
-        line.push(point);
+        segment.push(point);
         current_pos = point;
-        current_length *= settings.ra;
+        current_length *= params.ra;
     }
 
     // calculate center offset
@@ -76,11 +67,22 @@ fn calculate_shapes(settings: &Settings) -> Shapes {
     let center_offset_y = (min_y + max_y) / 2.0;
 
     // make segments centered
-    for point in &mut line {
+    for point in &mut segment {
         *point -= pt2(center_offset_x, center_offset_y);
     }
 
-    vec![vec![line]]
+    shape.push(segment);
+    shapes.push(shape);
+
+    shapes
+}
+
+fn ui_elements(params: &mut Params, ui: &mut Ui) -> bool {
+    add_number_slider(ui, "k", &mut params.k, 1..=2500)
+        || add_float_slider_pi(ui, "an", &mut params.an, -1.0..=1.0)
+        || add_float_slider(ui, "ra", &mut params.ra, 0.0..=1.0)
+        || add_float_slider_pi(ui, "aa", &mut params.aa, 0.0..=1.0)
+        || add_float_slider_np(ui, "rr", &mut params.rr, 0.0..=1.0)
 }
 
 fn main() {
