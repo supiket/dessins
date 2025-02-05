@@ -10,6 +10,7 @@ pub mod chapter_2;
 pub mod chapter_3;
 pub mod chapter_4;
 pub mod chapter_5;
+pub mod chapter_6;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
 pub const WEIGHT: f32 = 1.0; // point weight

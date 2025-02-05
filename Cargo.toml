@@ -208,6 +208,30 @@ path = "5/3_courbes_spirales.rs"
 name = "6-1"
 path = "6/1_biparti_complet.rs"
 
+[[bin]]
+name = "6-2-1"
+path = "6/2_1_lineaires_modulo.rs"
+
+[[bin]]
+name = "6-2-2"
+path = "6/2_2_lineaires_modulo.rs"
+
+[[bin]]
+name = "6-3-1"
+path = "6/3_1_lineaires_batons.rs"
+
+[[bin]]
+name = "6-3-2"
+path = "6/3_2_lineaires_batons.rs"
+
+[[bin]]
+name = "6-3-3"
+path = "6/3_3_lineaires_batons.rs"
+
+[[bin]]
+name = "6-3-4"
+path = "6/3_4_lineaires_batons.rs"
+
 [dependencies]
 evalexpr = "12.0.2"
 nannou = "0.19"
