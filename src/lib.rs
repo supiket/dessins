@@ -1,6 +1,6 @@
 use nannou::prelude::*;
 use nannou_egui::{
-    egui::{self, Ui},
+    egui::{self, emath::Numeric, Ui},
     Egui,
 };
 use std::{f32::consts::PI, ops::RangeInclusive};
@@ -11,6 +11,7 @@ pub mod chapter_3;
 pub mod chapter_4;
 pub mod chapter_5;
 pub mod chapter_6;
+pub mod chapter_7;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
 pub const WEIGHT: f32 = 1.0; // point weight
@@ -113,11 +114,11 @@ pub fn ui_color(ui: &mut Ui) -> Option<Srgb<u8>> {
     }
 }
 
-pub fn add_number_slider(
+pub fn add_number_slider<T: Numeric>(
     ui: &mut Ui,
     label: &str,
-    value: &mut u32,
-    range: RangeInclusive<u32>,
+    value: &mut T,
+    range: RangeInclusive<T>,
 ) -> bool {
     ui.label(label);
     ui.add(egui::Slider::new(&mut *value, range)).changed()

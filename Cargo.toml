@@ -232,6 +232,10 @@ path = "6/3_3_lineaires_batons.rs"
 name = "6-3-4"
 path = "6/3_4_lineaires_batons.rs"
 
+[[bin]]
+name = "7"
+path = "7/fractales_simples.rs"
+
 [dependencies]
 evalexpr = "12.0.2"
 nannou = "0.19"

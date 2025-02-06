@@ -27,8 +27,8 @@ impl LinearModuloParams {
         let mut points = vec![];
 
         let n = self.n as f32;
-        let k1 = self.k1 as f32;
-        let k2 = self.k2 as f32;
+        let k1 = self.k1;
+        let k2 = self.k2;
 
         for i in 0..=self.n {
             let i = i as f32;
