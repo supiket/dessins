@@ -84,6 +84,6 @@ impl DragonParams {
     }
 
     pub fn ui_a0_factor(&mut self, ui: &mut Ui) -> bool {
-        add_float_slider_pi(ui, "dragon a0 factor", &mut self.a0_factor, -2.0..=2.0)
+        add_float_slider_pi(ui, "dragon a0 factor", &mut self.a0_factor)
     }
 }

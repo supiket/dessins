@@ -1,5 +1,5 @@
 use crate::{
-    add_float_slider, add_float_slider_np, add_number_slider, Model, Segment, Shape, Shapes,
+    add_float_slider, add_float_slider_np_length, add_number_slider, Model, Segment, Shape, Shapes,
 };
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
@@ -32,8 +32,8 @@ impl CurveParams {
         add_number_slider(ui, "curve n", &mut self.n, 1000..=6000)
             || add_float_slider(ui, "curve t1", &mut self.t1, 0.5..=600.0)
             || add_float_slider(ui, "curve t2", &mut self.t2, 0.5..=600.0)
-            || add_float_slider_np(ui, "curve r1", &mut self.r1, 0.0..=1.0)
-            || add_float_slider_np(ui, "curve r2", &mut self.r2, 0.0..=1.0)
+            || add_float_slider_np_length(ui, "curve r1", &mut self.r1)
+            || add_float_slider_np_length(ui, "curve r2", &mut self.r2)
             || add_number_slider(ui, "curve k1", &mut self.k1, 1..=4)
             || add_number_slider(ui, "curve k2", &mut self.k2, 1..=4)
             || add_number_slider(ui, "curve h1", &mut self.h1, 1..=4)

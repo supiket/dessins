@@ -1,4 +1,4 @@
-use crate::{add_float_slider_np, add_float_slider_pi, add_number_slider};
+use crate::{add_float_slider_np_length, add_float_slider_pi, add_number_slider};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 
@@ -19,7 +19,7 @@ pub fn calculate_polygon(params: &PolygonParams, i: u32) -> Point2 {
 impl PolygonParams {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         add_number_slider(ui, "polygon k", &mut self.k, 3..=20)
-            || add_float_slider_np(ui, "polygon r", &mut self.r, 0.0..=1.0)
-            || add_float_slider_pi(ui, "polygon ad", &mut self.ad, -1.0..=1.0)
+            || add_float_slider_np_length(ui, "polygon r", &mut self.r)
+            || add_float_slider_pi(ui, "polygon ad", &mut self.ad)
     }
 }

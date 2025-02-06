@@ -1,6 +1,6 @@
 use crate::{
-    add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider, Model, Segment,
-    Shape, Shapes,
+    add_float_slider, add_float_slider_np_length, add_float_slider_pi, add_number_slider, Model,
+    Segment, Shape, Shapes,
 };
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
@@ -58,7 +58,7 @@ impl FractalParams {
         add_number_slider(ui, "fractal n", &mut self.n, 3..=20)
             || add_number_slider(ui, "fractal k", &mut self.k, 2..=12)
             || add_float_slider(ui, "fractal ra", &mut self.ra, 0.0..=1.0)
-            || add_float_slider_np(ui, "fractal ll", &mut self.ll, 0.0..=1.0)
-            || add_float_slider_pi(ui, "fractal aa", &mut self.aa, -2.0..=2.0)
+            || add_float_slider_np_length(ui, "fractal ll", &mut self.ll)
+            || add_float_slider_pi(ui, "fractal aa", &mut self.aa)
     }
 }

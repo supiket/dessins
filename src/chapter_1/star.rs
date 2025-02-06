@@ -1,4 +1,4 @@
-use crate::{add_float_slider_np, add_float_slider_pi, add_number_slider};
+use crate::{add_float_slider_np_length, add_float_slider_pi, add_number_slider};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 
@@ -21,7 +21,7 @@ impl StarParams {
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
         add_number_slider(ui, "star k", &mut self.k, 5..=100)
             || add_number_slider(ui, "star h", &mut self.h, 3..=50)
-            || add_float_slider_np(ui, "star r", &mut self.r, 0.0..=1.0)
-            || add_float_slider_pi(ui, "star ad", &mut self.ad, -1.0..=1.0)
+            || add_float_slider_np_length(ui, "star r", &mut self.r)
+            || add_float_slider_pi(ui, "star ad", &mut self.ad)
     }
 }

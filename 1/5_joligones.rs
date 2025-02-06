@@ -1,6 +1,6 @@
 use common::{
-    self, add_float_slider, add_float_slider_np, add_float_slider_pi, add_number_slider, Model,
-    Segment, Shape, Shapes, NP,
+    self, add_float_slider, add_float_slider_np_length, add_float_slider_pi, add_number_slider,
+    Model, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 use nannou_egui::{self, egui::Ui};
@@ -79,10 +79,10 @@ fn calculate_shapes(params: &Params) -> Shapes {
 
 fn ui_elements(params: &mut Params, ui: &mut Ui) -> bool {
     add_number_slider(ui, "k", &mut params.k, 1..=2500)
-        || add_float_slider_pi(ui, "an", &mut params.an, -1.0..=1.0)
+        || add_float_slider_pi(ui, "an", &mut params.an)
         || add_float_slider(ui, "ra", &mut params.ra, 0.0..=1.0)
-        || add_float_slider_pi(ui, "aa", &mut params.aa, 0.0..=1.0)
-        || add_float_slider_np(ui, "rr", &mut params.rr, 0.0..=1.0)
+        || add_float_slider_pi(ui, "aa", &mut params.aa)
+        || add_float_slider_np_length(ui, "rr", &mut params.rr)
 }
 
 fn main() {

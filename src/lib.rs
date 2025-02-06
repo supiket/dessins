@@ -137,7 +137,15 @@ pub fn add_float_slider(
     .changed()
 }
 
-pub fn add_float_slider_np(
+pub fn add_float_slider_np_position(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
+    add_float_slider_np(ui, label, value, -0.5..=0.5)
+}
+
+pub fn add_float_slider_np_length(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
+    add_float_slider_np(ui, label, value, 0.0..=1.0)
+}
+
+fn add_float_slider_np(
     ui: &mut Ui,
     label: &str,
     value: &mut f32,
@@ -159,18 +167,13 @@ pub fn add_float_slider_np(
     recalculate
 }
 
-pub fn add_float_slider_pi(
-    ui: &mut Ui,
-    label: &str,
-    value: &mut f32,
-    range: RangeInclusive<f32>,
-) -> bool {
+pub fn add_float_slider_pi(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
     ui.label(label);
     let mut val = *value / PI;
 
     let recalculate = ui
         .add(
-            egui::Slider::new(&mut val, range)
+            egui::Slider::new(&mut val, -PI..=PI)
                 .custom_parser(|str| evalexpr::eval_float(str).ok())
                 .suffix("π"),
         )

@@ -1,4 +1,6 @@
-use common::{self, add_float_slider_np, add_number_slider, Model, Segment, Shape, Shapes, NP};
+use common::{
+    self, add_float_slider_np_position, add_number_slider, Model, Segment, Shape, Shapes, NP,
+};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 
@@ -77,15 +79,14 @@ impl BipartiteParams {
     }
 
     pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        let range = -0.9..=0.9;
         add_number_slider(ui, "bipartite n", &mut self.n, 10..=20)
-            || add_float_slider_np(ui, "bipartite a.x", &mut self.a.x, range.clone())
-            || add_float_slider_np(ui, "bipartite a.y", &mut self.a.y, range.clone())
-            || add_float_slider_np(ui, "bipartite b.x", &mut self.b.x, range.clone())
-            || add_float_slider_np(ui, "bipartite b.y", &mut self.b.y, range.clone())
-            || add_float_slider_np(ui, "bipartite c.x", &mut self.c.x, range.clone())
-            || add_float_slider_np(ui, "bipartite c.y", &mut self.c.y, range.clone())
-            || add_float_slider_np(ui, "bipartite d.x", &mut self.d.x, range.clone())
-            || add_float_slider_np(ui, "bipartite d.y", &mut self.d.y, range.clone())
+            || add_float_slider_np_position(ui, "bipartite a.x", &mut self.a.x)
+            || add_float_slider_np_position(ui, "bipartite a.y", &mut self.a.y)
+            || add_float_slider_np_position(ui, "bipartite b.x", &mut self.b.x)
+            || add_float_slider_np_position(ui, "bipartite b.y", &mut self.b.y)
+            || add_float_slider_np_position(ui, "bipartite c.x", &mut self.c.x)
+            || add_float_slider_np_position(ui, "bipartite c.y", &mut self.c.y)
+            || add_float_slider_np_position(ui, "bipartite d.x", &mut self.d.x)
+            || add_float_slider_np_position(ui, "bipartite d.y", &mut self.d.y)
     }
 }

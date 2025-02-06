@@ -1,5 +1,6 @@
 use crate::{
-    add_float_slider_np, add_float_slider_pi, add_number_slider,
+    add_float_slider_np_length, add_float_slider_np_position, add_float_slider_pi,
+    add_number_slider,
     chapter_1::polygon::{calculate_polygon, PolygonParams},
     Model, Segment, Shape, Shapes, NP,
 };
@@ -99,18 +100,8 @@ fn add_positions_sliders(ui: &mut Ui, positions: &mut [Point2]) -> bool {
     let mut recalculate = false;
     for (i, position) in positions.iter_mut().enumerate() {
         recalculate = recalculate
-            || add_float_slider_np(
-                ui,
-                &format!("positions[{}].x", i),
-                &mut position.x,
-                -1.0..=1.0,
-            )
-            || add_float_slider_np(
-                ui,
-                &format!("positions[{}].y", i),
-                &mut position.y,
-                -1.0..=1.0,
-            );
+            || add_float_slider_np_position(ui, &format!("positions[{}].x", i), &mut position.x)
+            || add_float_slider_np_position(ui, &format!("positions[{}].y", i), &mut position.y);
     }
     recalculate
 }
@@ -119,7 +110,7 @@ fn add_lengths_sliders(ui: &mut Ui, lengths: &mut [f32]) -> bool {
     let mut recalculate = false;
     for (i, length) in lengths.iter_mut().enumerate() {
         recalculate =
-            recalculate || add_float_slider_np(ui, &format!("lengths[{}]", i), length, -1.0..=1.0);
+            recalculate || add_float_slider_np_length(ui, &format!("lengths[{}]", i), length);
     }
     recalculate
 }
@@ -127,8 +118,7 @@ fn add_lengths_sliders(ui: &mut Ui, lengths: &mut [f32]) -> bool {
 fn add_angles_sliders(ui: &mut Ui, angles: &mut [f32]) -> bool {
     let mut recalculate = false;
     for (i, angle) in angles.iter_mut().enumerate() {
-        recalculate =
-            recalculate || add_float_slider_pi(ui, &format!("angles[{}]", i), angle, -2.0..=2.0);
+        recalculate = recalculate || add_float_slider_pi(ui, &format!("angles[{}]", i), angle);
     }
     recalculate
 }
