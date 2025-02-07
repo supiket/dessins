@@ -1,12 +1,12 @@
 use common::{
     self,
-    chapter_6::linear_modulo::{self, LinearModuloParams, YParams},
+    chapter_6::linear_modulo::{self, ParamsInner, YParams},
     Model, NP,
 };
 use nannou::prelude::*;
 
-fn model(app: &App) -> Model<LinearModuloParams> {
-    let params = LinearModuloParams {
+fn model(app: &App) -> Model {
+    let inner = ParamsInner {
         n: 400,
         m: 400,
         k1: 4.0,
@@ -16,7 +16,11 @@ fn model(app: &App) -> Model<LinearModuloParams> {
         y_eq: Box::new(y),
     };
 
-    common::model(Box::new(LinearModuloParams::calculate_shapes), params, app)
+    linear_modulo::model(app, inner)
+}
+
+fn update(_app: &App, model: &mut Model, update: Update) {
+    common::update(model, update);
 }
 
 fn y(params: &YParams) -> f32 {
@@ -24,5 +28,5 @@ fn y(params: &YParams) -> f32 {
 }
 
 fn main() {
-    nannou::app(model).update(linear_modulo::update).run();
+    nannou::app(model).update(update).run();
 }

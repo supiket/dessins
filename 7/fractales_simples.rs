@@ -1,14 +1,14 @@
 use common::{
     self,
-    chapter_7::{self, SimpleFractalParams},
+    chapter_7::{self, ParamsInner},
     Model, NP,
 };
 use nannou::prelude::*;
 
-fn model(app: &App) -> Model<SimpleFractalParams> {
+fn model(app: &App) -> Model {
     let np = NP as f32;
 
-    let params = SimpleFractalParams {
+    let inner = ParamsInner {
         m: 4,
         n: 4,
         k: 5,
@@ -23,9 +23,13 @@ fn model(app: &App) -> Model<SimpleFractalParams> {
         angles: vec![0.0, 0.45 * PI, -0.45 * PI, 0.0],
     };
 
-    common::model(Box::new(SimpleFractalParams::calculate_shapes), params, app)
+    chapter_7::model(app, inner)
+}
+
+fn update(_app: &App, model: &mut Model, update: Update) {
+    common::update(model, update);
 }
 
 fn main() {
-    nannou::app(model).update(chapter_7::update).run();
+    nannou::app(model).update(update).run();
 }

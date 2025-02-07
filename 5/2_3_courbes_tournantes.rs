@@ -1,12 +1,12 @@
 use common::{
     self,
-    chapter_5::rotating::{self, CurveParams, SParams},
+    chapter_5::rotating::{self, ParamsInner, SParams},
     Model, NP,
 };
 use nannou::prelude::*;
 
-fn model(app: &App) -> Model<CurveParams> {
-    let curve = CurveParams {
+fn model(app: &App) -> Model {
+    let inner = ParamsInner {
         n: 3000,
         t1: 0.5,
         t2: 30.0,
@@ -19,7 +19,11 @@ fn model(app: &App) -> Model<CurveParams> {
         s_eq: Box::new(s),
     };
 
-    common::model(Box::new(CurveParams::calculate_shapes), curve, app)
+    rotating::model(app, inner)
+}
+
+fn update(_app: &App, model: &mut Model, update: Update) {
+    common::update(model, update);
 }
 
 fn s(_params: SParams) -> f32 {
@@ -27,5 +31,5 @@ fn s(_params: SParams) -> f32 {
 }
 
 fn main() {
-    nannou::app(model).update(rotating::update).run();
+    nannou::app(model).update(update).run();
 }

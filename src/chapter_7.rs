@@ -1,13 +1,16 @@
 use crate::{
     add_float_slider_np_length, add_float_slider_np_position, add_float_slider_pi,
     add_number_slider,
-    chapter_1::polygon::{calculate_polygon, PolygonParams},
-    Model, Segment, Shape, Shapes, NP,
+    chapter_1::polygon::{self, calculate_point},
+    DesignParams, Model, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 
-pub struct SimpleFractalParams {
+pub type OuterSegment = Segment;
+pub type InnerSegment = Segment;
+
+pub struct ParamsInner {
     pub m: usize, // # of segments in starting curve
     pub n: usize, // # of sub-segments per segment
     pub k: usize, // depth
@@ -16,84 +19,94 @@ pub struct SimpleFractalParams {
     pub angles: Vec<f32>,
 }
 
-pub fn update(_app: &App, model: &mut Model<SimpleFractalParams>, update: Update) {
-    crate::update(model, update, SimpleFractalParams::ui_elements)
+pub struct Params {
+    pub inner: ParamsInner,
+    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
+    pub ui_elements: Box<dyn Fn(&mut ParamsInner, &mut Ui) -> bool>,
 }
 
-impl SimpleFractalParams {
-    pub fn calculate_shapes(&self) -> Shapes {
-        assert_eq!(self.positions.len(), self.m + 1);
-        assert_eq!(self.lengths.len(), self.n);
-        assert_eq!(self.angles.len(), self.n);
+pub fn model(app: &App, inner: ParamsInner) -> Model {
+    let params = DesignParams::SimpleFractal(Params {
+        inner,
+        calculate_shapes: Box::new(calculate_shapes),
+        ui_elements: Box::new(ui_elements),
+    });
 
-        let mut shapes = Shapes::new();
-        let mut shape = Shape::new();
+    crate::model(params, app)
+}
 
-        for ii in 0..self.m {
-            let mut segment = Segment::new();
+pub fn ui_elements(inner: &mut ParamsInner, ui: &mut Ui) -> bool {
+    let m_changed = add_number_slider(ui, "m", &mut inner.m, 1..=10);
+    let n_changed = add_number_slider(ui, "n", &mut inner.n, 1..=10);
 
-            let source = self.positions[ii];
-            let destination = self.positions[ii + 1];
-            let diff = destination - source;
+    if m_changed {
+        inner.positions = calculate_positions(inner.m);
+    }
 
-            let mut point = source;
-            segment.push(point);
+    if n_changed {
+        inner.lengths = calculate_lengths(inner.m, inner.n);
+        inner.angles = calculate_angles(inner.m, inner.n);
+    }
 
-            let angle = if diff.x == 0.0 {
-                PI / 2.0 * if diff.y < 0.0 { -1.0 } else { 1.0 }
-            } else {
-                (diff.y / diff.x).atan()
-            } + if diff.x < 0.0 { PI } else { 0.0 };
+    m_changed
+        || n_changed
+        || add_number_slider(ui, "k", &mut inner.k, 1..=10)
+        || add_positions_sliders(ui, &mut inner.positions)
+        || add_lengths_sliders(ui, &mut inner.lengths)
+        || add_angles_sliders(ui, &mut inner.angles)
+}
 
-            let length = diff.length();
+pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
+    assert_eq!(inner.positions.len(), inner.m + 1);
+    assert_eq!(inner.lengths.len(), inner.n);
+    assert_eq!(inner.angles.len(), inner.n);
 
-            for i in 0..(self.n).pow(self.k as u32) {
-                let mut current_length = length;
-                let mut current_angle = angle;
-                let mut t1 = i;
-                if self.k != 0 {
-                    for j in (0..self.k).rev() {
-                        let r = (self.n).pow(j as u32);
-                        let t2 = t1 / r;
-                        current_angle += self.angles[t2];
-                        current_length *= self.lengths[t2];
-                        t1 -= t2 * r;
-                    }
+    let mut shapes = Shapes::new();
+    let mut shape = Shape::new();
+
+    for ii in 0..inner.m {
+        let mut segment = Segment::new();
+
+        let source = inner.positions[ii];
+        let destination = inner.positions[ii + 1];
+        let diff = destination - source;
+
+        let mut point = source;
+        segment.push(point);
+
+        let angle = if diff.x == 0.0 {
+            PI / 2.0 * if diff.y < 0.0 { -1.0 } else { 1.0 }
+        } else {
+            (diff.y / diff.x).atan()
+        } + if diff.x < 0.0 { PI } else { 0.0 };
+
+        let length = diff.length();
+
+        for i in 0..(inner.n).pow(inner.k as u32) {
+            let mut current_length = length;
+            let mut current_angle = angle;
+            let mut t1 = i;
+            if inner.k != 0 {
+                for j in (0..inner.k).rev() {
+                    let r = (inner.n).pow(j as u32);
+                    let t2 = t1 / r;
+                    current_angle += inner.angles[t2];
+                    current_length *= inner.lengths[t2];
+                    t1 -= t2 * r;
                 }
-                point += pt2(
-                    current_length * current_angle.cos(),
-                    current_length * current_angle.sin(),
-                );
-                segment.push(point);
             }
-            shape.push(segment);
+            point += pt2(
+                current_length * current_angle.cos(),
+                current_length * current_angle.sin(),
+            );
+            segment.push(point);
         }
-
-        shapes.push(shape);
-
-        shapes
+        shape.push(segment);
     }
 
-    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        let m_changed = add_number_slider(ui, "m", &mut self.m, 1..=10);
-        let n_changed = add_number_slider(ui, "n", &mut self.n, 1..=10);
+    shapes.push(shape);
 
-        if m_changed {
-            self.positions = calculate_positions(self.m);
-        }
-
-        if n_changed {
-            self.lengths = calculate_lengths(self.m, self.n);
-            self.angles = calculate_angles(self.m, self.n);
-        }
-
-        m_changed
-            || n_changed
-            || add_number_slider(ui, "k", &mut self.k, 1..=10)
-            || add_positions_sliders(ui, &mut self.positions)
-            || add_lengths_sliders(ui, &mut self.lengths)
-            || add_angles_sliders(ui, &mut self.angles)
-    }
+    shapes
 }
 
 fn add_positions_sliders(ui: &mut Ui, positions: &mut [Point2]) -> bool {
@@ -124,14 +137,14 @@ fn add_angles_sliders(ui: &mut Ui, angles: &mut [f32]) -> bool {
 }
 
 fn calculate_positions(m: usize) -> Vec<Point2> {
-    let params = PolygonParams {
+    let params = polygon::ParamsInner {
         k: m as u32,
         r: NP as f32 * 0.5,
         ad: 0.0,
     };
     let mut points = vec![];
     for i in 0..m {
-        let point = calculate_polygon(&params, i as u32);
+        let point = calculate_point(&params, i as u32);
         points.push(point);
     }
     points.push(points[0]);

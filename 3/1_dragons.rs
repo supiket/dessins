@@ -1,12 +1,14 @@
-use common::{self, chapter_3::DragonParams, Model, NP};
+use common::{
+    self,
+    chapter_3::{self, ui_n, ParamsInner},
+    Model, NP,
+};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 
-fn model(app: &App) -> Model<DragonParams> {
-    let n = 6;
-
-    let params = DragonParams {
-        n,
+fn model(app: &App) -> Model {
+    let inner = ParamsInner {
+        n: 6,
         a0_fn: Box::new(a0_fn),
         a0_factor: -PI / 4.0,
         l0_fn: Box::new(l0_fn),
@@ -14,11 +16,11 @@ fn model(app: &App) -> Model<DragonParams> {
         rules_fn: Box::new(rules_fn),
     };
 
-    common::model(Box::new(DragonParams::calculate_shapes), params, app)
+    chapter_3::model(app, inner, Box::new(ui_elements))
 }
 
-fn update(_app: &App, model: &mut Model<DragonParams>, update: Update) {
-    common::update(model, update, ui_elements)
+fn update(_app: &App, model: &mut Model, update: Update) {
+    common::update(model, update)
 }
 
 fn a0_fn(n: u32, factor: f32) -> f32 {
@@ -37,8 +39,8 @@ fn rules_fn(n: u32) -> Vec<i32> {
     vec![0; n as usize + 1]
 }
 
-fn ui_elements(params: &mut DragonParams, ui: &mut Ui) -> bool {
-    params.ui_n(ui)
+fn ui_elements(inner: &mut ParamsInner, ui: &mut Ui) -> bool {
+    ui_n(inner, ui)
 }
 
 fn main() {

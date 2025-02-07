@@ -1,14 +1,18 @@
 use common::{
     chapter_2::{self, Action, DesignShape, HORSE},
-    Model, NoParams, Segment, Shape, Shapes, NP,
+    Model, NoParamsInner, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 
-fn model(app: &App) -> Model<NoParams> {
-    chapter_2::model(Box::new(calculate_shapes), app)
+fn model(app: &App) -> Model {
+    chapter_2::model(app, Box::new(calculate_shapes))
 }
 
-fn calculate_shapes(_params: &NoParams) -> Shapes {
+fn update(_app: &App, model: &mut Model, update: Update) {
+    common::update(model, update);
+}
+
+fn calculate_shapes(_inner: &NoParamsInner) -> Shapes {
     let mut shapes = Shapes::new();
 
     for i in 0..=5 {
@@ -41,5 +45,5 @@ fn calculate_shapes(_params: &NoParams) -> Shapes {
 }
 
 fn main() {
-    nannou::app(model).update(chapter_2::update).run();
+    nannou::app(model).update(update).run();
 }

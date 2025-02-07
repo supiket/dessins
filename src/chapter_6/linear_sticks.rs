@@ -1,8 +1,9 @@
-use crate::{add_number_slider, Model, Shape, Shapes};
+use crate::{add_number_slider, DesignParams, Model, Shape, Shapes};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
+use std::f32::consts::PI;
 
-pub struct LinearSticksParams {
+pub struct ParamsInner {
     pub n: u32,
     pub m: u32,
     pub k: u32,
@@ -14,49 +15,59 @@ pub struct RParams {
     pub i: f32,
 }
 
-pub fn update(_app: &App, model: &mut Model<LinearSticksParams>, update: Update) {
-    crate::update(model, update, LinearSticksParams::ui_elements)
+pub struct Params {
+    pub inner: ParamsInner,
+    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
+    pub ui_elements: Box<dyn Fn(&mut ParamsInner, &mut Ui) -> bool>,
 }
 
-impl LinearSticksParams {
-    pub fn calculate_shapes(&self) -> Shapes {
-        let mut shapes = Shapes::new();
-        let mut shape = Shape::new();
+pub fn model(app: &App, inner: ParamsInner) -> Model {
+    let params = DesignParams::LinearSticks(Params {
+        inner,
+        calculate_shapes: Box::new(calculate_shapes),
+        ui_elements: Box::new(ui_elements),
+    });
 
-        let n = self.n as f32;
-        let k = self.k as f32;
+    crate::model(params, app)
+}
 
-        for i in 0..=self.m {
-            let r_params = RParams { i: i as f32 };
-            let r1 = (self.r1_eq)(&r_params);
-            let r2 = (self.r2_eq)(&r_params);
+pub fn ui_elements(inner: &mut ParamsInner, ui: &mut Ui) -> bool {
+    add_number_slider(ui, "linear sticks n", &mut inner.n, 100..=600)
+        || add_number_slider(ui, "linear sticks m", &mut inner.m, 1..=6)
+        || add_number_slider(ui, "linear sticks k", &mut inner.k, 3..=7)
+}
 
-            for j in 0..self.n {
-                let j = j as f32;
+pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
+    let mut shapes = Shapes::new();
+    let mut shape = Shape::new();
 
-                let an = 2.0 * j * PI / n;
+    let n = inner.n as f32;
+    let k = inner.k as f32;
 
-                let x = r1 * an.cos() + r2 * (k * an).cos();
-                let y = r1 * an.sin() + r2 * (k * an).sin();
-                let d = pt2(x, y);
+    for i in 0..=inner.m {
+        let r_params = RParams { i: i as f32 };
+        let r1 = (inner.r1_eq)(&r_params);
+        let r2 = (inner.r2_eq)(&r_params);
 
-                let x = r1 * an.cos() + r2 * (k * an + PI).cos();
-                let y = r1 * an.sin() + r2 * (k * an + PI).sin();
-                let a = pt2(x, y);
+        for j in 0..inner.n {
+            let j = j as f32;
 
-                let segment = vec![d, a];
-                shape.push(segment);
-            }
+            let an = 2.0 * j * PI / n;
+
+            let x = r1 * an.cos() + r2 * (k * an).cos();
+            let y = r1 * an.sin() + r2 * (k * an).sin();
+            let d = pt2(x, y);
+
+            let x = r1 * an.cos() + r2 * (k * an + PI).cos();
+            let y = r1 * an.sin() + r2 * (k * an + PI).sin();
+            let a = pt2(x, y);
+
+            let segment = vec![d, a];
+            shape.push(segment);
         }
-
-        shapes.push(shape);
-
-        shapes
     }
 
-    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        add_number_slider(ui, "linear modulo n", &mut self.n, 100..=600)
-            || add_number_slider(ui, "linear modulo m", &mut self.m, 1..=6)
-            || add_number_slider(ui, "linear modulo k", &mut self.k, 3..=7)
-    }
+    shapes.push(shape);
+
+    shapes
 }

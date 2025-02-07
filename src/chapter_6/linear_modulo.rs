@@ -1,8 +1,9 @@
-use crate::{add_float_slider, add_number_slider, Model, Segment, Shape, Shapes, NP};
+use crate::{add_float_slider, add_number_slider, DesignParams, Model, Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
+use std::f32::consts::PI;
 
-pub struct LinearModuloParams {
+pub struct ParamsInner {
     pub n: u32,
     pub m: u32,
     pub k1: f32,
@@ -18,54 +19,64 @@ pub struct YParams {
     pub k2: f32,
 }
 
-pub fn update(_app: &App, model: &mut Model<LinearModuloParams>, update: Update) {
-    crate::update(model, update, LinearModuloParams::ui_elements)
+pub struct Params {
+    pub inner: ParamsInner,
+    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
+    pub ui_elements: Box<dyn Fn(&mut ParamsInner, &mut Ui) -> bool>,
 }
 
-impl LinearModuloParams {
-    fn calculate_points(&self) -> Segment {
-        let mut points = vec![];
+pub fn model(app: &App, inner: ParamsInner) -> Model {
+    let params = DesignParams::LinearModulo(Params {
+        inner,
+        calculate_shapes: Box::new(calculate_shapes),
+        ui_elements: Box::new(ui_elements),
+    });
 
-        let n = self.n as f32;
-        let k1 = self.k1;
-        let k2 = self.k2;
+    crate::model(params, app)
+}
 
-        for i in 0..=self.n {
-            let i = i as f32;
+pub fn ui_elements(inner: &mut ParamsInner, ui: &mut Ui) -> bool {
+    add_number_slider(ui, "linear modulo n", &mut inner.n, 10..=400)
+        || add_number_slider(ui, "linear modulo m", &mut inner.m, 10..=400)
+        || add_float_slider(ui, "linear modulo k1", &mut inner.k1, 1.0..=5.0)
+        || add_float_slider(ui, "linear modulo k2", &mut inner.k2, 1.0..=5.0)
+        || add_number_slider(ui, "linear modulo h", &mut inner.h, 1..=10)
+        || add_number_slider(ui, "linear modulo i1 factor", &mut inner.i1_factor, 1..=8)
+}
 
-            let x = NP as f32 * 0.5 * (k1 * i * PI / n).sin();
-            let y = (self.y_eq)(&YParams { i, n, k2 });
-            points.push(pt2(x, y));
-        }
+pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
+    let mut shapes = Shapes::new();
+    let mut shape = Shape::new();
 
-        points
+    let points = calculate_points(inner);
+
+    for i in 0..=inner.m {
+        let start_index = ((inner.i1_factor * i) % inner.n) as usize;
+        let end_index = ((inner.h * i) % inner.n) as usize;
+
+        let segment = vec![points[start_index], points[end_index]];
+        shape.push(segment);
     }
 
-    pub fn calculate_shapes(&self) -> Shapes {
-        let mut shapes = Shapes::new();
-        let mut shape = Shape::new();
+    shapes.push(shape);
 
-        let points = self.calculate_points();
+    shapes
+}
 
-        for i in 0..=self.m {
-            let start_index = ((self.i1_factor * i) % self.n) as usize;
-            let end_index = ((self.h * i) % self.n) as usize;
+fn calculate_points(inner: &ParamsInner) -> Segment {
+    let mut points = vec![];
 
-            let segment = vec![points[start_index], points[end_index]];
-            shape.push(segment);
-        }
+    let n = inner.n as f32;
+    let k1 = inner.k1;
+    let k2 = inner.k2;
 
-        shapes.push(shape);
+    for i in 0..=inner.n {
+        let i = i as f32;
 
-        shapes
+        let x = NP as f32 * 0.5 * (k1 * i * PI / n).sin();
+        let y = (inner.y_eq)(&YParams { i, n, k2 });
+        points.push(pt2(x, y));
     }
 
-    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        add_number_slider(ui, "linear modulo n", &mut self.n, 10..=400)
-            || add_number_slider(ui, "linear modulo m", &mut self.m, 10..=400)
-            || add_float_slider(ui, "linear modulo k1", &mut self.k1, 1.0..=5.0)
-            || add_float_slider(ui, "linear modulo k2", &mut self.k2, 1.0..=5.0)
-            || add_number_slider(ui, "linear modulo h", &mut self.h, 1..=10)
-            || add_number_slider(ui, "linear modulo i1 factor", &mut self.i1_factor, 1..=8)
-    }
+    points
 }

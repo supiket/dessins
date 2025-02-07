@@ -20,15 +20,38 @@ pub type Shapes = Vec<Shape>;
 pub type Shape = Vec<Segment>;
 pub type Segment = Vec<Point2>;
 
-pub struct Model<P> {
-    pub params: P,
-    pub calculate_shapes: Box<dyn Fn(&P) -> Shapes>,
+pub struct NoParamsInner();
+
+pub struct NoParams {
+    pub inner: NoParamsInner,
+    pub calculate_shapes: Box<dyn Fn(&NoParamsInner) -> Shapes>,
+    pub ui_elements: Box<dyn Fn(&mut NoParamsInner, &mut Ui) -> bool>,
+}
+
+pub enum DesignParams {
+    No(NoParams),
+    Polygon(chapter_1::polygon::Params),
+    Star(chapter_1::star::Params),
+    Composition1(chapter_1::composition_1::Params),
+    Composition2(chapter_1::composition_2::Params),
+    Jolygon(chapter_1::jolygon::Params),
+    Dragon(chapter_3::Params),
+    Fractal(chapter_4::Params),
+    Orbital(chapter_5::orbital::Params),
+    Rotating(chapter_5::rotating::Params),
+    Spiral(chapter_5::spiral::Params),
+    Bipartite(chapter_6::bipartite::Params),
+    LinearModulo(chapter_6::linear_modulo::Params),
+    LinearSticks(chapter_6::linear_sticks::Params),
+    SimpleFractal(chapter_7::Params),
+}
+
+pub struct Model {
+    pub params: DesignParams,
     pub points: Shapes,
     pub egui: Egui,
     pub color: Srgb<u8>,
 }
-
-pub struct NoParams();
 
 pub fn draw_segment(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
     if points.len() < 2 {
@@ -47,22 +70,17 @@ pub fn draw_segment(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
     }
 }
 
-pub fn model<P: 'static>(
-    calculate_shapes: Box<dyn Fn(&P) -> Shapes>,
-    params: P,
-    app: &App,
-) -> Model<P> {
+pub fn model(params: DesignParams, app: &App) -> Model {
     let window_id = app
         .new_window()
-        .view(view::<P>)
-        .raw_event(raw_window_event::<P>)
+        .view(view)
+        .raw_event(raw_window_event)
         .build()
         .unwrap();
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
 
     Model {
-        calculate_shapes,
         egui,
         params,
         points: Default::default(),
@@ -70,7 +88,7 @@ pub fn model<P: 'static>(
     }
 }
 
-fn view<P>(app: &App, model: &Model<P>, frame: Frame) {
+fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(BLACK);
 
@@ -84,7 +102,7 @@ fn view<P>(app: &App, model: &Model<P>, frame: Frame) {
     model.egui.draw_to_frame(&frame).unwrap();
 }
 
-pub fn update<P>(model: &mut Model<P>, update: Update, elements: impl Fn(&mut P, &mut Ui) -> bool) {
+pub fn update(model: &mut Model, update: Update) {
     let mut recalculate = false;
 
     {
@@ -92,7 +110,24 @@ pub fn update<P>(model: &mut Model<P>, update: Update, elements: impl Fn(&mut P,
         let ctx = model.egui.begin_frame();
 
         egui::Window::new("params").show(&ctx, |ui| {
-            recalculate = (elements)(&mut model.params, ui);
+            recalculate = match &mut model.params {
+                DesignParams::No(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Polygon(params) => (params.ui_elements)(&mut params.inner, ui),
+
+                DesignParams::Star(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Composition1(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Composition2(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Jolygon(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Dragon(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Fractal(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Orbital(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Rotating(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Spiral(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::Bipartite(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::LinearModulo(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::LinearSticks(params) => (params.ui_elements)(&mut params.inner, ui),
+                DesignParams::SimpleFractal(params) => (params.ui_elements)(&mut params.inner, ui),
+            };
 
             if let Some(color) = ui_color(ui) {
                 model.color = color;
@@ -101,7 +136,23 @@ pub fn update<P>(model: &mut Model<P>, update: Update, elements: impl Fn(&mut P,
     }
 
     if recalculate || model.points.is_empty() {
-        model.points = (model.calculate_shapes)(&model.params);
+        model.points = match &model.params {
+            DesignParams::No(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Polygon(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Star(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Composition1(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Composition2(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Jolygon(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Dragon(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Fractal(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Orbital(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Rotating(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Spiral(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::Bipartite(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::LinearModulo(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::LinearSticks(params) => (params.calculate_shapes)(&params.inner),
+            DesignParams::SimpleFractal(params) => (params.calculate_shapes)(&params.inner),
+        };
     }
 }
 
@@ -184,14 +235,10 @@ pub fn add_float_slider_pi(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
     recalculate
 }
 
-pub fn no_ui_elements(_params: &mut NoParams, _ui: &mut Ui) -> bool {
+pub fn no_ui_elements(_inner: &mut NoParamsInner, _ui: &mut Ui) -> bool {
     false
 }
 
-fn raw_window_event<P>(
-    _app: &App,
-    model: &mut Model<P>,
-    event: &nannou::winit::event::WindowEvent,
-) {
+fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
     model.egui.handle_raw_event(event);
 }

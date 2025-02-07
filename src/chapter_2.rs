@@ -1,4 +1,4 @@
-use crate::{no_ui_elements, Model, NoParams, Shapes};
+use crate::{no_ui_elements, DesignParams, Model, NoParams, NoParamsInner, Shapes};
 use nannou::prelude::*;
 
 pub const HORSE: &[f32] = &[
@@ -84,12 +84,14 @@ pub enum Action {
     Break,
 }
 
-pub fn model(calculate_shapes: Box<dyn Fn(&NoParams) -> Shapes>, app: &App) -> Model<NoParams> {
-    crate::model(calculate_shapes, NoParams(), app)
-}
+pub fn model(app: &App, calculate_shapes: Box<dyn Fn(&NoParamsInner) -> Shapes>) -> Model {
+    let params = DesignParams::No(NoParams {
+        inner: NoParamsInner(),
+        calculate_shapes,
+        ui_elements: Box::new(no_ui_elements),
+    });
 
-pub fn update(_app: &App, model: &mut Model<NoParams>, update: Update) {
-    crate::update(model, update, no_ui_elements);
+    crate::model(params, app)
 }
 
 impl DesignShape {
