@@ -1,4 +1,4 @@
-use crate::{Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
@@ -36,4 +36,18 @@ pub fn calculate_point(inner: &ParamsInner, i: u32) -> Point2 {
     let x = inner.r * angle.cos();
     let y = inner.r * angle.sin();
     pt2(x, y)
+}
+
+impl Default for Params {
+    fn default() -> Self {
+        Self {
+            inner: ParamsInner {
+                k: 3,
+                r: NP as f32 * 0.45,
+                ad: 0_f32,
+            },
+            calculate_shapes: Box::new(calculate_shapes),
+            ui_elements: Box::new(ParamsInner::ui_elements),
+        }
+    }
 }

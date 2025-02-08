@@ -7,6 +7,10 @@ version.workspace = true
 [lib]
 path = "src/lib.rs"
 
+[[bin]]
+name = "dessins"
+path = "src/main.rs"
+
 [dependencies]
 evalexpr.workspace = true
 nannou.workspace = true
