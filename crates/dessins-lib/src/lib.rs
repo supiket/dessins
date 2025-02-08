@@ -104,7 +104,7 @@ fn view(app: &App, model: &Model, frame: Frame) {
     model.egui.draw_to_frame(&frame).unwrap();
 }
 
-pub fn update(model: &mut Model, update: Update) {
+pub fn update(_app: &App, model: &mut Model, update: Update) {
     let mut recalculate = false;
 
     {
@@ -115,7 +115,6 @@ pub fn update(model: &mut Model, update: Update) {
             recalculate = match &mut model.params {
                 DesignParams::No(params) => (params.ui_elements)(&mut params.inner, ui),
                 DesignParams::Polygon(params) => (params.ui_elements)(&mut params.inner, ui),
-
                 DesignParams::Star(params) => (params.ui_elements)(&mut params.inner, ui),
                 DesignParams::Composition1(params) => (params.ui_elements)(&mut params.inner, ui),
                 DesignParams::Composition2(params) => (params.ui_elements)(&mut params.inner, ui),

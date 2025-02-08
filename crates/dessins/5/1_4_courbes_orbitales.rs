@@ -1,12 +1,11 @@
 use dessins_lib::{
-    self,
-    chapter_5::orbital::{self, ParamsInner, R2Params},
-    Model, NP,
+    chapter_5::orbital::{ParamsInner, R2Params},
+    update, Model, NP,
 };
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
-    let inner = ParamsInner {
+    ParamsInner {
         n: 2000,
         t1: 1,
         t2: 100,
@@ -14,13 +13,8 @@ fn model(app: &App) -> Model {
         k1: 1,
         k2: 1,
         r2_eq: Box::new(r2),
-    };
-
-    orbital::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
+    }
+    .model(app)
 }
 
 fn r2(params: R2Params) -> f32 {

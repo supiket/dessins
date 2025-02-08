@@ -1,24 +1,18 @@
 use dessins_lib::{
-    self,
-    chapter_6::linear_sticks::{self, ParamsInner, RParams},
-    Model, NP,
+    chapter_6::linear_sticks::{ParamsInner, RParams},
+    update, Model, NP,
 };
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
-    let inner = ParamsInner {
+    ParamsInner {
         n: 100,
         m: 6,
         k: 6,
         r1_eq: Box::new(r1),
         r2_eq: Box::new(r2),
-    };
-
-    linear_sticks::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
+    }
+    .model(app)
 }
 
 fn r1(params: &RParams) -> f32 {

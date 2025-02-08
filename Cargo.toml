@@ -14,5 +14,6 @@ ui-controlled-params = { path = "crates/ui-controlled-params", version = "0.1.0"
 evalexpr = "12.0.2"
 nannou = "0.19"
 nannou_egui = "0.19.0"
+proc-macro2 = "1.0"
 quote = "1.0"
 syn = { version = "2.0", features = [ "full" ] }

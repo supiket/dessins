@@ -1,9 +1,10 @@
-use crate::{DesignParams, Model, Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
+#[params(Star)]
 pub struct ParamsInner {
     #[param(label = "star k", range(5..=100))]
     pub k: u32, // # vertices
@@ -13,22 +14,6 @@ pub struct ParamsInner {
     pub r: f32, // radius of the circle C on which the vertices are
     #[param(label = "star ad", pi)]
     pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
-}
-
-pub struct Params {
-    pub inner: ParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
-    pub ui_elements: UiElements,
-}
-
-pub fn model(app: &App, inner: ParamsInner) -> Model {
-    let params = DesignParams::Star(Params {
-        inner,
-        calculate_shapes: Box::new(calculate_shapes),
-        ui_elements: Box::new(ParamsInner::ui_elements),
-    });
-
-    crate::model(params, app)
 }
 
 pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {

@@ -1,25 +1,16 @@
-use dessins_lib::{
-    self,
-    chapter_3::{self, ParamsInner},
-    Model, NP,
-};
+use dessins_lib::{chapter_3::ParamsInner, update, Model, NP};
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
-    let inner = ParamsInner {
+    ParamsInner {
         n: 10,
         a0_fn: Box::new(a0_fn),
         a0_factor: -PI / 2.0,
         l0_fn: Box::new(l0_fn),
         p0_fn: Box::new(p0_fn),
         rules_fn: Box::new(rules_fn),
-    };
-
-    chapter_3::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update)
+    }
+    .model(app)
 }
 
 fn a0_fn(_n: u32, factor: f32) -> f32 {

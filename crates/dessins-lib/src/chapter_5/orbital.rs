@@ -1,10 +1,11 @@
-use crate::{DesignParams, Model, Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
+#[params(Orbital)]
 pub struct ParamsInner {
     #[param(range(1000..=6000))]
     pub n: u32, // # segments
@@ -24,22 +25,6 @@ pub struct ParamsInner {
 pub struct R2Params {
     pub i: f32,
     pub n: f32,
-}
-
-pub struct Params {
-    pub inner: ParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
-    pub ui_elements: UiElements,
-}
-
-pub fn model(app: &App, inner: ParamsInner) -> Model {
-    let params = DesignParams::Orbital(Params {
-        inner,
-        calculate_shapes: Box::new(calculate_shapes),
-        ui_elements: Box::new(ParamsInner::ui_elements),
-    });
-
-    crate::model(params, app)
 }
 
 pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {

@@ -1,9 +1,10 @@
-use crate::{DesignParams, Model, Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
+#[params(Jolygon)]
 pub struct ParamsInner {
     #[param(range(1..=2500))]
     pub k: u32, // # segments
@@ -15,22 +16,6 @@ pub struct ParamsInner {
     pub aa: f32, // angle of the first segment with horizontal
     #[param(np, length)]
     pub rr: f32, // length of the first segment
-}
-
-pub struct Params {
-    pub inner: ParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
-    pub ui_elements: UiElements,
-}
-
-pub fn model(app: &App, inner: ParamsInner) -> Model {
-    let params = DesignParams::Jolygon(Params {
-        inner,
-        calculate_shapes: Box::new(calculate_shapes),
-        ui_elements: Box::new(ParamsInner::ui_elements),
-    });
-
-    crate::model(params, app)
 }
 
 pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {

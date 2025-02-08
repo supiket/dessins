@@ -2,12 +2,13 @@ use super::{
     polygon::{self},
     star::{self},
 };
-use crate::{DesignParams, Model, Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
+#[params(Composition2)]
 pub struct ParamsInner {
     pub polygon: polygon::ParamsInner,
     pub star: star::ParamsInner,
@@ -15,22 +16,6 @@ pub struct ParamsInner {
     pub n: u32, // # stars
     #[param(length)]
     pub rr: f32, // reduction coefficient from one star to the next & the distance between the center of the spiral and the center of successive stars
-}
-
-pub struct Params {
-    pub inner: ParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
-    pub ui_elements: UiElements,
-}
-
-pub fn model(app: &App, inner: ParamsInner) -> Model {
-    let params = DesignParams::Composition2(Params {
-        inner,
-        calculate_shapes: Box::new(calculate_shapes),
-        ui_elements: Box::new(ParamsInner::ui_elements),
-    });
-
-    crate::model(params, app)
 }
 
 pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {

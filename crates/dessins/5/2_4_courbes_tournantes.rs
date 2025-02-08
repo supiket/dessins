@@ -1,12 +1,11 @@
 use dessins_lib::{
-    self,
-    chapter_5::rotating::{self, ParamsInner, SParams},
-    Model, NP,
+    chapter_5::rotating::{ParamsInner, SParams},
+    update, Model, NP,
 };
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
-    let inner = ParamsInner {
+    ParamsInner {
         n: 2000,
         t1: 0.5,
         t2: 50.0,
@@ -17,13 +16,8 @@ fn model(app: &App) -> Model {
         h1: 1,
         h2: 2,
         s_eq: Box::new(s),
-    };
-
-    rotating::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
+    }
+    .model(app)
 }
 
 fn s(_params: SParams) -> f32 {

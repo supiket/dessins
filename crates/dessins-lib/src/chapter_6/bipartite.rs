@@ -1,4 +1,4 @@
-use crate::{DesignParams, Model, Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
@@ -7,6 +7,7 @@ pub type OuterSegment = Segment;
 pub type InnerSegment = Segment;
 
 #[derive(UiControlledParams)]
+#[params(Bipartite)]
 pub struct ParamsInner {
     #[params(range(10..=20))]
     pub n: u32,
@@ -24,22 +25,6 @@ pub struct YParams {
     pub i: f32,
     pub n: f32,
     pub k2: f32,
-}
-
-pub struct Params {
-    pub inner: ParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
-    pub ui_elements: UiElements,
-}
-
-pub fn model(app: &App, inner: ParamsInner) -> Model {
-    let params = DesignParams::Bipartite(Params {
-        inner,
-        calculate_shapes: Box::new(calculate_shapes),
-        ui_elements: Box::new(ParamsInner::ui_elements),
-    });
-
-    crate::model(params, app)
 }
 
 pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {

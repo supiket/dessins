@@ -1,7 +1,6 @@
 use dessins_lib::{
-    self,
     chapter_7::{self, ParamsInner},
-    Model, NP,
+    update, Model, NP,
 };
 use nannou::prelude::*;
 
@@ -24,10 +23,6 @@ fn model(app: &App) -> Model {
     };
 
     chapter_7::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
 }
 
 fn main() {

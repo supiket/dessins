@@ -1,10 +1,11 @@
-use crate::{DesignParams, Model, Segment, Shape, Shapes, NP};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
+#[params(Spiral)]
 pub struct ParamsInner {
     #[param(range(1000..=9000))]
     pub n: u32, // # segments
@@ -16,22 +17,6 @@ pub struct ParamsInner {
     pub l: f32, // decrease factor beween the first ellipse traveled and the last
     #[param(range(1.0..=4.0))]
     pub an_factor: f32,
-}
-
-pub struct Params {
-    pub inner: ParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
-    pub ui_elements: UiElements,
-}
-
-pub fn model(app: &App, inner: ParamsInner) -> Model {
-    let params = DesignParams::Spiral(Params {
-        inner,
-        calculate_shapes: Box::new(calculate_shapes),
-        ui_elements: Box::new(ParamsInner::ui_elements),
-    });
-
-    crate::model(params, app)
 }
 
 pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {

@@ -1,23 +1,14 @@
-use dessins_lib::{
-    self,
-    chapter_1::star::{self, ParamsInner},
-    Model, NP,
-};
+use dessins_lib::{chapter_1::star::ParamsInner, update, Model, NP};
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
-    let inner = ParamsInner {
+    ParamsInner {
         k: 5,
         h: 3,
         r: NP as f32 * 0.45,
         ad: PI / 2.0,
-    };
-
-    star::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
+    }
+    .model(app)
 }
 
 fn main() {

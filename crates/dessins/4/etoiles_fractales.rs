@@ -1,8 +1,4 @@
-use dessins_lib::{
-    self,
-    chapter_4::{self, ParamsInner},
-    Model, NP,
-};
+use dessins_lib::{chapter_4::ParamsInner, update, Model, NP};
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
@@ -12,7 +8,7 @@ fn model(app: &App) -> Model {
     let a0 = -aa;
     let p0 = pt2((-ll) / 2.0, 0.0);
 
-    let inner = ParamsInner {
+    ParamsInner {
         n: 5,
         k: 5,
         ra: 0.35,
@@ -20,13 +16,8 @@ fn model(app: &App) -> Model {
         aa,
         a0,
         p0,
-    };
-
-    chapter_4::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
+    }
+    .model(app)
 }
 
 fn main() {

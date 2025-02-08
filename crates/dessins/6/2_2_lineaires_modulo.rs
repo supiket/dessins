@@ -1,12 +1,11 @@
 use dessins_lib::{
-    self,
-    chapter_6::linear_modulo::{self, ParamsInner, YParams},
-    Model, NP,
+    chapter_6::linear_modulo::{ParamsInner, YParams},
+    update, Model, NP,
 };
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
-    let inner = ParamsInner {
+    ParamsInner {
         n: 400,
         m: 200,
         k1: 2.0,
@@ -14,13 +13,8 @@ fn model(app: &App) -> Model {
         h: 9,
         i1_factor: 8,
         y_eq: Box::new(y),
-    };
-
-    linear_modulo::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
+    }
+    .model(app)
 }
 
 fn y(params: &YParams) -> f32 {

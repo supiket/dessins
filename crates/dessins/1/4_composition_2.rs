@@ -1,15 +1,11 @@
 use dessins_lib::{
-    self,
-    chapter_1::{
-        composition_2::{self, ParamsInner},
-        polygon, star,
-    },
-    Model, NP,
+    chapter_1::{composition_2::ParamsInner, polygon, star},
+    update, Model, NP,
 };
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
-    let inner = ParamsInner {
+    ParamsInner {
         n: 32,
         rr: 0.9,
         polygon: polygon::ParamsInner {
@@ -23,13 +19,8 @@ fn model(app: &App) -> Model {
             r: NP as f32 * 0.14,
             ad: 0_f32,
         },
-    };
-
-    composition_2::model(app, inner)
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
+    }
+    .model(app)
 }
 
 fn main() {

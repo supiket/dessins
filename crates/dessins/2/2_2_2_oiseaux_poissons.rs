@@ -1,15 +1,11 @@
 use dessins_lib::{
     chapter_2::{self, Action, DesignShape, BIRD_FISH},
-    Model, NoParamsInner, Segment, Shape, Shapes, NP,
+    update, Model, NoParamsInner, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
     chapter_2::model(app, Box::new(calculate_shapes))
-}
-
-fn update(_app: &App, model: &mut Model, update: Update) {
-    dessins_lib::update(model, update);
 }
 
 fn calculate_shapes(_inner: &NoParamsInner) -> Shapes {
