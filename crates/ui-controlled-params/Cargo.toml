@@ -1,0 +1,12 @@
+[package]
+name = "ui-controlled-params"
+authors.workspace = true
+edition.workspace = true
+version = "0.1.0"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote.workspace = true
+syn.workspace = true
