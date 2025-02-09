@@ -18,7 +18,7 @@ impl NoParamsInner {
         app: &App,
         calculate_shapes: Box<dyn Fn(&NoParamsInner) -> Shapes>,
     ) -> Model {
-        let params = DesignParams::No(NoParams {
+        let params = DesignParams::Shape(NoParams {
             inner: self,
             calculate_shapes,
             ui_elements: Box::new(Self::no_ui_elements),
@@ -27,7 +27,7 @@ impl NoParamsInner {
         crate::model(params, app)
     }
 
-    fn no_ui_elements(_inner: &mut NoParamsInner, _ui: &mut Ui) -> bool {
+    pub fn no_ui_elements(_inner: &mut NoParamsInner, _ui: &mut Ui) -> bool {
         false
     }
 }

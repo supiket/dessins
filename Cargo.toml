@@ -3,7 +3,6 @@ members = ["crates/dessins", "crates/dessins-lib", "crates/ui-controlled-params"
 resolver = "2"
 
 [workspace.package]
-name = "dessins"
 authors = ["bikem <bengisuozaydin@gmail.com>"]
 edition = "2021"
 version = "0.1.0"

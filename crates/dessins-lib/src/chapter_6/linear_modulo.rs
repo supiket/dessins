@@ -28,39 +28,61 @@ pub struct YParams {
     pub k2: f32,
 }
 
-pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
-    let mut shapes = Shapes::new();
-    let mut shape = Shape::new();
+impl ParamsInner {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
 
-    let points = calculate_points(inner);
+        let points = self.calculate_points();
 
-    for i in 0..=inner.m {
-        let start_index = ((inner.i1_factor * i) % inner.n) as usize;
-        let end_index = ((inner.h * i) % inner.n) as usize;
+        for i in 0..=self.m {
+            let start_index = ((self.i1_factor * i) % self.n) as usize;
+            let end_index = ((self.h * i) % self.n) as usize;
 
-        let segment = vec![points[start_index], points[end_index]];
-        shape.push(segment);
+            let segment = vec![points[start_index], points[end_index]];
+            shape.push(segment);
+        }
+
+        shapes.push(shape);
+
+        shapes
     }
 
-    shapes.push(shape);
+    fn calculate_points(&self) -> Segment {
+        let mut points = vec![];
 
-    shapes
+        let n = self.n as f32;
+        let k1 = self.k1;
+        let k2 = self.k2;
+
+        for i in 0..=self.n {
+            let i = i as f32;
+
+            let x = NP as f32 * 0.5 * (k1 * i * PI / n).sin();
+            let y = (self.y_eq)(&YParams { i, n, k2 });
+            points.push(pt2(x, y));
+        }
+
+        points
+    }
 }
 
-fn calculate_points(inner: &ParamsInner) -> Segment {
-    let mut points = vec![];
-
-    let n = inner.n as f32;
-    let k1 = inner.k1;
-    let k2 = inner.k2;
-
-    for i in 0..=inner.n {
-        let i = i as f32;
-
-        let x = NP as f32 * 0.5 * (k1 * i * PI / n).sin();
-        let y = (inner.y_eq)(&YParams { i, n, k2 });
-        points.push(pt2(x, y));
+impl Default for Params {
+    fn default() -> Self {
+        Self {
+            inner: ParamsInner {
+                n: 400,
+                m: 400,
+                k1: 4.0,
+                k2: 5.0,
+                h: 2,
+                i1_factor: 1,
+                y_eq: Box::new(|params: &YParams| {
+                    NP as f32 * 0.75 * (params.k2 * params.i * PI / params.n).cos()
+                }),
+            },
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
+            ui_elements: Box::new(ParamsInner::ui_elements),
+        }
     }
-
-    points
 }

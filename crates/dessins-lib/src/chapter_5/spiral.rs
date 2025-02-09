@@ -19,41 +19,59 @@ pub struct ParamsInner {
     pub an_factor: f32,
 }
 
-pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
-    let mut shapes = Shapes::new();
-    let mut shape = Shape::new();
-    let mut segment = Segment::new();
+impl ParamsInner {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
+        let mut segment = Segment::new();
 
-    let np = NP as f32;
-    let n = inner.n as f32;
-    let t = inner.t as f32;
-    let r = inner.r;
-    let l = inner.l;
-    let an_factor = inner.an_factor;
+        let np = NP as f32;
+        let n = self.n as f32;
+        let t = self.t as f32;
+        let r = self.r;
+        let l = self.l;
+        let an_factor = self.an_factor;
 
-    for i in 0..=inner.n {
-        let i = i as f32;
+        for i in 0..=self.n {
+            let i = i as f32;
 
-        let rr = l.powf(i / n);
-        let an = 2.0 * PI * i / n * an_factor;
+            let rr = l.powf(i / n);
+            let an = 2.0 * PI * i / n * an_factor;
 
-        let x = rr * (t * an).cos();
-        let y = rr * r * (t * an).sin();
+            let x = rr * (t * an).cos();
+            let y = rr * r * (t * an).sin();
 
-        let co = an.cos();
-        let si = an.sin();
+            let co = an.cos();
+            let si = an.sin();
 
-        let xx = x * co - y * si;
-        let yy = x * si + y * co;
+            let xx = x * co - y * si;
+            let yy = x * si + y * co;
 
-        let x = xx * np / 2.0;
-        let y = yy * np / 2.0;
+            let x = xx * np / 2.0;
+            let y = yy * np / 2.0;
 
-        segment.push(pt2(x, y));
+            segment.push(pt2(x, y));
+        }
+
+        shape.push(segment);
+        shapes.push(shape);
+
+        shapes
     }
+}
 
-    shape.push(segment);
-    shapes.push(shape);
-
-    shapes
+impl Default for Params {
+    fn default() -> Self {
+        Self {
+            inner: ParamsInner {
+                n: 2000,
+                t: 40,
+                r: 0.8,
+                l: 0.1,
+                an_factor: 1.0,
+            },
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
+            ui_elements: Box::new(ParamsInner::ui_elements),
+        }
+    }
 }

@@ -14,28 +14,30 @@ pub struct ParamsInner {
     pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
 }
 
-pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
-    let mut shapes = Shapes::new();
-    let mut shape = Shape::new();
-    let mut segment = Segment::new();
+impl ParamsInner {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
+        let mut segment = Segment::new();
 
-    for i in 0..inner.k {
-        let point = calculate_point(inner, i);
-        segment.push(point);
+        for i in 0..self.k {
+            let point = self.calculate_point(i);
+            segment.push(point);
+        }
+
+        segment.push(segment[0]);
+
+        shape.push(segment);
+        shapes.push(shape);
+        shapes
     }
 
-    segment.push(segment[0]);
-
-    shape.push(segment);
-    shapes.push(shape);
-    shapes
-}
-
-pub fn calculate_point(inner: &ParamsInner, i: u32) -> Point2 {
-    let angle = (2.0 * i as f32 * PI) / inner.k as f32 + inner.ad;
-    let x = inner.r * angle.cos();
-    let y = inner.r * angle.sin();
-    pt2(x, y)
+    pub fn calculate_point(&self, i: u32) -> Point2 {
+        let angle = (2.0 * i as f32 * PI) / self.k as f32 + self.ad;
+        let x = self.r * angle.cos();
+        let y = self.r * angle.sin();
+        pt2(x, y)
+    }
 }
 
 impl Default for Params {
@@ -46,7 +48,7 @@ impl Default for Params {
                 r: NP as f32 * 0.45,
                 ad: 0_f32,
             },
-            calculate_shapes: Box::new(calculate_shapes),
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
             ui_elements: Box::new(ParamsInner::ui_elements),
         }
     }

@@ -1,4 +1,4 @@
-use crate::{Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
@@ -20,36 +20,62 @@ pub struct ParamsInner {
     pub a0: f32,
 }
 
-pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
-    let mut shapes = Shapes::new();
-    let mut shape = Shape::new();
-    let mut segment = Segment::new();
+impl ParamsInner {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
+        let mut segment = Segment::new();
 
-    let mut p0 = inner.p0;
-    let mut a0 = inner.a0;
+        let mut p0 = self.p0;
+        let mut a0 = self.a0;
 
-    let nn = inner.n * (inner.n - 1).pow(inner.k - 1) - 1;
+        let nn = self.n * (self.n - 1).pow(self.k - 1) - 1;
 
-    for i in 0..=nn {
-        let mut i1 = i;
-        let mut h = 0;
+        for i in 0..=nn {
+            let mut i1 = i;
+            let mut h = 0;
 
-        while i1 % (inner.n - 1) == 0 && h < (inner.k - 1) {
-            i1 /= inner.n - 1;
-            h += 1;
+            while i1 % (self.n - 1) == 0 && h < (self.k - 1) {
+                i1 /= self.n - 1;
+                h += 1;
+            }
+
+            let l0 = self.ll * self.ra.powf((self.k - 1 - h) as f32);
+            a0 += self.aa;
+
+            let point = p0 + pt2(l0 * a0.cos(), l0 * a0.sin());
+
+            segment.push(point);
+            p0 = point;
         }
 
-        let l0 = inner.ll * inner.ra.powf((inner.k - 1 - h) as f32);
-        a0 += inner.aa;
+        shape.push(segment);
+        shapes.push(shape);
 
-        let point = p0 + pt2(l0 * a0.cos(), l0 * a0.sin());
-
-        segment.push(point);
-        p0 = point;
+        shapes
     }
+}
 
-    shape.push(segment);
-    shapes.push(shape);
+impl Default for Params {
+    fn default() -> Self {
+        let aa = 4.0 * PI / 5.0;
+        let ll = NP as f32;
 
-    shapes
+        let a0 = -aa;
+        let p0 = pt2((-ll) / 2.0, 0.0);
+
+        Self {
+            inner: ParamsInner {
+                n: 5,
+                k: 5,
+                ra: 0.35,
+                ll,
+                aa,
+                a0,
+                p0,
+            },
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
+            ui_elements: Box::new(ParamsInner::ui_elements),
+        }
+    }
 }

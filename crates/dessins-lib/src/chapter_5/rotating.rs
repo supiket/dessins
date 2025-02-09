@@ -1,4 +1,4 @@
-use crate::{Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
@@ -33,39 +33,64 @@ pub struct SParams {
     pub n: f32,
 }
 
-pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
-    let mut shapes = Shapes::new();
-    let mut shape = Shape::new();
-    let mut segment = Segment::new();
+impl ParamsInner {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
+        let mut segment = Segment::new();
 
-    let n = inner.n as f32;
-    let t1 = inner.t1;
-    let t2 = inner.t2;
-    let r1 = inner.r1;
-    let k1 = inner.k1 as f32;
-    let k2 = inner.k2 as f32;
-    let r2 = inner.r2;
-    let h1 = inner.h1 as f32;
-    let h2 = inner.h2 as f32;
+        let n = self.n as f32;
+        let t1 = self.t1;
+        let t2 = self.t2;
+        let r1 = self.r1;
+        let k1 = self.k1 as f32;
+        let k2 = self.k2 as f32;
+        let r2 = self.r2;
+        let h1 = self.h1 as f32;
+        let h2 = self.h2 as f32;
 
-    for i in 0..=inner.n {
-        let i = i as f32;
+        for i in 0..=self.n {
+            let i = i as f32;
 
-        let s = (inner.s_eq)(SParams { i, n });
-        let an = 2.0 * PI * i / n;
-        let c1 = (h1 * an * t1).cos();
-        let s1 = (h2 * an * t1).sin();
-        let c2 = s * (k1 * an * t2).cos();
-        let s2 = s * (k2 * an * t2).sin();
+            let s = (self.s_eq)(SParams { i, n });
+            let an = 2.0 * PI * i / n;
+            let c1 = (h1 * an * t1).cos();
+            let s1 = (h2 * an * t1).sin();
+            let c2 = s * (k1 * an * t2).cos();
+            let s2 = s * (k2 * an * t2).sin();
 
-        let x = r1 * c1 + r2 * (c1 * c2 - s1 * s2);
-        let y = r1 * s1 + r2 * (s1 * c2 + c1 * s2);
+            let x = r1 * c1 + r2 * (c1 * c2 - s1 * s2);
+            let y = r1 * s1 + r2 * (s1 * c2 + c1 * s2);
 
-        segment.push(pt2(x, y));
+            segment.push(pt2(x, y));
+        }
+
+        shape.push(segment);
+        shapes.push(shape);
+
+        shapes
     }
+}
 
-    shape.push(segment);
-    shapes.push(shape);
-
-    shapes
+impl Default for Params {
+    fn default() -> Self {
+        Self {
+            inner: ParamsInner {
+                n: 2000,
+                t1: 1.0,
+                t2: 100.0,
+                r1: NP as f32 / 6.0,
+                k1: 1,
+                k2: 1,
+                r2: NP as f32 / 4.0,
+                h1: 1,
+                h2: 1,
+                s_eq: Box::new(|params: SParams| {
+                    (4.0 * PI * params.i / params.n).cos() * 0.4 + 0.6
+                }),
+            },
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
+            ui_elements: Box::new(ParamsInner::ui_elements),
+        }
+    }
 }

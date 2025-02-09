@@ -2,7 +2,10 @@ use dessins_lib::{
     draw_segment, match_calculate_shapes, match_ui_elements, ui_color, DesignParams, Shapes,
 };
 use nannou::prelude::*;
-use nannou_egui::{egui, Egui};
+use nannou_egui::{
+    egui::{self, Ui},
+    Egui,
+};
 
 pub struct Model {
     pub params: DesignParams,
@@ -52,22 +55,10 @@ pub fn update(_app: &App, model: &mut Model, update: Update) {
         model.egui.set_elapsed_time(update.since_start);
         let ctx = model.egui.begin_frame();
 
-        egui::Window::new("designs").show(&ctx, |ui| {
-            if ui.button("change design").clicked() {
-                match &model.params {
-                    DesignParams::Polygon(_params) => {
-                        new_design = Some(DesignParams::Star(
-                            dessins_lib::chapter_1::star::Params::default(),
-                        ));
-                    }
-                    DesignParams::Star(_params) => {
-                        new_design = Some(DesignParams::Polygon(
-                            dessins_lib::chapter_1::polygon::Params::default(),
-                        ));
-                    }
-                    _ => {}
-                }
-            }
+        egui::TopBottomPanel::top("designs").show(&ctx, |ui| {
+            ui.horizontal(|ui| {
+                new_design = design_buttons(&model.params, ui);
+            })
         });
 
         egui::Window::new("params").show(&ctx, |ui| {
@@ -85,6 +76,57 @@ pub fn update(_app: &App, model: &mut Model, update: Update) {
     } else if recalculate || model.points.is_empty() {
         model.points = match_calculate_shapes(&model.params);
     }
+}
+
+fn design_buttons(params: &DesignParams, ui: &mut Ui) -> Option<DesignParams> {
+    let mut new_design = Option::None;
+    if let Some(new) = dessins_lib::chapter_1::polygon::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_1::star::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_1::composition_1::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_1::composition_2::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_1::jolygon::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_2::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_3::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_4::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_5::orbital::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_5::rotating::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_5::spiral::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_6::bipartite::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_6::linear_modulo::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_6::linear_sticks::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) = dessins_lib::chapter_7::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+
+    new_design
 }
 
 pub fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {

@@ -23,12 +23,12 @@ pub type Shape = Vec<Segment>;
 pub type Segment = Vec<Point2>;
 
 pub enum DesignParams {
-    No(NoParams),
     Polygon(chapter_1::polygon::Params),
     Star(chapter_1::star::Params),
     Composition1(chapter_1::composition_1::Params),
     Composition2(chapter_1::composition_2::Params),
     Jolygon(chapter_1::jolygon::Params),
+    Shape(NoParams),
     Dragon(chapter_3::Params),
     Fractal(chapter_4::Params),
     Orbital(chapter_5::orbital::Params),
@@ -202,12 +202,12 @@ pub fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::ev
 
 pub fn match_ui_elements(params: &mut DesignParams, ui: &mut Ui) -> bool {
     match params {
-        DesignParams::No(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Polygon(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Star(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Composition1(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Composition2(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Jolygon(params) => (params.ui_elements)(&mut params.inner, ui),
+        DesignParams::Shape(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Dragon(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Fractal(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Orbital(params) => (params.ui_elements)(&mut params.inner, ui),
@@ -222,12 +222,12 @@ pub fn match_ui_elements(params: &mut DesignParams, ui: &mut Ui) -> bool {
 
 pub fn match_calculate_shapes(params: &DesignParams) -> Shapes {
     match params {
-        DesignParams::No(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Polygon(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Star(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Composition1(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Composition2(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Jolygon(params) => (params.calculate_shapes)(&params.inner),
+        DesignParams::Shape(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Dragon(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Fractal(params) => (params.calculate_shapes)(&params.inner),
         DesignParams::Orbital(params) => (params.calculate_shapes)(&params.inner),

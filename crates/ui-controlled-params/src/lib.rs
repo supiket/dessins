@@ -20,6 +20,10 @@ pub fn derive_design_params(input: TokenStream) -> TokenStream {
     let _name = input.ident;
 
     let struct_param_type = parse_struct_attributes(&input.attrs);
+    let struct_param_type_lowercase_string = struct_param_type
+        .as_ref()
+        .map(|ty| ty.clone().to_string().to_lowercase())
+        .unwrap_or("".to_string());
 
     let fields = match input.data {
         Data::Struct(ref data) => match data.fields {
@@ -52,7 +56,7 @@ pub fn derive_design_params(input: TokenStream) -> TokenStream {
             pub fn model(self, app: &App) -> crate::Model {
                 let params = crate::DesignParams::#struct_param_type(Params {
                     inner: self,
-                    calculate_shapes: Box::new(calculate_shapes),
+                    calculate_shapes: Box::new(Self::calculate_shapes),
                     ui_elements: Box::new(Self::ui_elements),
                 });
 
@@ -63,6 +67,22 @@ pub fn derive_design_params(input: TokenStream) -> TokenStream {
                 let mut changed = false;
                 #(changed |= #param_impls;)*
                 changed
+            }
+        }
+
+        impl Params {
+            pub fn ui_design_type(current_design: &crate::DesignParams, ui: &mut nannou_egui::egui::Ui) -> Option<crate::DesignParams> {
+                let enabled = match current_design {
+                    crate::DesignParams::#struct_param_type(_) => false,
+                    _ => true,
+                };
+                if ui
+                    .add_enabled(enabled, nannou_egui::egui::Button::new(#struct_param_type_lowercase_string))
+                    .clicked()
+                {
+                    return Some(crate::DesignParams::#struct_param_type(Params::default()));
+                }
+                None
             }
         }
     };

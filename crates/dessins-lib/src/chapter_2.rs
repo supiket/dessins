@@ -1,4 +1,12 @@
+use crate::{
+    no_params::{NoParams, NoParamsInner},
+    DesignParams, Segment, Shape, Shapes, NP,
+};
 use nannou::prelude::*;
+use nannou_egui::egui::Ui;
+
+pub type Params = NoParams;
+pub type ParamsInner = NoParamsInner;
 
 pub const HORSE: &[f32] = &[
     1000.0, 10.0, 10.0, 8.0, 12.0, 9.0, 16.0, 12.0, 17.0, 13.0, 18.0, 14.0, 20.0, 1000.0, 13.0,
@@ -109,5 +117,59 @@ impl DesignShape {
         self.data_index += 1;
 
         Action::Continue(point, new_segment)
+    }
+}
+
+impl Params {
+    pub fn ui_design_type(params: &DesignParams, ui: &mut Ui) -> Option<DesignParams> {
+        let enabled = match params {
+            crate::DesignParams::Shape(_) => false,
+            _ => true,
+        };
+        if ui
+            .add_enabled(enabled, nannou_egui::egui::Button::new("shape"))
+            .clicked()
+        {
+            return Some(crate::DesignParams::Shape(Self::default()));
+        }
+        None
+    }
+}
+
+impl ParamsInner {
+    pub fn calculate_shapes(_inner: &ParamsInner) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
+        let mut segment = Segment::new();
+
+        let mut horse = DesignShape::new(HORSE);
+
+        while let Action::Continue(read_point, newsegment) = horse.calculate_point() {
+            if newsegment {
+                shape.push(segment);
+                segment = Segment::new();
+            }
+
+            let x = NP as f32 * (read_point.x - 20.0) / 40.0;
+            let y = NP as f32 * (read_point.y - 20.0) / 40.0;
+            let point = pt2(x, y);
+
+            segment.push(point);
+        }
+
+        shapes.push(shape);
+
+        shapes
+    }
+}
+
+impl Default for Params {
+    fn default() -> Self {
+        let inner = NoParamsInner();
+        Self {
+            inner,
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
+            ui_elements: Box::new(ParamsInner::no_ui_elements),
+        }
     }
 }

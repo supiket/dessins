@@ -2,7 +2,7 @@ use super::{
     polygon::{self},
     star::{self},
 };
-use crate::{Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
@@ -16,26 +16,50 @@ pub struct ParamsInner {
     pub star: star::ParamsInner,
 }
 
-pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
-    let mut shapes = Shapes::new();
-    let mut shape = Shape::new();
+impl ParamsInner {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
 
-    for i in 0..inner.polygon.k {
-        let polygon_point = polygon::calculate_point(&inner.polygon, i);
+        for i in 0..self.polygon.k {
+            let polygon_point = self.polygon.calculate_point(i);
 
-        let mut segment = Segment::new();
+            let mut segment = Segment::new();
 
-        for j in 0..inner.star.k {
-            let star_point = star::calculate_point(&inner.star, j);
-            let point = star_point + polygon_point;
-            segment.push(point);
+            for j in 0..self.star.k {
+                let star_point = self.star.calculate_point(j);
+                let point = star_point + polygon_point;
+                segment.push(point);
+            }
+
+            segment.push(segment[0]);
+
+            shape.push(segment);
         }
 
-        segment.push(segment[0]);
-
-        shape.push(segment);
+        shapes.push(shape);
+        shapes
     }
+}
 
-    shapes.push(shape);
-    shapes
+impl Default for Params {
+    fn default() -> Self {
+        Self {
+            inner: ParamsInner {
+                polygon: polygon::ParamsInner {
+                    k: 5,
+                    r: NP as f32 * 0.27,
+                    ad: PI / 2.0,
+                },
+                star: star::ParamsInner {
+                    k: 25,
+                    h: 12,
+                    r: NP as f32 * 0.22,
+                    ad: PI / 2.0,
+                },
+            },
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
+            ui_elements: Box::new(ParamsInner::ui_elements),
+        }
+    }
 }

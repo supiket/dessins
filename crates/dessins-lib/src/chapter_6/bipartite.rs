@@ -1,4 +1,4 @@
-use crate::{Segment, Shape, Shapes};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
@@ -27,44 +27,62 @@ pub struct YParams {
     pub k2: f32,
 }
 
-pub fn calculate_shapes(inner: &ParamsInner) -> Shapes {
-    let mut shapes = Shapes::new();
-    let mut shape = Shape::new();
+impl ParamsInner {
+    pub fn calculate_shapes(&self) -> Shapes {
+        let mut shapes = Shapes::new();
+        let mut shape = Shape::new();
 
-    let (outer_points, inner_points) = calculate_points(inner);
+        let (outer_points, inner_points) = self.calculate_points();
 
-    for outer in &outer_points {
-        for inner in &inner_points {
-            let segment = vec![*outer, *inner];
-            shape.push(segment);
+        for outer in &outer_points {
+            for inner in &inner_points {
+                let segment = vec![*outer, *inner];
+                shape.push(segment);
+            }
         }
+
+        shapes.push(shape);
+
+        shapes
     }
 
-    shapes.push(shape);
+    pub fn calculate_points(&self) -> (OuterSegment, InnerSegment) {
+        let mut outer_segment = vec![];
+        let mut inner_segment = vec![];
 
-    shapes
+        let n = self.n as f32;
+
+        for i in 0..=self.n {
+            let i = i as f32;
+            let x1 = (i * self.a.x + (n - i) * self.b.x) / n;
+            let y1 = (i * self.a.y + (n - i) * self.b.y) / n;
+            outer_segment.push(pt2(x1, y1));
+
+            for j in 0..=self.n {
+                let j = j as f32;
+
+                let x2 = (j * self.c.x + (n - j) * self.d.x) / n;
+                let y2 = (j * self.c.y + (n - j) * self.d.y) / n;
+                inner_segment.push(pt2(x2, y2));
+            }
+        }
+
+        (outer_segment, inner_segment)
+    }
 }
 
-fn calculate_points(inner: &ParamsInner) -> (OuterSegment, InnerSegment) {
-    let mut outer_segment = vec![];
-    let mut inner_segment = vec![];
-
-    let n = inner.n as f32;
-
-    for i in 0..=inner.n {
-        let i = i as f32;
-        let x1 = (i * inner.a.x + (n - i) * inner.b.x) / n;
-        let y1 = (i * inner.a.y + (n - i) * inner.b.y) / n;
-        outer_segment.push(pt2(x1, y1));
-
-        for j in 0..=inner.n {
-            let j = j as f32;
-
-            let x2 = (j * inner.c.x + (n - j) * inner.d.x) / n;
-            let y2 = (j * inner.c.y + (n - j) * inner.d.y) / n;
-            inner_segment.push(pt2(x2, y2));
+impl Default for Params {
+    fn default() -> Self {
+        Self {
+            inner: ParamsInner {
+                n: 10,
+                a: pt2((NP as f32) / -2.0, (NP as f32) / -2.0),
+                b: pt2((NP as f32) / -2.0, (NP as f32) / 2.0),
+                c: pt2((NP as f32) / 2.0, (NP as f32) / -2.0),
+                d: pt2((NP as f32) / 2.0, (NP as f32) / 2.0),
+            },
+            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
+            ui_elements: Box::new(ParamsInner::ui_elements),
         }
     }
-
-    (outer_segment, inner_segment)
 }
