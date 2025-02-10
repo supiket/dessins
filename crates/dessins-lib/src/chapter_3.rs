@@ -1,4 +1,5 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{ui::ExpressionF32, Segment, Shape, Shapes, NP};
+use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
@@ -9,23 +10,32 @@ use ui_controlled_params::UiControlledParams;
 pub struct ParamsInner {
     #[param(range(2..=14))]
     pub n: u32, // depth of recursion
-    pub l0_fn: Box<dyn Fn(u32) -> f32>, // base length
-    #[param(pi)]
-    pub a0_factor: f32,
-    pub a0_fn: Box<dyn Fn(u32, f32) -> f32>, // initial angle
-    pub p0_fn: Box<dyn Fn() -> Point2>,      // initial position
-    pub rules_fn: Box<dyn Fn(u32) -> Vec<i32>>, // turning rules
+    #[param(range(0.0..= 300.0), expression(default="480.0 / (sqrt(2.0).powf(n)", context(n)))]
+    pub l0: ExpressionF32, // initial length
+    #[param(range(-180.0..=180.0), expression(default="-pi / 4 * (n - 2)", context(n)))]
+    pub a0: ExpressionF32, // initial length
+    #[param]
+    pub p0: Point2, // initial position
+    #[param(range(0..=1))]
+    pub rules: Vec<i32>, // turning rules
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        let rules = (self.rules_fn)(self.n);
-        let p0 = (self.p0_fn)();
-        let l0 = (self.l0_fn)(self.n);
+        if self.n as usize != self.rules.len() + 1 {
+            self.rules = vec![0; self.n as usize + 1];
+            if let Ok(val) = evalexpr::eval_number_with_context(&self.l0.expr, &self.l0.ctx) {
+                self.l0.val = val as f32;
+            }
+        }
+
+        let p0 = self.p0;
+        let l0 = self.l0.val;
+        let a0 = self.a0.val;
 
         segment.push(p0);
 
@@ -33,7 +43,7 @@ impl ParamsInner {
         let mut p1 = p0;
         let mut p2 = p0;
 
-        let mut current_angle = (self.a0_fn)(self.n, self.a0_factor);
+        let mut current_angle = a0;
 
         let nn = 2_i32.pow(self.n) - 1;
 
@@ -60,7 +70,7 @@ impl ParamsInner {
                     j += 1;
                 }
 
-                let aa = (rules[self.n as usize - j] * 2 - 1) as f32
+                let aa = (self.rules[self.n as usize - j] * 2 - 1) as f32
                     * ((((ii - 1) / 2) % 2) * 2 - 1) as f32
                     * PI
                     / 2.0;
@@ -87,17 +97,37 @@ impl ParamsInner {
 
 impl Default for Params {
     fn default() -> Self {
+        let n = 6;
+        let rules = vec![0; n as usize + 1];
+        let l0_fn = |n: u32| NP as f32 / (2.0_f32.sqrt().powf(n as f32));
+        let a0_fn = |n: u32| (n - 2) as f32 * -PI / 4.0;
+        let p0_fn = || pt2(-(NP as f32) / 6.0, -(NP as f32) / 2.5);
+
+        let mut ctx = HashMapContext::new();
+        ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
+            .unwrap();
+        let l0 = ExpressionF32 {
+            expr: "480 / (math::sqrt(2.0) ^ n)".to_string(),
+            ctx: ctx.clone(),
+            val: l0_fn(n),
+        };
+        let a0 = ExpressionF32 {
+            expr: "-pi / 4 * (n - 2)".to_string(),
+            ctx,
+            val: a0_fn(n),
+        };
         Self {
             inner: ParamsInner {
-                n: 6,
-                a0_fn: Box::new(|n: u32, factor: f32| (n - 2) as f32 * factor),
-                a0_factor: -PI / 4.0,
-                l0_fn: Box::new(|n: u32| NP as f32 / (2.0_f32.sqrt().powf(n as f32))),
-                p0_fn: Box::new(|| pt2(-(NP as f32) / 6.0, -(NP as f32) / 2.5)),
-                rules_fn: Box::new(|n: u32| vec![0; n as usize + 1]),
+                n,
+                l0,
+                a0,
+                p0: p0_fn(),
+                rules,
             },
             calculate_shapes: Box::new(ParamsInner::calculate_shapes),
             ui_elements: Box::new(ParamsInner::ui_elements),
         }
     }
 }
+
+// NP as f32 / (2.0_f32.sqrt().powf(n as f32))

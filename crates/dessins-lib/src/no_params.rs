@@ -8,7 +8,7 @@ pub struct NoParamsInner();
 
 pub struct NoParams {
     pub inner: NoParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&NoParamsInner) -> Shapes>,
+    pub calculate_shapes: Box<dyn Fn(&mut NoParamsInner) -> Shapes>,
     pub ui_elements: UiElements,
 }
 
@@ -16,7 +16,7 @@ impl NoParamsInner {
     pub fn model(
         self,
         app: &App,
-        calculate_shapes: Box<dyn Fn(&NoParamsInner) -> Shapes>,
+        calculate_shapes: Box<dyn Fn(&mut NoParamsInner) -> Shapes>,
     ) -> Model {
         let params = DesignParams::Shape(NoParams {
             inner: self,

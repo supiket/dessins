@@ -1,68 +1,42 @@
 use crate::{
-    add_float_slider_np_length, add_float_slider_np_position, add_float_slider_pi,
-    add_number_slider,
     chapter_1::polygon::{self},
-    DesignParams, Model, Segment, Shape, Shapes, NP,
+    Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
 use nannou_egui::egui::Ui;
+use ui_controlled_params::UiControlledParams;
 
 pub type OuterSegment = Segment;
 pub type InnerSegment = Segment;
 
-pub type UiElements = Box<dyn Fn(&mut ParamsInner, &mut Ui) -> bool>;
-
+#[derive(UiControlledParams)]
+#[params(SimpleFractal)]
 pub struct ParamsInner {
+    #[param(range(1..=10))]
     pub m: usize, // # of segments in starting curve
+    #[param(range(1..=10))]
     pub n: usize, // # of sub-segments per segment
+    #[param(range(1..=10))]
     pub k: usize, // depth
+    #[param(position)]
     pub positions: Vec<Point2>,
+    #[param(length)]
     pub lengths: Vec<f32>,
+    #[param(pi)]
     pub angles: Vec<f32>,
 }
 
-pub struct Params {
-    pub inner: ParamsInner,
-    pub calculate_shapes: Box<dyn Fn(&ParamsInner) -> Shapes>,
-    pub ui_elements: UiElements,
-}
-
-pub fn model(app: &App, inner: ParamsInner) -> Model {
-    let params = DesignParams::SimpleFractal(Params {
-        inner,
-        calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-        ui_elements: Box::new(ParamsInner::ui_elements),
-    });
-
-    crate::model(params, app)
-}
-
 impl ParamsInner {
-    pub fn ui_elements(&mut self, ui: &mut Ui) -> bool {
-        let m_changed = add_number_slider(ui, "m", &mut self.m, 1..=10);
-        let n_changed = add_number_slider(ui, "n", &mut self.n, 1..=10);
-
-        if m_changed {
-            self.positions = calculate_positions(self.m);
+    pub fn calculate_shapes(&mut self) -> Shapes {
+        if self.positions.len() != self.m + 1 {
+            self.positions = Self::calculate_positions(self.m);
         }
-
-        if n_changed {
-            self.lengths = calculate_lengths(self.m, self.n);
-            self.angles = calculate_angles(self.m, self.n);
+        if self.lengths.len() != self.n {
+            self.lengths = Self::calculate_lengths(self.m, self.n);
         }
-
-        m_changed
-            || n_changed
-            || add_number_slider(ui, "k", &mut self.k, 1..=10)
-            || add_positions_sliders(ui, &mut self.positions)
-            || add_lengths_sliders(ui, &mut self.lengths)
-            || add_angles_sliders(ui, &mut self.angles)
-    }
-
-    pub fn calculate_shapes(&self) -> Shapes {
-        assert_eq!(self.positions.len(), self.m + 1);
-        assert_eq!(self.lengths.len(), self.n);
-        assert_eq!(self.angles.len(), self.n);
+        if self.angles.len() != self.n {
+            self.angles = Self::calculate_angles(self.m, self.n);
+        }
 
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
@@ -111,24 +85,36 @@ impl ParamsInner {
 
         shapes
     }
-}
 
-impl Params {
-    pub fn ui_design_type(
-        current_design: &crate::DesignParams,
-        ui: &mut nannou_egui::egui::Ui,
-    ) -> Option<crate::DesignParams> {
-        let enabled = match current_design {
-            crate::DesignParams::SimpleFractal(_) => false,
-            _ => true,
+    fn calculate_positions(m: usize) -> Vec<Point2> {
+        let params = polygon::ParamsInner {
+            k: m as u32,
+            r: NP as f32 * 0.5,
+            ad: 0.0,
         };
-        if ui
-            .add_enabled(enabled, nannou_egui::egui::Button::new("simple fractal"))
-            .clicked()
-        {
-            return Some(crate::DesignParams::SimpleFractal(Params::default()));
+        let mut points = vec![];
+        for i in 0..m {
+            let point = params.calculate_point(i as u32);
+            points.push(point);
         }
-        None
+        points.push(points[0]);
+        points
+    }
+
+    fn calculate_lengths(m: usize, n: usize) -> Vec<f32> {
+        vec![1.0 / (m as f32); n]
+    }
+
+    fn calculate_angles(m: usize, n: usize) -> Vec<f32> {
+        let mut angles = vec![0.0];
+
+        for i in 1..(n - 1) {
+            angles.push((PI / (m as f32)) * if i % 2 == 1 { 1.0 } else { -1.0 });
+        }
+
+        angles.push(0.0);
+
+        angles
     }
 }
 
@@ -154,62 +140,4 @@ impl Default for Params {
             ui_elements: Box::new(ParamsInner::ui_elements),
         }
     }
-}
-
-fn add_positions_sliders(ui: &mut Ui, positions: &mut [Point2]) -> bool {
-    let mut recalculate = false;
-    for (i, position) in positions.iter_mut().enumerate() {
-        recalculate = recalculate
-            || add_float_slider_np_position(ui, &format!("positions[{}].x", i), &mut position.x)
-            || add_float_slider_np_position(ui, &format!("positions[{}].y", i), &mut position.y);
-    }
-    recalculate
-}
-
-fn add_lengths_sliders(ui: &mut Ui, lengths: &mut [f32]) -> bool {
-    let mut recalculate = false;
-    for (i, length) in lengths.iter_mut().enumerate() {
-        recalculate =
-            recalculate || add_float_slider_np_length(ui, &format!("lengths[{}]", i), length);
-    }
-    recalculate
-}
-
-fn add_angles_sliders(ui: &mut Ui, angles: &mut [f32]) -> bool {
-    let mut recalculate = false;
-    for (i, angle) in angles.iter_mut().enumerate() {
-        recalculate = recalculate || add_float_slider_pi(ui, &format!("angles[{}]", i), angle);
-    }
-    recalculate
-}
-
-fn calculate_positions(m: usize) -> Vec<Point2> {
-    let params = polygon::ParamsInner {
-        k: m as u32,
-        r: NP as f32 * 0.5,
-        ad: 0.0,
-    };
-    let mut points = vec![];
-    for i in 0..m {
-        let point = params.calculate_point(i as u32);
-        points.push(point);
-    }
-    points.push(points[0]);
-    points
-}
-
-fn calculate_lengths(m: usize, n: usize) -> Vec<f32> {
-    vec![1.0 / (m as f32); n]
-}
-
-fn calculate_angles(m: usize, n: usize) -> Vec<f32> {
-    let mut angles = vec![0.0];
-
-    for i in 1..(n - 1) {
-        angles.push((PI / (m as f32)) * if i % 2 == 1 { 1.0 } else { -1.0 });
-    }
-
-    angles.push(0.0);
-
-    angles
 }

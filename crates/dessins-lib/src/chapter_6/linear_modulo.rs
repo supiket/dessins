@@ -19,6 +19,7 @@ pub struct ParamsInner {
     pub h: u32,
     #[param(range(1..=8))]
     pub i1_factor: u32,
+    // TODO: contains i
     pub y_eq: Box<dyn Fn(&YParams) -> f32>,
 }
 
@@ -29,7 +30,7 @@ pub struct YParams {
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 

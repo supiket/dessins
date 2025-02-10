@@ -10,7 +10,9 @@ use ui_controlled_params::UiControlledParams;
 #[derive(UiControlledParams)]
 #[params(Composition2)]
 pub struct ParamsInner {
+    #[param]
     pub polygon: polygon::ParamsInner,
+    #[param]
     pub star: star::ParamsInner,
     #[param(range(1..=100))]
     pub n: u32, // # stars
@@ -19,7 +21,7 @@ pub struct ParamsInner {
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 

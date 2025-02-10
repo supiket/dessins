@@ -14,12 +14,12 @@ pub struct ParamsInner {
     pub ra: f32, // ratio of the lengths of two consecutive segments
     #[param(pi)]
     pub aa: f32, // angle of the first segment with horizontal
-    #[param(np, length)]
+    #[param(length)]
     pub rr: f32, // length of the first segment
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();

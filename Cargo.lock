@@ -2254,6 +2254,7 @@ dependencies = [
 name = "ui-controlled-params"
 version = "0.1.0"
 dependencies = [
+ "evalexpr",
  "proc-macro2",
  "quote",
  "syn 2.0.98",

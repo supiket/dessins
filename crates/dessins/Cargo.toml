@@ -65,30 +65,6 @@ name = "2-2-3-2"
 path = "2/2_3_2_smurf.rs"
 
 [[bin]]
-name = "3-2"
-path = "3/2_dragons.rs"
-
-[[bin]]
-name = "3-3"
-path = "3/3_dragons.rs"
-
-[[bin]]
-name = "3-4"
-path = "3/4_dragons.rs"
-
-[[bin]]
-name = "3-5"
-path = "3/5_dragons.rs"
-
-[[bin]]
-name = "3-6"
-path = "3/6_dragons.rs"
-
-[[bin]]
-name = "3-7"
-path = "3/7_dragons.rs"
-
-[[bin]]
 name = "5-1-2"
 path = "5/1_2_courbes_orbitales.rs"
 

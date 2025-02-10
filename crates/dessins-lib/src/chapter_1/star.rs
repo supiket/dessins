@@ -10,14 +10,14 @@ pub struct ParamsInner {
     pub k: u32, // # vertices
     #[param(label = "star h", range(3..=50))]
     pub h: u32, // # vertices to skip (clockwise) before connecting two dots
-    #[param(label = "star r", np, length)]
+    #[param(label = "star r", length)]
     pub r: f32, // radius of the circle C on which the vertices are
     #[param(label = "star ad", pi)]
     pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();

@@ -1,10 +1,9 @@
 use nannou::prelude::*;
 use nannou_egui::{
-    egui::{self, emath::Numeric, Ui},
+    egui::{self, Ui},
     Egui,
 };
 use no_params::NoParams;
-use std::{f32::consts::PI, ops::RangeInclusive};
 
 pub mod chapter_1;
 pub mod chapter_2;
@@ -14,6 +13,7 @@ pub mod chapter_5;
 pub mod chapter_6;
 pub mod chapter_7;
 pub mod no_params;
+pub mod ui;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
 pub const WEIGHT: f32 = 1.0; // point weight
@@ -45,23 +45,6 @@ pub struct Model {
     pub points: Shapes,
     pub egui: Egui,
     pub color: Srgb<u8>,
-}
-
-pub fn draw_segment(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
-    if points.len() < 2 {
-        return;
-    }
-
-    for i in 0..points.len() - 1 {
-        let start = points[i];
-        let end = points[i + 1];
-
-        draw.line()
-            .start(start)
-            .end(end)
-            .color(color)
-            .weight(WEIGHT);
-    }
 }
 
 pub fn model(params: DesignParams, app: &App) -> Model {
@@ -106,98 +89,32 @@ pub fn update(_app: &App, model: &mut Model, update: Update) {
         egui::Window::new("params").show(&ctx, |ui| {
             recalculate = match_ui_elements(&mut model.params, ui);
 
-            if let Some(color) = ui_color(ui) {
+            if let Some(color) = ui::ui_color(ui) {
                 model.color = color;
             }
         });
     }
 
     if recalculate || model.points.is_empty() {
-        model.points = match_calculate_shapes(&model.params)
+        model.points = match_calculate_shapes(&mut model.params)
     }
 }
 
-pub fn ui_color(ui: &mut Ui) -> Option<Srgb<u8>> {
-    let clicked = ui.button("random color").clicked();
-    if clicked {
-        Some(rgb(random(), random(), random()))
-    } else {
-        None
+pub fn draw_segment(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
+    if points.len() < 2 {
+        return;
     }
-}
 
-pub fn add_number_slider<T: Numeric>(
-    ui: &mut Ui,
-    label: &str,
-    value: &mut T,
-    range: RangeInclusive<T>,
-) -> bool {
-    ui.label(label);
-    ui.add(egui::Slider::new(&mut *value, range)).changed()
-}
+    for i in 0..points.len() - 1 {
+        let start = points[i];
+        let end = points[i + 1];
 
-pub fn add_float_slider(
-    ui: &mut Ui,
-    label: &str,
-    value: &mut f32,
-    range: RangeInclusive<f32>,
-) -> bool {
-    ui.label(label);
-    ui.add(
-        egui::Slider::new(&mut *value, range).custom_parser(|str| evalexpr::eval_float(str).ok()),
-    )
-    .changed()
-}
-
-pub fn add_float_slider_np_position(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
-    add_float_slider_np(ui, label, value, -0.5..=0.5)
-}
-
-pub fn add_float_slider_np_length(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
-    add_float_slider_np(ui, label, value, 0.0..=1.0)
-}
-
-fn add_float_slider_np(
-    ui: &mut Ui,
-    label: &str,
-    value: &mut f32,
-    range: RangeInclusive<f32>,
-) -> bool {
-    ui.label(label);
-    let mut val = *value / NP as f32;
-
-    let recalculate = ui
-        .add(
-            egui::Slider::new(&mut val, range)
-                .custom_parser(|str| evalexpr::eval_float(str).ok())
-                .suffix(format!("resolution (={})", NP)),
-        )
-        .changed();
-
-    *value = val * NP as f32;
-
-    recalculate
-}
-
-pub fn add_float_slider_pi(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
-    ui.label(label);
-    let mut val = *value / PI;
-
-    let recalculate = ui
-        .add(
-            egui::Slider::new(&mut val, -PI..=PI)
-                .custom_parser(|str| evalexpr::eval_float(str).ok())
-                .suffix("π"),
-        )
-        .changed();
-
-    *value = val * PI;
-
-    recalculate
-}
-
-pub fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);
+        draw.line()
+            .start(start)
+            .end(end)
+            .color(color)
+            .weight(WEIGHT);
+    }
 }
 
 pub fn match_ui_elements(params: &mut DesignParams, ui: &mut Ui) -> bool {
@@ -220,22 +137,26 @@ pub fn match_ui_elements(params: &mut DesignParams, ui: &mut Ui) -> bool {
     }
 }
 
-pub fn match_calculate_shapes(params: &DesignParams) -> Shapes {
+pub fn match_calculate_shapes(params: &mut DesignParams) -> Shapes {
     match params {
-        DesignParams::Polygon(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Star(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Composition1(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Composition2(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Jolygon(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Shape(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Dragon(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Fractal(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Orbital(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Rotating(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Spiral(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::Bipartite(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::LinearModulo(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::LinearSticks(params) => (params.calculate_shapes)(&params.inner),
-        DesignParams::SimpleFractal(params) => (params.calculate_shapes)(&params.inner),
+        DesignParams::Polygon(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Star(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Composition1(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Composition2(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Jolygon(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Shape(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Dragon(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Fractal(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Orbital(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Rotating(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Spiral(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::Bipartite(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::LinearModulo(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::LinearSticks(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::SimpleFractal(params) => (params.calculate_shapes)(&mut params.inner),
     }
+}
+
+pub fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
+    model.egui.handle_raw_event(event);
 }

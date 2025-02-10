@@ -8,6 +8,7 @@ version = "0.1.0"
 proc-macro = true
 
 [dependencies]
+evalexpr.workspace = true
 proc-macro2.workspace = true
 quote.workspace = true
 syn.workspace = true

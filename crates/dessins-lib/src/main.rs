@@ -1,5 +1,5 @@
 use dessins_lib::{
-    draw_segment, match_calculate_shapes, match_ui_elements, ui_color, DesignParams, Shapes,
+    draw_segment, match_calculate_shapes, match_ui_elements, ui::ui_color, DesignParams, Shapes,
 };
 use nannou::prelude::*;
 use nannou_egui::{
@@ -23,7 +23,7 @@ pub fn model(app: &App) -> Model {
         .unwrap();
     let window = app.window(window_id).unwrap();
     let egui = Egui::from_window(&window);
-    let params = DesignParams::Polygon(dessins_lib::chapter_1::polygon::Params::default());
+    let params = DesignParams::Dragon(dessins_lib::chapter_3::Params::default());
 
     Model {
         egui,
@@ -72,9 +72,9 @@ pub fn update(_app: &App, model: &mut Model, update: Update) {
 
     if let Some(new_design) = new_design {
         model.params = new_design;
-        model.points = match_calculate_shapes(&model.params);
+        model.points = match_calculate_shapes(&mut model.params);
     } else if recalculate || model.points.is_empty() {
-        model.points = match_calculate_shapes(&model.params);
+        model.points = match_calculate_shapes(&mut model.params);
     }
 }
 

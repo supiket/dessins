@@ -122,10 +122,7 @@ impl DesignShape {
 
 impl Params {
     pub fn ui_design_type(params: &DesignParams, ui: &mut Ui) -> Option<DesignParams> {
-        let enabled = match params {
-            crate::DesignParams::Shape(_) => false,
-            _ => true,
-        };
+        let enabled = !matches!(params, crate::DesignParams::Shape(_));
         if ui
             .add_enabled(enabled, nannou_egui::egui::Button::new("shape"))
             .clicked()
@@ -137,7 +134,7 @@ impl Params {
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(_inner: &ParamsInner) -> Shapes {
+    pub fn calculate_shapes(_inner: &mut ParamsInner) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();

@@ -2,13 +2,16 @@ use dessins_lib::{chapter_3::ParamsInner, update, Model, NP};
 use nannou::prelude::*;
 
 fn model(app: &App) -> Model {
+    let n = 10;
+    let rules = rules_fn(n);
     ParamsInner {
-        n: 10,
+        n,
         a0_fn: Box::new(a0_fn),
         a0_factor: -1.5 * PI,
+        l0: l0_fn(n),
         l0_fn: Box::new(l0_fn),
         p0_fn: Box::new(p0_fn),
-        rules_fn: Box::new(rules_fn),
+        rules,
     }
     .model(app)
 }

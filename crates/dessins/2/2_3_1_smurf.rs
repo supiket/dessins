@@ -9,7 +9,7 @@ fn model(app: &App) -> Model {
     NoParamsInner().model(app, Box::new(calculate_shapes))
 }
 
-fn calculate_shapes(_inner: &NoParamsInner) -> Shapes {
+fn calculate_shapes(_inner: &mut NoParamsInner) -> Shapes {
     let mut shapes = Shapes::new();
     let mut shape = Shape::new();
     let mut segment = Segment::new();

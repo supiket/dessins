@@ -13,12 +13,13 @@ pub struct ParamsInner {
     pub t1: u32, // # times the planet turns around the sun
     #[param(range(1..=600))]
     pub t2: u32, // # times the satellite turns around the planet
-    #[param(np, length)]
+    #[param(length)]
     pub r1: f32, // radius of the planet's curve
     #[param(range(1..=4))]
     pub k1: u32, // elliptic parameter of the planet's curve
     #[param(range(1..=4))]
     pub k2: u32, // elliptic parameter of the planet's curve
+    // TODO: contains i
     pub r2_eq: Box<dyn Fn(R2Params) -> f32>,
 }
 
@@ -28,7 +29,7 @@ pub struct R2Params {
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();

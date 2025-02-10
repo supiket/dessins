@@ -12,7 +12,7 @@ pub struct ParamsInner {
     pub k: u32,
     #[param(label = "fractal ra", length)]
     pub ra: f32,
-    #[param(label = "fractal ll", np, length)]
+    #[param(label = "fractal ll", length)]
     pub ll: f32,
     #[param(label = "fractal aa", pi)]
     pub aa: f32,
@@ -21,7 +21,7 @@ pub struct ParamsInner {
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();

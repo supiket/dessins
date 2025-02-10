@@ -9,15 +9,15 @@ pub type InnerSegment = Segment;
 #[derive(UiControlledParams)]
 #[params(Bipartite)]
 pub struct ParamsInner {
-    #[params(range(10..=20))]
+    #[param(range(10..=20))]
     pub n: u32,
-    #[params]
+    #[param]
     pub a: Point2,
-    #[params]
+    #[param]
     pub b: Point2,
-    #[params]
+    #[param]
     pub c: Point2,
-    #[params]
+    #[param]
     pub d: Point2,
 }
 
@@ -28,7 +28,7 @@ pub struct YParams {
 }
 
 impl ParamsInner {
-    pub fn calculate_shapes(&self) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
