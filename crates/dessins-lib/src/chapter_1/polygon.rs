@@ -1,6 +1,5 @@
 use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]

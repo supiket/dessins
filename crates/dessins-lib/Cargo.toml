@@ -14,5 +14,4 @@ path = "src/main.rs"
 [dependencies]
 evalexpr.workspace = true
 nannou.workspace = true
-nannou_egui.workspace = true
 ui-controlled-params.workspace = true

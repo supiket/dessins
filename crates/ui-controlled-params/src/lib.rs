@@ -54,11 +54,11 @@ pub fn derive_design_params(input: TokenStream) -> TokenStream {
     let expanded = quote! {
         pub struct Params {
             pub inner: ParamsInner,
-            pub calculate_shapes: Box<dyn Fn(&mut ParamsInner) -> Shapes>,
+            pub calculate_shapes: Box<dyn Fn(&mut ParamsInner) -> Shapes + Send + Sync>,
             pub ui_elements: UiElements,
         }
 
-        pub type UiElements = Box<dyn Fn(&mut ParamsInner, &mut Ui) -> bool>;
+        pub type UiElements = Box<dyn Fn(&mut ParamsInner, &mut crate::egui::Ui) -> bool + Send + Sync>;
 
         impl ParamsInner {
             pub fn model(self, app: &App) -> crate::Model {
@@ -71,7 +71,7 @@ pub fn derive_design_params(input: TokenStream) -> TokenStream {
                 crate::model(params, app)
             }
 
-            pub fn ui_elements(&mut self, ui: &mut nannou_egui::egui::Ui) -> bool {
+            pub fn ui_elements(&mut self, ui: &mut crate::egui::Ui) -> bool {
                 let mut changed = false;
                 #(changed |= #param_impls;)*
                 changed
@@ -79,13 +79,13 @@ pub fn derive_design_params(input: TokenStream) -> TokenStream {
         }
 
         impl Params {
-            pub fn ui_design_type(current_design: &crate::DesignParams, ui: &mut nannou_egui::egui::Ui) -> Option<crate::DesignParams> {
+            pub fn ui_design_type(current_design: &crate::DesignParams, ui: &mut crate::egui::Ui) -> Option<crate::DesignParams> {
                 let enabled = match current_design {
                     crate::DesignParams::#struct_param_type(_) => false,
                     _ => true,
                 };
                 if ui
-                    .add_enabled(enabled, nannou_egui::egui::Button::new(#struct_param_type_lowercase_string))
+                    .add_enabled(enabled, crate::egui::Button::new(#struct_param_type_lowercase_string))
                     .clicked()
                 {
                     return Some(crate::DesignParams::#struct_param_type(Params::default()));

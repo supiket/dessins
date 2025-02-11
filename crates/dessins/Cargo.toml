@@ -166,5 +166,4 @@ path = "6/3_4_lineaires_batons.rs"
 
 [dependencies]
 nannou.workspace = true
-nannou_egui.workspace = true
 dessins-lib.workspace = true

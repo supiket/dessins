@@ -1,7 +1,6 @@
 use crate::{ui::ExpressionF32, Segment, Shape, Shapes, NP};
 use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
 use ui_controlled_params::UiControlledParams;
 

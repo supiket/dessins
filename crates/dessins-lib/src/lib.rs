@@ -1,8 +1,4 @@
 use nannou::prelude::*;
-use nannou_egui::{
-    egui::{self, Ui},
-    Egui,
-};
 use no_params::NoParams;
 
 pub mod chapter_1;
@@ -43,29 +39,20 @@ pub enum DesignParams {
 pub struct Model {
     pub params: DesignParams,
     pub points: Shapes,
-    pub egui: Egui,
-    pub color: Srgb<u8>,
+    pub color: Color,
 }
 
 pub fn model(params: DesignParams, app: &App) -> Model {
-    let window_id = app
-        .new_window()
-        .view(view)
-        .raw_event(raw_window_event)
-        .build()
-        .unwrap();
-    let window = app.window(window_id).unwrap();
-    let egui = Egui::from_window(&window);
+    app.new_window().view(view).build();
 
     Model {
-        egui,
         params,
         points: Default::default(),
-        color: rgb(random(), random(), random()),
+        color: Color::srgb(random(), random(), random()),
     }
 }
 
-pub fn view(app: &App, model: &Model, frame: Frame) {
+pub fn view(app: &App, model: &Model) {
     let draw = app.draw();
     draw.background().color(BLACK);
 
@@ -74,17 +61,14 @@ pub fn view(app: &App, model: &Model, frame: Frame) {
             .iter()
             .for_each(|segment| draw_segment(&draw, model.color, segment))
     });
-
-    draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
 }
 
-pub fn update(_app: &App, model: &mut Model, update: Update) {
+pub fn update(app: &App, model: &mut Model) {
     let mut recalculate = false;
 
     {
-        model.egui.set_elapsed_time(update.since_start);
-        let ctx = model.egui.begin_frame();
+        let mut egui_ctx = app.egui();
+        let ctx = egui_ctx.get_mut();
 
         egui::Window::new("params").show(&ctx, |ui| {
             recalculate = match_ui_elements(&mut model.params, ui);
@@ -100,7 +84,7 @@ pub fn update(_app: &App, model: &mut Model, update: Update) {
     }
 }
 
-pub fn draw_segment(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
+pub fn draw_segment(draw: &Draw, color: Color, points: &[Point2]) {
     if points.len() < 2 {
         return;
     }
@@ -117,7 +101,7 @@ pub fn draw_segment(draw: &Draw, color: Srgb<u8>, points: &[Point2]) {
     }
 }
 
-pub fn match_ui_elements(params: &mut DesignParams, ui: &mut Ui) -> bool {
+pub fn match_ui_elements(params: &mut DesignParams, ui: &mut egui::Ui) -> bool {
     match params {
         DesignParams::Polygon(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::Star(params) => (params.ui_elements)(&mut params.inner, ui),
@@ -155,8 +139,4 @@ pub fn match_calculate_shapes(params: &mut DesignParams) -> Shapes {
         DesignParams::LinearSticks(params) => (params.calculate_shapes)(&mut params.inner),
         DesignParams::SimpleFractal(params) => (params.calculate_shapes)(&mut params.inner),
     }
-}
-
-pub fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);
 }

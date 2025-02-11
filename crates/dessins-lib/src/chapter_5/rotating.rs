@@ -1,6 +1,5 @@
 use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
 use ui_controlled_params::UiControlledParams;
 
@@ -26,7 +25,7 @@ pub struct ParamsInner {
     #[param(range(1..=4))]
     pub h2: u32, // elliptic parameter of the satellite's curve
     // TODO: contains i
-    pub s_eq: Box<dyn Fn(SParams) -> f32>,
+    pub s_eq: Box<dyn Fn(SParams) -> f32 + Send + Sync>,
 }
 
 pub struct SParams {

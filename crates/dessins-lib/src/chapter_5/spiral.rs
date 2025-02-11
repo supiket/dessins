@@ -1,6 +1,5 @@
 use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
 use ui_controlled_params::UiControlledParams;
 

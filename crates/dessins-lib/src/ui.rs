@@ -1,7 +1,6 @@
 use crate::NP;
 use evalexpr::HashMapContext;
 use nannou::prelude::*;
-use nannou_egui::egui::{self, emath::Numeric, Ui};
 use std::{f32::consts::PI, ops::RangeInclusive};
 
 pub struct ExpressionF32 {
@@ -10,17 +9,17 @@ pub struct ExpressionF32 {
     pub val: f32,
 }
 
-pub fn ui_color(ui: &mut Ui) -> Option<Srgb<u8>> {
+pub fn ui_color(ui: &mut egui::Ui) -> Option<Color> {
     let clicked = ui.button("random color").clicked();
     if clicked {
-        Some(rgb(random(), random(), random()))
+        Some(Color::srgb(random(), random(), random()))
     } else {
         None
     }
 }
 
-pub fn add_numeric_slider<T: Numeric>(
-    ui: &mut Ui,
+pub fn add_numeric_slider<T: egui::emath::Numeric>(
+    ui: &mut egui::Ui,
     label: &str,
     value: &mut T,
     range: RangeInclusive<T>,
@@ -32,16 +31,16 @@ pub fn add_numeric_slider<T: Numeric>(
     .changed()
 }
 
-pub fn add_float_slider_position(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
+pub fn add_float_slider_position(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
     add_float_slider_np(ui, label, value, -0.5..=0.5)
 }
 
-pub fn add_float_slider_length(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
+pub fn add_float_slider_length(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
     add_float_slider_np(ui, label, value, 0.0..=1.0)
 }
 
 fn add_float_slider_np(
-    ui: &mut Ui,
+    ui: &mut egui::Ui,
     label: &str,
     value: &mut f32,
     range: RangeInclusive<f32>,
@@ -62,7 +61,7 @@ fn add_float_slider_np(
     recalculate
 }
 
-pub fn add_float_slider_pi(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
+pub fn add_float_slider_pi(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
     ui.label(label);
     let mut val = *value / PI;
 
@@ -80,7 +79,7 @@ pub fn add_float_slider_pi(ui: &mut Ui, label: &str, value: &mut f32) -> bool {
 }
 
 pub fn add_point2_slider(
-    ui: &mut Ui,
+    ui: &mut egui::Ui,
     label: &str,
     value: &mut Point2,
     range: RangeInclusive<f32>,
@@ -114,8 +113,8 @@ pub fn add_point2_slider(
     changed
 }
 
-pub fn add_numeric_vector_slider<T: Numeric>(
-    ui: &mut Ui,
+pub fn add_numeric_vector_slider<T: egui::emath::Numeric>(
+    ui: &mut egui::Ui,
     label: &str,
     value: &mut [T],
     range: RangeInclusive<T>,
@@ -135,7 +134,7 @@ pub fn add_numeric_vector_slider<T: Numeric>(
 }
 
 pub fn add_point2_vector(
-    ui: &mut Ui,
+    ui: &mut egui::Ui,
     label: &str,
     value: &mut [Point2],
     range: RangeInclusive<f32>,
@@ -150,7 +149,7 @@ pub fn add_point2_vector(
 }
 
 pub fn add_expression_f32_slider(
-    ui: &mut Ui,
+    ui: &mut egui::Ui,
     label: &str,
     value: &mut ExpressionF32,
     default: &str,

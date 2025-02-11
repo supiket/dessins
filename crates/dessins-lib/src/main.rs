@@ -1,59 +1,24 @@
-use dessins_lib::{
-    draw_segment, match_calculate_shapes, match_ui_elements, ui::ui_color, DesignParams, Shapes,
-};
+use dessins_lib::{match_calculate_shapes, match_ui_elements, ui::ui_color, DesignParams, Model};
 use nannou::prelude::*;
-use nannou_egui::{
-    egui::{self, Ui},
-    Egui,
-};
-
-pub struct Model {
-    pub params: DesignParams,
-    pub points: Shapes,
-    pub egui: Egui,
-    pub color: Srgb<u8>,
-}
 
 pub fn model(app: &App) -> Model {
-    let window_id = app
-        .new_window()
-        .view(view)
-        .raw_event(raw_window_event)
-        .build()
-        .unwrap();
-    let window = app.window(window_id).unwrap();
-    let egui = Egui::from_window(&window);
     let params = DesignParams::Dragon(dessins_lib::chapter_3::Params::default());
+    app.new_window().view(dessins_lib::view).build();
 
     Model {
-        egui,
         params,
         points: Default::default(),
-        color: rgb(random(), random(), random()),
+        color: Color::srgb(random(), random(), random()),
     }
 }
 
-pub fn view(app: &App, model: &Model, frame: Frame) {
-    let draw = app.draw();
-    draw.background().color(BLACK);
-
-    model.points.iter().for_each(|shape| {
-        shape
-            .iter()
-            .for_each(|segment| draw_segment(&draw, model.color, segment))
-    });
-
-    draw.to_frame(app, &frame).unwrap();
-    model.egui.draw_to_frame(&frame).unwrap();
-}
-
-pub fn update(_app: &App, model: &mut Model, update: Update) {
+pub fn update(app: &App, model: &mut Model) {
     let mut recalculate = false;
     let mut new_design = Option::None;
 
     {
-        model.egui.set_elapsed_time(update.since_start);
-        let ctx = model.egui.begin_frame();
+        let mut egui_ctx = app.egui();
+        let ctx = egui_ctx.get_mut();
 
         egui::TopBottomPanel::top("designs").show(&ctx, |ui| {
             ui.horizontal(|ui| {
@@ -78,7 +43,7 @@ pub fn update(_app: &App, model: &mut Model, update: Update) {
     }
 }
 
-fn design_buttons(params: &DesignParams, ui: &mut Ui) -> Option<DesignParams> {
+fn design_buttons(params: &DesignParams, ui: &mut crate::egui::Ui) -> Option<DesignParams> {
     let mut new_design = Option::None;
     if let Some(new) = dessins_lib::chapter_1::polygon::Params::ui_design_type(params, ui) {
         new_design = Some(new);
@@ -127,10 +92,6 @@ fn design_buttons(params: &DesignParams, ui: &mut Ui) -> Option<DesignParams> {
     }
 
     new_design
-}
-
-pub fn raw_window_event(_app: &App, model: &mut Model, event: &nannou::winit::event::WindowEvent) {
-    model.egui.handle_raw_event(event);
 }
 
 fn main() {

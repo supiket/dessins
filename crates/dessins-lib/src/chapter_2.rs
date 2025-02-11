@@ -3,7 +3,6 @@ use crate::{
     DesignParams, Segment, Shape, Shapes, NP,
 };
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
 
 pub type Params = NoParams;
 pub type ParamsInner = NoParamsInner;
@@ -121,10 +120,10 @@ impl DesignShape {
 }
 
 impl Params {
-    pub fn ui_design_type(params: &DesignParams, ui: &mut Ui) -> Option<DesignParams> {
+    pub fn ui_design_type(params: &DesignParams, ui: &mut egui::Ui) -> Option<DesignParams> {
         let enabled = !matches!(params, crate::DesignParams::Shape(_));
         if ui
-            .add_enabled(enabled, nannou_egui::egui::Button::new("shape"))
+            .add_enabled(enabled, egui::Button::new("shape"))
             .clicked()
         {
             return Some(crate::DesignParams::Shape(Self::default()));

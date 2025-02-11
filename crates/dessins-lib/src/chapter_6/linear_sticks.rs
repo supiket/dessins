@@ -1,6 +1,5 @@
 use crate::{Shape, Shapes, NP};
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
 use ui_controlled_params::UiControlledParams;
 
@@ -14,9 +13,9 @@ pub struct ParamsInner {
     #[param(range(1..=7))]
     pub k: u32,
     // TODO: contains i
-    pub r1_eq: Box<dyn Fn(&RParams) -> f32>,
+    pub r1_eq: Box<dyn Fn(&RParams) -> f32 + Send + Sync>,
     // TODO: contains i
-    pub r2_eq: Box<dyn Fn(&RParams) -> f32>,
+    pub r2_eq: Box<dyn Fn(&RParams) -> f32 + Send + Sync>,
 }
 
 pub struct RParams {

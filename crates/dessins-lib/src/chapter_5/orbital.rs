@@ -1,6 +1,5 @@
 use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-use nannou_egui::egui::Ui;
 use std::f32::consts::PI;
 use ui_controlled_params::UiControlledParams;
 
@@ -20,7 +19,7 @@ pub struct ParamsInner {
     #[param(range(1..=4))]
     pub k2: u32, // elliptic parameter of the planet's curve
     // TODO: contains i
-    pub r2_eq: Box<dyn Fn(R2Params) -> f32>,
+    pub r2_eq: Box<dyn Fn(R2Params) -> f32 + Send + Sync>,
 }
 
 pub struct R2Params {
