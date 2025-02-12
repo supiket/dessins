@@ -1040,6 +1040,7 @@ dependencies = [
 [[package]]
 name = "bevy_nannou"
 version = "0.1.0"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
 dependencies = [
  "bevy",
  "bevy_nannou_draw",
@@ -1048,8 +1049,8 @@ dependencies = [
 [[package]]
 name = "bevy_nannou_derive"
 version = "0.1.0"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
 dependencies = [
- "proc-macro2",
  "quote",
  "syn 1.0.109",
 ]
@@ -1057,13 +1058,12 @@ dependencies = [
 [[package]]
 name = "bevy_nannou_draw"
 version = "0.1.0"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
 dependencies = [
  "bevy",
  "bitflags 2.8.0",
- "bytemuck",
  "lyon",
  "nannou_core",
- "num-traits",
  "rayon",
  "rusttype",
  "uuid",
@@ -3166,15 +3166,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "instant"
-version = "0.1.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0242819d153cba4b4b05a5a8f2a7e9bbf97b6055b2a002b395c96b5ff3c0222"
-dependencies = [
- "cfg-if 1.0.0",
-]
-
-[[package]]
 name = "interpolate_name"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3651,6 +3642,7 @@ dependencies = [
 [[package]]
 name = "nannou"
 version = "0.19.0"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
@@ -3658,18 +3650,12 @@ dependencies = [
  "bevy_nannou",
  "bevy_nannou_derive",
  "find_folder",
- "futures",
- "getrandom 0.2.15",
  "image 0.25.5",
- "instant",
  "lyon",
  "nannou_core",
  "nannou_wgpu",
  "noise",
- "notosans",
- "num_cpus",
  "pennereq",
- "rusttype",
  "tokio",
  "walkdir",
  "wgpu",
@@ -3678,6 +3664,7 @@ dependencies = [
 [[package]]
 name = "nannou_core"
 version = "0.19.0"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
 dependencies = [
  "glam",
  "num-traits",
@@ -3687,11 +3674,10 @@ dependencies = [
 [[package]]
 name = "nannou_wgpu"
 version = "0.19.0"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
 dependencies = [
  "futures",
  "image 0.25.5",
- "instant",
- "num_cpus",
  "tokio",
  "wgpu",
 ]
@@ -3805,12 +3791,6 @@ name = "noop_proc_macro"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0676bb32a98c1a483ce53e500a81ad9c3d5b3f7c920c28c24e9cb0980d0b5bc8"
-
-[[package]]
-name = "notosans"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "004d578bbfc8a6bdd4690576a8381af234ef051dd4cc358604e1784821e8205c"
 
 [[package]]
 name = "ntapi"

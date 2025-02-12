@@ -1,6 +1,7 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{ui::ExpressionF32, Segment, Shape, Shapes, NP};
+use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
-use std::f32::consts::PI;
+use std::{collections::HashMap, f32::consts::PI};
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
@@ -18,8 +19,8 @@ pub struct ParamsInner {
     pub k1: u32, // elliptic parameter of the planet's curve
     #[param(range(1..=4))]
     pub k2: u32, // elliptic parameter of the planet's curve
-    // TODO: contains i
-    pub r2_eq: Box<dyn Fn(R2Params) -> f32 + Send + Sync>,
+    #[param(range(0.0..=480.0), expression(default="96.0 * (1 - i / n)", context(n, ext(i))))]
+    pub r2: ExpressionF32,
 }
 
 pub struct R2Params {
@@ -42,7 +43,16 @@ impl ParamsInner {
 
         for i in 0..=self.n {
             let i = i as f32;
-            let r2 = (self.r2_eq)(R2Params { i, n });
+
+            self.r2
+                .ctx
+                .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
+                .unwrap();
+            self.r2.ctx_ext.remove("i");
+            self.r2.val =
+                evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx).unwrap() as f32;
+
+            let r2 = self.r2.val;
             let a1 = 2.0 * PI * i / n * t1;
             let a2 = 2.0 * PI * i / n * t2;
 
@@ -61,15 +71,25 @@ impl ParamsInner {
 
 impl Default for Params {
     fn default() -> Self {
+        let n = 2000;
+        let mut ctx = HashMapContext::new();
+        ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
+            .unwrap();
+        let r2 = ExpressionF32 {
+            expr: "96.0 * (1 - i / n)".to_string(),
+            ctx,
+            ctx_ext: HashMap::from([("i".to_string(), ())]),
+            val: 0.0,
+        };
         Self {
             inner: ParamsInner {
-                n: 2000,
+                n,
                 t1: 2,
                 t2: 100,
                 r1: NP as f32 * 0.25,
                 k1: 1,
                 k2: 1,
-                r2_eq: Box::new(|params: R2Params| NP as f32 * 0.2 * (1.0 - params.i / params.n)),
+                r2,
             },
             calculate_shapes: Box::new(ParamsInner::calculate_shapes),
             ui_elements: Box::new(ParamsInner::ui_elements),

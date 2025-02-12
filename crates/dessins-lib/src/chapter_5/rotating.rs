@@ -1,6 +1,7 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{ui::ExpressionF32, Segment, Shape, Shapes, NP};
+use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
-use std::f32::consts::PI;
+use std::{collections::HashMap, f32::consts::PI};
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
@@ -24,13 +25,8 @@ pub struct ParamsInner {
     pub h1: u32, // elliptic parameter of the satellite's curve
     #[param(range(1..=4))]
     pub h2: u32, // elliptic parameter of the satellite's curve
-    // TODO: contains i
-    pub s_eq: Box<dyn Fn(SParams) -> f32 + Send + Sync>,
-}
-
-pub struct SParams {
-    pub i: f32,
-    pub n: f32,
+    #[param(range(0.6..=1.0), expression(default="math::cos(4.0 * pi * i / n) * 0.4 + 0.6", context(n, ext(i, pi))))]
+    pub s: ExpressionF32,
 }
 
 impl ParamsInner {
@@ -52,7 +48,14 @@ impl ParamsInner {
         for i in 0..=self.n {
             let i = i as f32;
 
-            let s = (self.s_eq)(SParams { i, n });
+            self.s
+                .ctx
+                .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
+                .unwrap();
+            self.s.ctx_ext.remove("i");
+            self.s.val =
+                evalexpr::eval_number_with_context(&self.s.expr, &self.s.ctx).unwrap() as f32;
+            let s = self.s.val;
             let an = 2.0 * PI * i / n;
             let c1 = (h1 * an * t1).cos();
             let s1 = (h2 * an * t1).sin();
@@ -74,9 +77,21 @@ impl ParamsInner {
 
 impl Default for Params {
     fn default() -> Self {
+        let n = 2000;
+        let mut ctx = HashMapContext::new();
+        ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
+            .unwrap();
+        ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
+            .unwrap();
+        let s = ExpressionF32 {
+            expr: "math::cos(4.0 * pi * i / n) * 0.4 + 0.6".to_string(),
+            ctx,
+            ctx_ext: HashMap::from([("i".to_string(), ())]),
+            val: 1.0,
+        };
         Self {
             inner: ParamsInner {
-                n: 2000,
+                n,
                 t1: 1.0,
                 t2: 100.0,
                 r1: NP as f32 / 6.0,
@@ -85,9 +100,7 @@ impl Default for Params {
                 r2: NP as f32 / 4.0,
                 h1: 1,
                 h2: 1,
-                s_eq: Box::new(|params: SParams| {
-                    (4.0 * PI * params.i / params.n).cos() * 0.4 + 0.6
-                }),
+                s,
             },
             calculate_shapes: Box::new(ParamsInner::calculate_shapes),
             ui_elements: Box::new(ParamsInner::ui_elements),

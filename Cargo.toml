@@ -8,23 +8,10 @@ edition = "2021"
 version = "0.1.0"
 
 [workspace.dependencies]
-nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "supiket/bevy-refactor", features = [ "egui", "webgl2" ] }
+nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor", features = [ "egui" ] }
 dessins-lib = { path = "crates/dessins-lib", version = "0.1.0" }
 ui-controlled-params = { path = "crates/ui-controlled-params", version = "0.1.0" }
 evalexpr = "12.0.2"
 proc-macro2 = "1.0"
 quote = "1.0"
 syn = { version = "2.0", features = [ "full" ] }
-
-[profile.wasm-dev]
-inherits = "dev"
-debug = true
-
-[profile.wasm_release]
-inherits = "release"
-opt-level = 'z'  # Optimize for size
-lto = true       # Enable link-time optimization
-codegen-units = 1
-panic = 'abort'  # Remove panic unwinding to reduce size
-strip = true     # Remove debug symbols
-debug = false

@@ -18,6 +18,7 @@ struct FieldAttributes {
 struct ExpressionWithContext {
     expression: String,
     context_vars: Vec<String>,
+    context_vars_ext: Vec<String>,
 }
 
 #[proc_macro_derive(UiControlledParams, attributes(params, param))]
@@ -155,6 +156,7 @@ fn match_param_field(
                     let ExpressionWithContext {
                         expression,
                         context_vars,
+                        context_vars_ext,
                     } = attrs.expression.expect("in else block after is_none");
                     let Some(range_expr) = attrs.range.as_ref() else {
                         panic!("range missing for expression");
@@ -175,8 +177,16 @@ fn match_param_field(
                             use evalexpr::ContextWithMutableVariables;
 
                             let mut ctx = evalexpr::HashMapContext::new();
+                            let mut ctx_ext = std::collections::HashMap::new();
                             #(ctx.set_value(#context_vars.to_string(), evalexpr::Value::Float(self.#context_vars_idents as f64)).unwrap();)*
+                             #(
+                                 if #context_vars_ext == "pi" {
+                                     ctx.set_value("pi".to_string(), evalexpr::Value::Float(std::f32::consts::PI as f64)).unwrap();
+                                 } else {
+                                     ctx_ext.insert(#context_vars_ext.to_string(), ());
+                                 })*
                             self.#field_name.ctx = ctx;
+                            self.#field_name.ctx_ext = ctx_ext;
                             crate::ui::add_expression_f32_slider(
                                 ui,
                                 #label,
@@ -345,10 +355,10 @@ fn parse_field_attributes(attrs: &[Attribute], field_name: &syn::Ident) -> Optio
                                     syn::Expr::Lit(_) => {} // Literal is fine
                                     syn::Expr::Unary(expr_unary) => {
                                         match (&expr_unary.op, &*expr_unary.expr) {
-                        (syn::UnOp::Neg(_), syn::Expr::Lit(_)) => {}, // -literal is fine
-                        (syn::UnOp::Neg(_), syn::Expr::Path(path)) if path.path.is_ident("PI") => {}, // -PI is fine
-                        _ => panic!("Range bounds must be literals, negative literals, or PI")
-                    }
+                                            (syn::UnOp::Neg(_), syn::Expr::Lit(_)) => {}, // -literal is fine
+                                            (syn::UnOp::Neg(_), syn::Expr::Path(path)) if path.path.is_ident("PI") => {}, // -PI is fine
+                                            _ => panic!("Range bounds must be literals, negative literals, or PI")
+                                        }
                                     }
                                     syn::Expr::Path(path) if path.path.is_ident("PI") => {} // PI is fine
                                     _ => panic!(
@@ -369,6 +379,7 @@ fn parse_field_attributes(attrs: &[Attribute], field_name: &syn::Ident) -> Optio
 
                         let mut found_default = false;
                         let mut context_vars = Vec::new();
+                        let mut context_vars_ext = Vec::new();
                         let mut expression_info = None;
 
                         for meta in nested_meta {
@@ -382,20 +393,57 @@ fn parse_field_attributes(attrs: &[Attribute], field_name: &syn::Ident) -> Optio
                                             expression_info = Some(ExpressionWithContext {
                                                 expression: eq_str,
                                                 context_vars: Vec::new(),
+                                                context_vars_ext: Vec::new(),
                                             });
                                         }
                                     }
                                 }
                                 syn::Meta::List(list) if list.path.is_ident("context") => {
-                                    let vars = list
+                                    let (vars, vars_ext) = list
                                         .parse_args_with(|input: syn::parse::ParseStream| {
-                                            input
-                                                .parse_terminated(syn::Ident::parse, syn::Token![,])
+                                            let mut vars = Vec::new();
+                                            let mut vars_ext = Vec::new();
+
+                                            while !input.is_empty() {
+                                                // Look ahead to check if we have ext(...) pattern
+                                                if input.peek(syn::Ident)
+                                                    && input.peek2(syn::token::Paren)
+                                                {
+                                                    let ident: syn::Ident = input.parse()?;
+                                                    if ident == "ext" {
+                                                        // Parse ext(...) content
+                                                        let content;
+                                                        syn::parenthesized!(content in input);
+                                                        let ext_vars = content.parse_terminated(
+                                                            syn::Ident::parse,
+                                                            syn::Token![,],
+                                                        )?;
+                                                        vars_ext.extend(ext_vars);
+                                                    } else {
+                                                        return Err(input
+                                                            .error("Expected 'ext' identifier"));
+                                                    }
+                                                } else {
+                                                    // Regular variable
+                                                    vars.push(input.parse::<syn::Ident>()?);
+                                                }
+
+                                                // Handle optional comma
+                                                if !input.is_empty() {
+                                                    input.parse::<syn::Token![,]>()?;
+                                                }
+                                            }
+
+                                            Ok((vars, vars_ext))
                                         })
                                         .expect("Failed to parse context variables");
 
                                     context_vars =
                                         vars.into_iter().map(|ident| ident.to_string()).collect();
+                                    context_vars_ext = vars_ext
+                                        .into_iter()
+                                        .map(|ident| ident.to_string())
+                                        .collect();
                                 }
                                 _ => {}
                             }
@@ -410,6 +458,7 @@ fn parse_field_attributes(attrs: &[Attribute], field_name: &syn::Ident) -> Optio
                             param.expression = Some(ExpressionWithContext {
                                 expression: eq.expression,
                                 context_vars,
+                                context_vars_ext,
                             });
                         } else {
                             panic!("expression attribute value must be a string literal");

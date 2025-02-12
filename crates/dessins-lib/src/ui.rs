@@ -1,11 +1,12 @@
 use crate::NP;
 use evalexpr::HashMapContext;
 use nannou::prelude::*;
-use std::{f32::consts::PI, ops::RangeInclusive};
+use std::{collections::HashMap, f32::consts::PI, ops::RangeInclusive};
 
 pub struct ExpressionF32 {
     pub expr: String,
     pub ctx: HashMapContext,
+    pub ctx_ext: HashMap<String, ()>,
     pub val: f32,
 }
 
@@ -168,12 +169,16 @@ pub fn add_expression_f32_slider(
     }
 
     let response = egui::TextEdit::singleline(&mut value.expr)
-        .desired_width(100.0)
+        .desired_width(120.0)
         .show(ui);
 
     if response.response.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-        if let Ok(val) = evalexpr::eval_number_with_context(&value.expr, &value.ctx) {
-            value.val = val as f32;
+        if value.ctx_ext.is_empty() {
+            if let Ok(val) = evalexpr::eval_number_with_context(&value.expr, &value.ctx) {
+                value.val = val as f32;
+                changed = true;
+            }
+        } else {
             changed = true;
         }
     }

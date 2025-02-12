@@ -9,9 +9,9 @@ use ui_controlled_params::UiControlledParams;
 pub struct ParamsInner {
     #[param(range(2..=14))]
     pub n: u32, // depth of recursion
-    #[param(range(0.0..= 300.0), expression(default="480.0 / (sqrt(2.0).powf(n)", context(n)))]
+    #[param(range(0.0..= 300.0), expression(default="480.0 / (math::sqrt(2.0) ^ n", context(n)))]
     pub l0: ExpressionF32, // initial length
-    #[param(range(-180.0..=180.0), expression(default="-pi / 4 * (n - 2)", context(n)))]
+    #[param(range(-180.0..=180.0), expression(default="-pi / 4 * (n-2)", context(n, ext(pi))))]
     pub a0: ExpressionF32, // initial length
     #[param]
     pub p0: Point2, // initial position
@@ -27,9 +27,10 @@ impl ParamsInner {
 
         if self.n as usize != self.rules.len() + 1 {
             self.rules = vec![0; self.n as usize + 1];
-            if let Ok(val) = evalexpr::eval_number_with_context(&self.l0.expr, &self.l0.ctx) {
-                self.l0.val = val as f32;
-            }
+            self.l0.val =
+                evalexpr::eval_number_with_context(&self.l0.expr, &self.l0.ctx).unwrap() as f32;
+            self.a0.val =
+                evalexpr::eval_number_with_context(&self.a0.expr, &self.a0.ctx).unwrap() as f32;
         }
 
         let p0 = self.p0;
@@ -108,11 +109,16 @@ impl Default for Params {
         let l0 = ExpressionF32 {
             expr: "480 / (math::sqrt(2.0) ^ n)".to_string(),
             ctx: ctx.clone(),
+            ctx_ext: Default::default(),
             val: l0_fn(n),
         };
+        let mut ctx = ctx.clone();
+        ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
+            .unwrap();
         let a0 = ExpressionF32 {
             expr: "-pi / 4 * (n - 2)".to_string(),
             ctx,
+            ctx_ext: Default::default(),
             val: a0_fn(n),
         };
         Self {
@@ -128,5 +134,3 @@ impl Default for Params {
         }
     }
 }
-
-// NP as f32 / (2.0_f32.sqrt().powf(n as f32))
