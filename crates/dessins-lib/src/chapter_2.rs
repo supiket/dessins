@@ -1,11 +1,6 @@
-use crate::{
-    no_params::{NoParams, NoParamsInner},
-    DesignParams, Segment, Shape, Shapes, NP,
-};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-
-pub type Params = NoParams;
-pub type ParamsInner = NoParamsInner;
+use ui_controlled_params::UiControlledParams;
 
 pub const HORSE: &[f32] = &[
     1000.0, 10.0, 10.0, 8.0, 12.0, 9.0, 16.0, 12.0, 17.0, 13.0, 18.0, 14.0, 20.0, 1000.0, 13.0,
@@ -85,9 +80,104 @@ pub struct DesignShape {
     pub data_index: usize,
 }
 
+#[derive(UiControlledParams)]
+#[params(Shape)]
+pub struct ParamsInner {
+    #[param]
+    pub raw_shape: RawShape,
+    #[param]
+    pub shape_program: ShapeProgram,
+}
+
 pub enum Action {
     Continue(Point2, bool),
     Break,
+}
+
+#[derive(PartialEq)]
+pub enum RawShape {
+    Horse,
+    Lion,
+    BirdFish,
+    Smurf,
+}
+
+#[derive(PartialEq)]
+pub enum ShapeProgram {
+    Program1,
+    Program2,
+    Program3,
+    Program4,
+    Program5,
+    Program6,
+    Program7,
+    Program8,
+    Program9,
+    Program10,
+    Program11,
+    Program12,
+    Program13,
+}
+
+impl RawShape {
+    fn ui_elements(&mut self, ui: &mut egui::Ui) -> bool {
+        let mut changed = false;
+
+        ui.label("shape");
+        changed |= ui.radio_value(self, RawShape::Horse, "horse").changed();
+        changed |= ui.radio_value(self, RawShape::Lion, "lion").changed();
+        changed |= ui
+            .radio_value(self, RawShape::BirdFish, "bird-fish")
+            .changed();
+        changed |= ui.radio_value(self, RawShape::Smurf, "smurf").changed();
+
+        changed
+    }
+}
+
+impl ShapeProgram {
+    fn ui_elements(&mut self, ui: &mut egui::Ui) -> bool {
+        let mut changed = false;
+
+        ui.label("program");
+        changed |= ui.radio_value(self, ShapeProgram::Program1, "o").changed();
+        changed |= ui.radio_value(self, ShapeProgram::Program2, "oO").changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program3, "oOo")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program4, "oOoO")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program5, "oOoOo")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program6, "oOoOoO")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program7, "oOoOoOo")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program8, "oOoOoOoO")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program9, "oOoOoOoOo")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program10, "oOoOoOoOoO")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program11, "oOoOoOoOoOo")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program12, "oOoOoOoOoOoO")
+            .changed();
+        changed |= ui
+            .radio_value(self, ShapeProgram::Program13, "oOoOoOoOoOoOo")
+            .changed();
+
+        changed
+    }
 }
 
 impl DesignShape {
@@ -119,28 +209,39 @@ impl DesignShape {
     }
 }
 
-impl Params {
-    pub fn ui_design_type(params: &DesignParams, ui: &mut egui::Ui) -> Option<DesignParams> {
-        let enabled = !matches!(params, crate::DesignParams::Shape(_));
-        if ui
-            .add_enabled(enabled, egui::Button::new("shape"))
-            .clicked()
-        {
-            return Some(crate::DesignParams::Shape(Self::default()));
-        }
-        None
-    }
-}
-
 impl ParamsInner {
-    pub fn calculate_shapes(_inner: &mut ParamsInner) -> Shapes {
+    pub fn calculate_shapes(&mut self) -> Shapes {
+        let raw_shape = match self.raw_shape {
+            RawShape::Horse => HORSE,
+            RawShape::Lion => LION,
+            RawShape::BirdFish => BIRD_FISH,
+            RawShape::Smurf => SMURF,
+        };
+        let mut design_shape = DesignShape::new(raw_shape);
+
+        match self.shape_program {
+            ShapeProgram::Program1 => self.program_1(&mut design_shape),
+            ShapeProgram::Program2 => self.program_2(&mut design_shape),
+            ShapeProgram::Program3 => self.program_3(&mut design_shape),
+            ShapeProgram::Program4 => self.program_4(&mut design_shape),
+            ShapeProgram::Program5 => self.program_5(&mut design_shape),
+            ShapeProgram::Program6 => self.program_6(&mut design_shape),
+            ShapeProgram::Program7 => self.program_7(&mut design_shape),
+            ShapeProgram::Program8 => self.program_8(&mut design_shape),
+            ShapeProgram::Program9 => self.program_9(&mut design_shape),
+            ShapeProgram::Program10 => self.program_10(&mut design_shape),
+            ShapeProgram::Program11 => self.program_11(&mut design_shape),
+            ShapeProgram::Program12 => self.program_12(&mut design_shape),
+            ShapeProgram::Program13 => self.program_13(&mut design_shape),
+        }
+    }
+
+    fn program_1(&mut self, design_shape: &mut DesignShape) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        let mut horse = DesignShape::new(HORSE);
-
-        while let Action::Continue(read_point, newsegment) = horse.calculate_point() {
+        while let Action::Continue(read_point, newsegment) = design_shape.calculate_point() {
             if newsegment {
                 shape.push(segment);
                 segment = Segment::new();
@@ -157,15 +258,436 @@ impl ParamsInner {
 
         shapes
     }
+
+    fn program_2(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 0..=5 {
+            let mut shape = Shape::new();
+            let mut segment = Segment::new();
+
+            design_shape.data_index = 0;
+
+            let an = 2.0 * i as f32 * PI / 6.0 + PI / 12.0;
+            let co = an.cos();
+            let si = an.sin();
+
+            while let Action::Continue(read_point, newsegment) = design_shape.calculate_point() {
+                if newsegment {
+                    shape.push(segment);
+                    segment = Segment::new();
+                }
+
+                let x = co * read_point.x - si * read_point.y;
+                let y = si * read_point.x + co * read_point.y;
+                let (x, y) = (x * NP as f32 / 90.0, y * NP as f32 / 90.0);
+                let point = pt2(x, y);
+
+                segment.push(point);
+            }
+
+            shapes.push(shape);
+        }
+
+        shapes
+    }
+
+    fn program_3(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 0..=5 {
+            for j in 0..=1 {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                let r = pow(0.5, i as usize);
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let x = (1.0 - 2.0 * j as f32) * NP as f32 * read_point.x / 80.0 * r;
+                    let y = NP as f32 * (0.5 - r + read_point.y / 80.0 * r);
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_4(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 0..=15 {
+            let mut shape = Shape::new();
+            let mut segment = Segment::new();
+
+            design_shape.data_index = 0;
+
+            let an = 2.0 * i as f32 * PI / 6.0 + PI / 12.0;
+            let co = an.cos();
+            let si = an.sin();
+            let r = pow(0.87, i as usize);
+
+            while let Action::Continue(read_point, newsegment) = design_shape.calculate_point() {
+                if newsegment {
+                    shape.push(segment);
+                    segment = Segment::new();
+                }
+
+                let x_ = 0.15 + read_point.x / 110.0;
+                let y_ = 0.15 + read_point.y / 110.0;
+                let x = NP as f32 * (r * (co * x_ - si * y_));
+                let y = NP as f32 * (r * (si * x_ + co * y_));
+                let point = pt2(x, y);
+
+                segment.push(point);
+            }
+
+            shapes.push(shape);
+        }
+
+        shapes
+    }
+
+    fn program_5(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 0..=5 {
+            for j in 0..pow(2, i as usize) {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                let r = pow(0.5, i as usize);
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let x = (j as f32 + read_point.x / 40.0) * NP as f32 * r - 0.5 * NP as f32;
+                    let y = (2.0 - 2.0 * r) * NP as f32 + read_point.y / 40.0 * NP as f32 * r
+                        - 0.9 * NP as f32;
+                    let (x, y) = (x * 0.7, y * 0.7);
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_6(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 0..=2 {
+            for j in 0..=2 {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let x = NP as f32 * ((read_point.x + j as f32 * 20.0) / 80.0 - 0.5);
+                    let y = NP as f32 * ((read_point.y + i as f32 * 20.0) / 80.0 - 0.5);
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_7(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in -4..=4 {
+            for j in -abs(i)..=abs(i) {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let xx = (read_point.x + j as f32 * 20.0 - 20.0) / 100.0;
+                    let yy = (read_point.y + i as f32 * 20.0 - 20.0) / 100.0;
+                    let x = xx * 0.7 * NP as f32;
+                    let y = yy * 0.7 * NP as f32;
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_8(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in -4..=4 {
+            for j in -4..=4 {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let xx = (read_point.x + j as f32 * 20.0 - 20.0) / 100.0;
+                    let yy = (read_point.y + i as f32 * 20.0 - 20.0) / 100.0;
+                    let x = xx * abs(xx) * 0.7 * NP as f32;
+                    let y = yy * abs(yy) * 0.7 * NP as f32;
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_9(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in -4..=4 {
+            for j in -4..=4 {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let x_ = (read_point.x + j as f32 * 20.0 - 20.0) * NP as f32 / 80.0;
+                    let y_ = (read_point.y + i as f32 * 20.0 - 20.0) * NP as f32 / 80.0;
+
+                    let di = (x_ * x_ + y_ * y_).sqrt();
+
+                    let an = if x_ != 0.0 {
+                        (y_ / x_).atan() + PI * (1.0 - if x_ < 0.0 { -1.0 } else { 1.0 }) / 2.0
+                    } else {
+                        PI / 2.0 * if y_ < 0.0 { -1.0 } else { 1.0 }
+                    };
+                    let di = di / NP as f32 * 3.0;
+                    let di = di / (1.0 + di) * NP as f32 * 0.65;
+
+                    let x = di * an.cos();
+                    let y = di * an.sin();
+
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_10(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in -4..=4 {
+            for j in -4..=4 {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let xx = (read_point.x + j as f32 * 20.0 - 20.0) / 100.0;
+                    let yy = (read_point.y + i as f32 * 20.0 - 20.0) / 100.0;
+                    let x = abs(xx).powf(0.7) * if xx < 0.0 { -1.0 } else { 1.0 } * NP as f32 / 2.0;
+                    let y = abs(yy).powf(0.7) * if yy < 0.0 { -1.0 } else { 1.0 } * NP as f32 / 2.0;
+
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_11(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 0..=4 {
+            for j in 0..=2 {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let x = NP as f32
+                        * (-18.0
+                            + (1.0 - 2.0 * (i % 2) as f32) * (7.0 - read_point.x)
+                            + 4.0
+                            + 14.0 * j as f32)
+                        / 50.0;
+                    let y = NP as f32
+                        * (-20.5
+                            + (1.0 - 2.0 * (j % 2) as f32) * (4.5 - read_point.y)
+                            + 4.0
+                            + 9.0 * i as f32)
+                        / 50.0;
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_12(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 1..=4 {
+            for j in 1..=4 {
+                let mut shape = Shape::new();
+                let mut segment = Segment::new();
+
+                design_shape.data_index = 0;
+
+                while let Action::Continue(read_point, newsegment) = design_shape.calculate_point()
+                {
+                    if newsegment {
+                        shape.push(segment);
+                        segment = Segment::new();
+                    }
+
+                    let x =
+                        NP as f32 * (read_point.y - 22.5 + 4.0 * i as f32 + 4.0 * j as f32) / 45.0;
+                    let y =
+                        NP as f32 * (read_point.x - 7.5 - 5.0 * i as f32 + 9.0 * j as f32) / 45.0;
+
+                    let point = pt2(x, y);
+
+                    segment.push(point);
+                }
+
+                shapes.push(shape);
+            }
+        }
+
+        shapes
+    }
+
+    fn program_13(&mut self, design_shape: &mut DesignShape) -> Shapes {
+        let mut shapes = Shapes::new();
+
+        for i in 0..=6 {
+            let mut shape = Shape::new();
+            let mut segment = Segment::new();
+
+            design_shape.data_index = 0;
+
+            let k = (0.5).pow(i) as f32;
+
+            while let Action::Continue(read_point, newsegment) = design_shape.calculate_point() {
+                if newsegment {
+                    shape.push(segment);
+                    segment = Segment::new();
+                }
+
+                let x = NP as f32 / 100.0 * read_point.x * k + 0.5 * NP as f32 - NP as f32 * k;
+                let y = NP as f32 / 100.0 * read_point.y * k - 0.5 * NP as f32;
+                let point = pt2(x, y);
+
+                segment.push(point);
+            }
+
+            shapes.push(shape);
+        }
+
+        shapes
+    }
 }
 
 impl Default for Params {
     fn default() -> Self {
-        let inner = NoParamsInner();
+        let inner = ParamsInner {
+            raw_shape: RawShape::Horse,
+            shape_program: ShapeProgram::Program1,
+        };
+
         Self {
             inner,
             calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::no_ui_elements),
+            ui_elements: Box::new(ParamsInner::ui_elements),
         }
     }
 }

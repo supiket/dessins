@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/dessins", "crates/dessins-lib", "crates/ui-controlled-params"]
+members = ["crates/dessins-lib", "crates/ui-controlled-params"]
 resolver = "2"
 
 [workspace.package]

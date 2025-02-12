@@ -2112,14 +2112,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dessins"
-version = "0.1.0"
-dependencies = [
- "dessins-lib",
- "nannou",
-]
-
-[[package]]
 name = "dessins-lib"
 version = "0.1.0"
 dependencies = [

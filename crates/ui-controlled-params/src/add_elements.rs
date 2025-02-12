@@ -1,4 +1,4 @@
-use crate::types::*;
+use crate::{parse::parse_range, types::*};
 use quote::quote;
 use syn::{Ident, Type};
 

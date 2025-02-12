@@ -1,5 +1,4 @@
 use nannou::prelude::*;
-use no_params::NoParams;
 
 pub mod chapter_1;
 pub mod chapter_2;
@@ -24,7 +23,7 @@ pub enum DesignParams {
     Composition1(chapter_1::composition_1::Params),
     Composition2(chapter_1::composition_2::Params),
     Jolygon(chapter_1::jolygon::Params),
-    Shape(NoParams),
+    Shape(chapter_2::Params),
     Dragon(chapter_3::Params),
     Fractal(chapter_4::Params),
     Orbital(chapter_5::orbital::Params),
