@@ -8,13 +8,13 @@ pub(crate) fn add_numeric_element(
     range: proc_macro2::TokenStream,
 ) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_numeric_slider(ui, #label, &mut self.#field_name, #range)
+        crate::ui::add_numeric(ui, #label, &mut self.#field_name, #range)
     }
 }
 
 pub(crate) fn add_float_element_pi(label: String, field_name: &Ident) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_float_slider_pi(ui, #label, &mut self.#field_name)
+        crate::ui::add_float_pi(ui, #label, &mut self.#field_name)
     }
 }
 
@@ -23,7 +23,7 @@ pub(crate) fn add_float_element_length(
     field_name: &Ident,
 ) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_float_slider_length(ui, #label, &mut self.#field_name)
+        crate::ui::add_float_length(ui, #label, &mut self.#field_name)
     }
 }
 
@@ -32,7 +32,7 @@ pub(crate) fn add_float_element_position(
     field_name: &Ident,
 ) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_float_slider_position(ui, #label, &mut self.#field_name)
+        crate::ui::add_float_position(ui, #label, &mut self.#field_name)
     }
 }
 
@@ -66,7 +66,7 @@ pub(crate) fn add_expression_f32_element(
                  })*
             self.#field_name.ctx = ctx;
             self.#field_name.ctx_ext = ctx_ext;
-            crate::ui::add_expression_f32_slider(
+            crate::ui::add_expression_f32(
                 ui,
                 #label,
                 &mut self.#field_name,
@@ -79,7 +79,7 @@ pub(crate) fn add_expression_f32_element(
 
 pub(crate) fn add_point2_element(label: String, field_name: &Ident) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_point2_slider(ui, #label, &mut self.#field_name, -0.5..=0.5)
+        crate::ui::add_point2(ui, #label, &mut self.#field_name, -0.5..=0.5)
     }
 }
 
@@ -122,7 +122,7 @@ pub(crate) fn add_vec_elements(
                 || quote! { -1.0..=1.0 },
                 |range_expr| parse_range(&range_expr),
             );
-            add_point2_vector(label, &field_name, range)
+            add_point2_vector(label, field_name, range)
         }
         "f32" => {
             let range = if attrs.is_pi {
@@ -136,12 +136,12 @@ pub(crate) fn add_vec_elements(
             } else {
                 panic!("range is required for {}: Vec<{}>", label, inner_type_name);
             };
-            add_numeric_vector(label, &field_name, range)
+            add_numeric_vector(label, field_name, range)
         }
         _ => {
             if let Some(range_expr) = attrs.range.clone() {
                 let range = parse_range(&range_expr);
-                add_numeric_vector(label, &field_name, range)
+                add_numeric_vector(label, field_name, range)
             } else {
                 panic!("range is required for {}: Vec<{}>", label, inner_type_name);
             }
@@ -165,6 +165,6 @@ pub(crate) fn add_numeric_vector(
     range: proc_macro2::TokenStream,
 ) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_numeric_vector_slider(ui, #label, &mut self.#field_name, #range)
+        crate::ui::add_numeric_vector(ui, #label, &mut self.#field_name, #range)
     }
 }

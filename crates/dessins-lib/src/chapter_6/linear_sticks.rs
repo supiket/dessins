@@ -35,19 +35,27 @@ impl ParamsInner {
             self.r1
                 .ctx
                 .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
-                .unwrap();
+                .expect("setting to value of same type each time");
             self.r1.ctx_ext.remove("i");
-            self.r1.val =
-                evalexpr::eval_number_with_context(&self.r1.expr, &self.r1.ctx).unwrap() as f32;
+            self.r1.val = evalexpr::eval_number_with_context(&self.r1.expr, &self.r1.ctx)
+                .unwrap_or_else(|_| {
+                    self.r1.expr = Self::default_r1_expr();
+                    evalexpr::eval_number_with_context(&self.r1.expr, &self.r1.ctx)
+                        .expect("default expression has to evaluate")
+                }) as f32;
             let r1 = self.r1.val;
 
             self.r2
                 .ctx
                 .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
-                .unwrap();
+                .expect("setting to value of same type each time");
             self.r2.ctx_ext.remove("i");
-            self.r2.val =
-                evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx).unwrap() as f32;
+            self.r2.val = evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx)
+                .unwrap_or_else(|_| {
+                    self.r2.expr = Self::default_r2_expr();
+                    evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx)
+                        .expect("default expression has to evaluate")
+                }) as f32;
             let r2 = self.r2.val;
 
             for j in 0..self.n {
@@ -72,6 +80,14 @@ impl ParamsInner {
 
         shapes
     }
+
+    fn default_r1_expr() -> String {
+        "120.0".to_string()
+    }
+
+    fn default_r2_expr() -> String {
+        "100.0".to_string()
+    }
 }
 
 impl Default for Params {
@@ -81,20 +97,20 @@ impl Default for Params {
 
         let mut ctx = HashMapContext::new();
         ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
-            .unwrap();
+            .expect("setting to value of same type each time");
         ctx.set_value("k".to_string(), evalexpr::Value::Float(k as f64))
-            .unwrap();
+            .expect("setting to value of same type each time");
         ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
-            .unwrap();
+            .expect("setting to value of same type each time");
 
         let r1 = ExpressionF32 {
-            expr: "120".to_string(),
+            expr: ParamsInner::default_r1_expr(),
             ctx: ctx.clone(),
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 120.0,
         };
         let r2 = ExpressionF32 {
-            expr: "100".to_string(),
+            expr: ParamsInner::default_r2_expr(),
             ctx,
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 100.0,

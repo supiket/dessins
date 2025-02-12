@@ -27,10 +27,19 @@ impl ParamsInner {
 
         if self.n as usize != self.rules.len() + 1 {
             self.rules = vec![0; self.n as usize + 1];
-            self.l0.val =
-                evalexpr::eval_number_with_context(&self.l0.expr, &self.l0.ctx).unwrap() as f32;
-            self.a0.val =
-                evalexpr::eval_number_with_context(&self.a0.expr, &self.a0.ctx).unwrap() as f32;
+            self.l0.val = evalexpr::eval_number_with_context(&self.l0.expr, &self.l0.ctx)
+                .unwrap_or_else(|_| {
+                    dbg!("error evaluating");
+                    self.l0.expr = Self::default_l0_expr();
+                    evalexpr::eval_number_with_context(&self.l0.expr, &self.l0.ctx)
+                        .expect("default expression has to evaluate")
+                }) as f32;
+            self.a0.val = evalexpr::eval_number_with_context(&self.a0.expr, &self.a0.ctx)
+                .unwrap_or_else(|_| {
+                    self.a0.expr = Self::default_a0_expr();
+                    evalexpr::eval_number_with_context(&self.a0.expr, &self.a0.ctx)
+                        .expect("default expression has to evaluate")
+                }) as f32;
         }
 
         let p0 = self.p0;
@@ -93,6 +102,14 @@ impl ParamsInner {
 
         shapes
     }
+
+    fn default_l0_expr() -> String {
+        "480 / (math::sqrt(2.0) ^ n)".to_string()
+    }
+
+    fn default_a0_expr() -> String {
+        "-pi / 4 * (n - 2)".to_string()
+    }
 }
 
 impl Default for Params {
@@ -105,18 +122,18 @@ impl Default for Params {
 
         let mut ctx = HashMapContext::new();
         ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
-            .unwrap();
+            .expect("setting to value of same type each time");
         let l0 = ExpressionF32 {
-            expr: "480 / (math::sqrt(2.0) ^ n)".to_string(),
+            expr: ParamsInner::default_l0_expr(),
             ctx: ctx.clone(),
             ctx_ext: Default::default(),
             val: l0_fn(n),
         };
         let mut ctx = ctx.clone();
         ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
-            .unwrap();
+            .expect("setting to value of same type each time");
         let a0 = ExpressionF32 {
-            expr: "-pi / 4 * (n - 2)".to_string(),
+            expr: ParamsInner::default_a0_expr(),
             ctx,
             ctx_ext: Default::default(),
             val: a0_fn(n),

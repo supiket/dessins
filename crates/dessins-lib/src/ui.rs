@@ -19,7 +19,7 @@ pub fn ui_color(ui: &mut egui::Ui) -> Option<Color> {
     }
 }
 
-pub fn add_numeric_slider<T: egui::emath::Numeric>(
+pub fn add_numeric<T: egui::emath::Numeric>(
     ui: &mut egui::Ui,
     label: &str,
     value: &mut T,
@@ -32,15 +32,15 @@ pub fn add_numeric_slider<T: egui::emath::Numeric>(
     .changed()
 }
 
-pub fn add_float_slider_position(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
-    add_float_slider_np(ui, label, value, -0.5..=0.5)
+pub fn add_float_position(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    add_float_np(ui, label, value, -0.5..=0.5)
 }
 
-pub fn add_float_slider_length(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
-    add_float_slider_np(ui, label, value, 0.0..=1.0)
+pub fn add_float_length(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    add_float_np(ui, label, value, 0.0..=1.0)
 }
 
-fn add_float_slider_np(
+fn add_float_np(
     ui: &mut egui::Ui,
     label: &str,
     value: &mut f32,
@@ -62,7 +62,7 @@ fn add_float_slider_np(
     recalculate
 }
 
-pub fn add_float_slider_pi(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+pub fn add_float_pi(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
     ui.label(label);
     let mut val = *value / PI;
 
@@ -79,7 +79,7 @@ pub fn add_float_slider_pi(ui: &mut egui::Ui, label: &str, value: &mut f32) -> b
     recalculate
 }
 
-pub fn add_point2_slider(
+pub fn add_point2(
     ui: &mut egui::Ui,
     label: &str,
     value: &mut Point2,
@@ -114,7 +114,7 @@ pub fn add_point2_slider(
     changed
 }
 
-pub fn add_numeric_vector_slider<T: egui::emath::Numeric>(
+pub fn add_numeric_vector<T: egui::emath::Numeric>(
     ui: &mut egui::Ui,
     label: &str,
     value: &mut [T],
@@ -143,13 +143,13 @@ pub fn add_point2_vector(
     let mut changed = false;
     ui.collapsing(label, |ui| {
         for (index, val) in value.iter_mut().enumerate() {
-            changed |= add_point2_slider(ui, &index.to_string(), val, range.clone());
+            changed |= add_point2(ui, &index.to_string(), val, range.clone());
         }
     });
     changed
 }
 
-pub fn add_expression_f32_slider(
+pub fn add_expression_f32(
     ui: &mut egui::Ui,
     label: &str,
     value: &mut ExpressionF32,

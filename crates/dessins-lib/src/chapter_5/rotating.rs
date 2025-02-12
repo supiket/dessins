@@ -51,10 +51,14 @@ impl ParamsInner {
             self.s
                 .ctx
                 .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
-                .unwrap();
+                .expect("setting to value of same type each time");
             self.s.ctx_ext.remove("i");
-            self.s.val =
-                evalexpr::eval_number_with_context(&self.s.expr, &self.s.ctx).unwrap() as f32;
+            self.s.val = evalexpr::eval_number_with_context(&self.s.expr, &self.s.ctx)
+                .unwrap_or_else(|_| {
+                    self.s.expr = Self::default_s_expr();
+                    evalexpr::eval_number_with_context(&self.s.expr, &self.s.ctx)
+                        .expect("default expression has to evaluate")
+                }) as f32;
             let s = self.s.val;
             let an = 2.0 * PI * i / n;
             let c1 = (h1 * an * t1).cos();
@@ -73,6 +77,10 @@ impl ParamsInner {
 
         shapes
     }
+
+    fn default_s_expr() -> String {
+        "math::cos(4.0 * pi * i / n) * 0.4 + 0.6".to_string()
+    }
 }
 
 impl Default for Params {
@@ -80,11 +88,11 @@ impl Default for Params {
         let n = 2000;
         let mut ctx = HashMapContext::new();
         ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
-            .unwrap();
+            .expect("setting to value of same type each time");
         ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
-            .unwrap();
+            .expect("setting to value of same type each time");
         let s = ExpressionF32 {
-            expr: "math::cos(4.0 * pi * i / n) * 0.4 + 0.6".to_string(),
+            expr: ParamsInner::default_s_expr(),
             ctx,
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 1.0,

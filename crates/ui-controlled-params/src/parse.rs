@@ -70,7 +70,7 @@ pub(crate) fn parse_range_attr(list: syn::MetaList) -> anyhow::Result<syn::ExprR
     if let Ok(range_expr) = syn::parse2::<syn::ExprRange>(list.tokens.clone()) {
         // Validate that we have both bounds
         if range_expr.start.is_none() || range_expr.end.is_none() {
-            panic!("Range must have both start and end bounds");
+            panic!("range must have both start and end bounds");
         }
 
         // Validate each bound is either a literal, -literal, PI, or -PI
@@ -84,11 +84,11 @@ pub(crate) fn parse_range_attr(list: syn::MetaList) -> anyhow::Result<syn::ExprR
                     match (&expr_unary.op, &*expr_unary.expr) {
                         (syn::UnOp::Neg(_), syn::Expr::Lit(_)) => {} // -literal is fine
                         (syn::UnOp::Neg(_), syn::Expr::Path(path)) if path.path.is_ident("PI") => {} // -PI is fine
-                        _ => panic!("Range bounds must be literals, negative literals, or PI"),
+                        _ => panic!("range bounds must be literals, negative literals, or PI"),
                     }
                 }
                 syn::Expr::Path(path) if path.path.is_ident("PI") => {} // PI is fine
-                _ => panic!("Range bounds must be literals, negative literals, or PI"),
+                _ => panic!("range bounds must be literals, negative literals, or PI"),
             }
         }
         Ok(range_expr)
@@ -102,7 +102,7 @@ pub(crate) fn parse_expression_attr(list: syn::MetaList) -> anyhow::Result<Expre
         .parse_args_with(|input: syn::parse::ParseStream| {
             input.parse_terminated(syn::Meta::parse, syn::Token![,])
         })
-        .expect("Failed to parse expression attribute");
+        .expect("failed to parse expression attribute");
 
     let mut found_default = false;
     let mut ctx: ContextVars = Default::default();
@@ -177,7 +177,7 @@ pub(crate) fn parse_expression_context(list: syn::MetaList) -> ContextVars {
 
             Ok((vars, vars_ext))
         })
-        .expect("Failed to parse context variables");
+        .expect("failed to parse context variables");
 
     ContextVars {
         int: vars.into_iter().map(|ident| ident.to_string()).collect(),

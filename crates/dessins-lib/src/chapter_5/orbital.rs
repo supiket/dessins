@@ -47,10 +47,14 @@ impl ParamsInner {
             self.r2
                 .ctx
                 .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
-                .unwrap();
+                .expect("setting to value of same type each time");
             self.r2.ctx_ext.remove("i");
-            self.r2.val =
-                evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx).unwrap() as f32;
+            self.r2.val = evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx)
+                .unwrap_or_else(|_| {
+                    self.r2.expr = Self::default_r2_expr();
+                    evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx)
+                        .expect("default expression has to evaluate")
+                }) as f32;
 
             let r2 = self.r2.val;
             let a1 = 2.0 * PI * i / n * t1;
@@ -67,6 +71,10 @@ impl ParamsInner {
 
         shapes
     }
+
+    fn default_r2_expr() -> String {
+        "96.0 * (1 - i / n)".to_string()
+    }
 }
 
 impl Default for Params {
@@ -74,9 +82,9 @@ impl Default for Params {
         let n = 2000;
         let mut ctx = HashMapContext::new();
         ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
-            .unwrap();
+            .expect("setting to value of same type each time");
         let r2 = ExpressionF32 {
-            expr: "96.0 * (1 - i / n)".to_string(),
+            expr: ParamsInner::default_r2_expr(),
             ctx,
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 0.0,

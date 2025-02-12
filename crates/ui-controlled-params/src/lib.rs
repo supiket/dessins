@@ -19,9 +19,9 @@ pub fn derive_design_params(input: TokenStream) -> TokenStream {
     let fields = match input.data {
         Data::Struct(ref data) => match data.fields {
             Fields::Named(ref fields) => &fields.named,
-            _ => panic!("Only named fields are supported"),
+            _ => panic!("only named fields are supported"),
         },
-        _ => panic!("Only structs are supported"),
+        _ => panic!("only structs are supported"),
     };
 
     let params = fields
@@ -57,21 +57,21 @@ fn match_param_field(
                 "usize" | "u32" => {
                     if let Some(range_expr) = attrs.range.as_ref() {
                         let range = parse_range(range_expr);
-                        add_numeric_element(label, &field_name, range)
+                        add_numeric_element(label, field_name, range)
                     } else {
                         panic!("fields missing for {}: {}", label, type_name);
                     }
                 }
                 "f32" => {
                     if attrs.is_pi {
-                        add_float_element_pi(label, &field_name)
+                        add_float_element_pi(label, field_name)
                     } else if attrs.is_length {
-                        add_float_element_length(label, &field_name)
+                        add_float_element_length(label, field_name)
                     } else if attrs.is_position {
-                        add_float_element_position(label, &field_name)
+                        add_float_element_position(label, field_name)
                     } else if let Some(range_expr) = attrs.range.as_ref() {
                         let range = parse_range(range_expr);
-                        add_numeric_element(label, &field_name, range)
+                        add_numeric_element(label, field_name, range)
                     } else {
                         panic!("fields missing for {}: {}", label, type_name);
                     }
@@ -82,10 +82,10 @@ fn match_param_field(
                     let range_expr = attrs.range.as_ref().expect("range missing for expression");
                     let range = parse_range(range_expr);
 
-                    add_expression_f32_element(label, &field_name, range, expr_with_ctx)
+                    add_expression_f32_element(label, field_name, range, expr_with_ctx)
                 }
-                "Point2" => add_point2_element(label, &field_name),
-                "Vec" => add_vec_elements(&type_path, &attrs, label, &field_name),
+                "Point2" => add_point2_element(label, field_name),
+                "Vec" => add_vec_elements(type_path, &attrs, label, field_name),
                 _ => quote! {
                     #type_path::ui_elements(&mut self.#field_name, ui)
                 },
