@@ -12,9 +12,19 @@ pub(crate) fn add_numeric_element(
     }
 }
 
+pub(crate) fn add_float(
+    label: String,
+    field_name: &Ident,
+    range: proc_macro2::TokenStream,
+) -> proc_macro2::TokenStream {
+    quote! {
+        crate::ui::add_float(ui, #label, &mut self.#field_name, #range)
+    }
+}
+
 pub(crate) fn add_float_element_pi(label: String, field_name: &Ident) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_float_pi(ui, #label, &mut self.#field_name)
+        crate::ui::add_float_pi_with_label(ui, #label, &mut self.#field_name)
     }
 }
 
@@ -23,7 +33,7 @@ pub(crate) fn add_float_element_length(
     field_name: &Ident,
 ) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_float_length(ui, #label, &mut self.#field_name)
+        crate::ui::add_float_length_with_label(ui, #label, &mut self.#field_name)
     }
 }
 
@@ -32,7 +42,7 @@ pub(crate) fn add_float_element_position(
     field_name: &Ident,
 ) -> proc_macro2::TokenStream {
     quote! {
-        crate::ui::add_float_position(ui, #label, &mut self.#field_name)
+        crate::ui::add_float_position_with_label(ui, #label, &mut self.#field_name)
     }
 }
 
@@ -125,18 +135,21 @@ pub(crate) fn add_vec_elements(
             add_point2_vector(label, field_name, range)
         }
         "f32" => {
-            let range = if attrs.is_pi {
-                quote! { -PI..=PI }
+            if attrs.is_pi {
+                add_angle_vector(label, field_name)
             } else if attrs.is_length {
-                quote! { 0.0..=(crate::NP as f32) }
+                add_length_vector(label, field_name)
             } else if attrs.is_position {
-                quote! { -(crate::NP as f32)..=(crate::NP as f32) }
+                add_position_vector(label, field_name)
             } else if let Some(range_expr) = attrs.range.clone() {
-                parse_range(&range_expr)
+                let range = parse_range(&range_expr);
+                add_float_vector(label, field_name, range)
             } else {
-                panic!("range is required for {}: Vec<{}>", label, inner_type_name);
-            };
-            add_numeric_vector(label, field_name, range)
+                panic!(
+                    "additional attribute pi | length | position | range is required for {}: Vec<{}>",
+                    label, inner_type_name
+                );
+            }
         }
         _ => {
             if let Some(range_expr) = attrs.range.clone() {
@@ -166,5 +179,33 @@ pub(crate) fn add_numeric_vector(
 ) -> proc_macro2::TokenStream {
     quote! {
         crate::ui::add_numeric_vector(ui, #label, &mut self.#field_name, #range)
+    }
+}
+
+pub(crate) fn add_float_vector(
+    label: String,
+    field_name: &Ident,
+    range: proc_macro2::TokenStream,
+) -> proc_macro2::TokenStream {
+    quote! {
+        crate::ui::add_float_vector(ui, #label, &mut self.#field_name, #range)
+    }
+}
+
+pub(crate) fn add_length_vector(label: String, field_name: &Ident) -> proc_macro2::TokenStream {
+    quote! {
+        crate::ui::add_length_vector(ui, #label, &mut self.#field_name)
+    }
+}
+
+pub(crate) fn add_position_vector(label: String, field_name: &Ident) -> proc_macro2::TokenStream {
+    quote! {
+        crate::ui::add_position_vector(ui, #label, &mut self.#field_name)
+    }
+}
+
+pub(crate) fn add_angle_vector(label: String, field_name: &Ident) -> proc_macro2::TokenStream {
+    quote! {
+        crate::ui::add_angle_vector(ui, #label, &mut self.#field_name)
     }
 }

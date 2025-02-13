@@ -71,7 +71,7 @@ fn match_param_field(
                         add_float_element_position(label, field_name)
                     } else if let Some(range_expr) = attrs.range.as_ref() {
                         let range = parse_range(range_expr);
-                        add_numeric_element(label, field_name, range)
+                        add_float(label, field_name, range)
                     } else {
                         panic!("fields missing for {}: {}", label, type_name);
                     }

@@ -69,7 +69,7 @@ pub fn update(app: &App, model: &mut Model) {
         let mut egui_ctx = app.egui();
         let ctx = egui_ctx.get_mut();
 
-        egui::Window::new("params").show(ctx, |ui| {
+        egui::SidePanel::left("params").show(ctx, |ui| {
             recalculate = match_ui_elements(&mut model.params, ui);
 
             if let Some(color) = ui::ui_color(ui) {

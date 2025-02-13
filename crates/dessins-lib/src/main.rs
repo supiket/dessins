@@ -10,15 +10,13 @@ pub fn model(app: &App) -> Model {
             .new_window()
             .camera(camera)
             .primary()
-            .size_pixels(1920, 1080)
             .view(dessins_lib::view)
             .build();
     } else {
         app.new_window().view(dessins_lib::view).build();
     }
 
-    let params =
-        DesignParams::LinearModulo(dessins_lib::chapter_6::linear_modulo::Params::default());
+    let params = DesignParams::SimpleFractal(dessins_lib::chapter_7::Params::default());
 
     {
         Model {
@@ -54,7 +52,7 @@ pub fn update(app: &App, model: &mut Model) {
             })
         });
 
-        egui::Window::new("params").show(ctx, |ui| {
+        egui::SidePanel::left("params").show(ctx, |ui| {
             recalculate = match_ui_elements(&mut model.params, ui);
 
             if let Some(color) = ui_color(ui) {
@@ -124,8 +122,12 @@ fn design_buttons(params: &DesignParams, ui: &mut crate::egui::Ui) -> Option<Des
 
 fn main() {
     if cfg!(target_arch = "wasm32") {
-        nannou::app(model).update(update).view(view).run();
+        nannou::app(model)
+            .update(update)
+            .view(view)
+            .fullscreen()
+            .run();
     } else {
-        nannou::app(model).update(update).run();
+        nannou::app(model).update(update).fullscreen().run();
     }
 }

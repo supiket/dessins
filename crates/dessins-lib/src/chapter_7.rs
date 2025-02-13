@@ -17,9 +17,9 @@ pub struct ParamsInner {
     pub n: usize, // # of sub-segments per segment
     #[param(range(1..=10))]
     pub k: usize, // depth
-    #[param(position)]
+    #[param]
     pub positions: Vec<Point2>,
-    #[param(length)]
+    #[param(range(0.0..=30.0))]
     pub lengths: Vec<f32>,
     #[param(pi)]
     pub angles: Vec<f32>,
@@ -120,20 +120,20 @@ impl ParamsInner {
 impl Default for Params {
     fn default() -> Self {
         let np = NP as f32;
+        let y0 = (f32::sqrt(3.0) / 2.0 - 0.5) * np;
         Self {
             inner: ParamsInner {
-                m: 4,
+                m: 3,
                 n: 4,
-                k: 5,
+                k: 4,
                 positions: vec![
-                    pt2(-0.5 * np, -0.5 * np),
-                    pt2(0.5 * np, -0.5 * np),
-                    pt2(0.5 * np, 0.5 * np),
-                    pt2(-0.5 * np, 0.5 * np),
-                    pt2(-0.5 * np, -0.5 * np),
+                    pt2(-0.5 * np, y0),
+                    pt2(0.5 * np, y0),
+                    pt2(0.0 * np, -0.5 * np),
+                    pt2(-0.5 * np, y0),
                 ],
-                lengths: vec![1.0 / (2.0 + 2.0 * (0.45 * PI).cos()); 4],
-                angles: vec![0.0, 0.45 * PI, -0.45 * PI, 0.0],
+                lengths: vec![1.0 / 3.0; 4],
+                angles: vec![0.0, PI / 3.0, -PI / 3.0, 0.0],
             },
             calculate_shapes: Box::new(ParamsInner::calculate_shapes),
             ui_elements: Box::new(ParamsInner::ui_elements),
