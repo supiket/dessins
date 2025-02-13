@@ -2112,7 +2112,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "dessins-lib"
+name = "dessins"
 version = "0.1.0"
 dependencies = [
  "evalexpr",

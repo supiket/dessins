@@ -1,4 +1,4 @@
-use dessins_lib::{
+use dessins::{
     draw_segment, match_calculate_shapes, match_ui_elements, ui::ui_color, DesignParams, Model,
 };
 use nannou::prelude::*;
@@ -10,13 +10,13 @@ pub fn model(app: &App) -> Model {
             .new_window()
             .camera(camera)
             .primary()
-            .view(dessins_lib::view)
+            .view(dessins::view)
             .build();
     } else {
-        app.new_window().view(dessins_lib::view).build();
+        app.new_window().view(dessins::view).build();
     }
 
-    let params = DesignParams::SimpleFractal(dessins_lib::chapter_7::Params::default());
+    let params = DesignParams::SimpleFractal(dessins::chapter_7::Params::default());
 
     {
         Model {
@@ -71,49 +71,49 @@ pub fn update(app: &App, model: &mut Model) {
 
 fn design_buttons(params: &DesignParams, ui: &mut crate::egui::Ui) -> Option<DesignParams> {
     let mut new_design = Option::None;
-    if let Some(new) = dessins_lib::chapter_1::polygon::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_1::polygon::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_1::star::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_1::star::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_1::composition_1::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_1::composition_1::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_1::composition_2::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_1::composition_2::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_1::jolygon::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_1::jolygon::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_2::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_2::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_3::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_3::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_4::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_4::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_5::orbital::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_5::orbital::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_5::rotating::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_5::rotating::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_5::spiral::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_5::spiral::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_6::bipartite::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_6::bipartite::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_6::linear_modulo::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_6::linear_modulo::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_6::linear_sticks::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_6::linear_sticks::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins_lib::chapter_7::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_7::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
 

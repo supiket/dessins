@@ -1,5 +1,5 @@
 [package]
-name = "dessins-lib"
+name = "dessins"
 authors.workspace = true
 edition.workspace = true
 version.workspace = true
