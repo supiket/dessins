@@ -32,7 +32,9 @@ pub enum DesignParams {
     Bipartite(chapter_6::bipartite::Params),
     LinearModulo(chapter_6::linear_modulo::Params),
     LinearSticks(chapter_6::linear_sticks::Params),
-    SimpleFractal(chapter_7::Params),
+    SimpleFractal(chapter_7::simple_fractal::Params),
+    SimpleRoundedFractal(chapter_7::simple_rounded_fractal::Params),
+    SimpleDeformedFractal(chapter_7::simple_deformed_fractal::Params),
 }
 
 pub struct Model {
@@ -117,6 +119,8 @@ pub fn match_ui_elements(params: &mut DesignParams, ui: &mut egui::Ui) -> bool {
         DesignParams::LinearModulo(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::LinearSticks(params) => (params.ui_elements)(&mut params.inner, ui),
         DesignParams::SimpleFractal(params) => (params.ui_elements)(&mut params.inner, ui),
+        DesignParams::SimpleRoundedFractal(params) => (params.ui_elements)(&mut params.inner, ui),
+        DesignParams::SimpleDeformedFractal(params) => (params.ui_elements)(&mut params.inner, ui),
     }
 }
 
@@ -137,5 +141,7 @@ pub fn match_calculate_shapes(params: &mut DesignParams) -> Shapes {
         DesignParams::LinearModulo(params) => (params.calculate_shapes)(&mut params.inner),
         DesignParams::LinearSticks(params) => (params.calculate_shapes)(&mut params.inner),
         DesignParams::SimpleFractal(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::SimpleRoundedFractal(params) => (params.calculate_shapes)(&mut params.inner),
+        DesignParams::SimpleDeformedFractal(params) => (params.calculate_shapes)(&mut params.inner),
     }
 }

@@ -119,6 +119,16 @@ pub enum ShapeProgram {
     Program13,
 }
 
+fn sign(val: f32) -> f32 {
+    if val < 0.0 {
+        -1.0
+    } else if val == 0.0 {
+        val
+    } else {
+        1.0
+    }
+}
+
 impl RawShape {
     fn ui_elements(&mut self, ui: &mut egui::Ui) -> bool {
         let mut changed = false;
@@ -515,9 +525,9 @@ impl ParamsInner {
                     let di = (x_ * x_ + y_ * y_).sqrt();
 
                     let an = if x_ != 0.0 {
-                        (y_ / x_).atan() + PI * (1.0 - if x_ < 0.0 { -1.0 } else { 1.0 }) / 2.0
+                        (y_ / x_).atan() + PI * (1.0 - sign(x_)) / 2.0
                     } else {
-                        PI / 2.0 * if y_ < 0.0 { -1.0 } else { 1.0 }
+                        PI / 2.0 * sign(y_)
                     };
                     let di = di / NP as f32 * 3.0;
                     let di = di / (1.0 + di) * NP as f32 * 0.65;
@@ -556,8 +566,8 @@ impl ParamsInner {
 
                     let xx = (read_point.x + j as f32 * 20.0 - 20.0) / 100.0;
                     let yy = (read_point.y + i as f32 * 20.0 - 20.0) / 100.0;
-                    let x = abs(xx).powf(0.7) * if xx < 0.0 { -1.0 } else { 1.0 } * NP as f32 / 2.0;
-                    let y = abs(yy).powf(0.7) * if yy < 0.0 { -1.0 } else { 1.0 } * NP as f32 / 2.0;
+                    let x = abs(xx).powf(0.7) * sign(xx) * NP as f32 / 2.0;
+                    let y = abs(yy).powf(0.7) * sign(yy) * NP as f32 / 2.0;
 
                     let point = pt2(x, y);
 

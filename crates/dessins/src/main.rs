@@ -16,7 +16,9 @@ pub fn model(app: &App) -> Model {
         app.new_window().view(dessins::view).build();
     }
 
-    let params = DesignParams::SimpleFractal(dessins::chapter_7::Params::default());
+    let params = DesignParams::SimpleDeformedFractal(
+        dessins::chapter_7::simple_deformed_fractal::Params::default(),
+    );
 
     {
         Model {
@@ -113,7 +115,12 @@ fn design_buttons(params: &DesignParams, ui: &mut crate::egui::Ui) -> Option<Des
     if let Some(new) = dessins::chapter_6::linear_sticks::Params::ui_design_type(params, ui) {
         new_design = Some(new);
     }
-    if let Some(new) = dessins::chapter_7::Params::ui_design_type(params, ui) {
+    if let Some(new) = dessins::chapter_7::simple_fractal::Params::ui_design_type(params, ui) {
+        new_design = Some(new);
+    }
+    if let Some(new) =
+        dessins::chapter_7::simple_rounded_fractal::Params::ui_design_type(params, ui)
+    {
         new_design = Some(new);
     }
 

@@ -19,14 +19,14 @@ pub fn ui_color(ui: &mut egui::Ui) -> Option<Color> {
     }
 }
 
-fn numeric<'a, T: egui::emath::Numeric>(
-    value: &'a mut T,
+fn numeric<T: egui::emath::Numeric>(
+    value: &mut T,
     range: RangeInclusive<T>,
-) -> egui::Slider<'a> {
+) -> egui::Slider<'_> {
     egui::Slider::new(value, range).custom_parser(|str| evalexpr::eval_number(str).ok())
 }
 
-fn float<'a>(value: &'a mut f32, range: RangeInclusive<f32>) -> egui::Slider<'a> {
+fn float(value: &mut f32, range: RangeInclusive<f32>) -> egui::Slider<'_> {
     let mut ctx: HashMapContext<evalexpr::DefaultNumericTypes> = HashMapContext::new();
     ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
         .expect("setting to value of same type each time");
@@ -34,11 +34,11 @@ fn float<'a>(value: &'a mut f32, range: RangeInclusive<f32>) -> egui::Slider<'a>
         .custom_parser(move |str| evalexpr::eval_number_with_context(str, &ctx).ok())
 }
 
-fn float_np<'a>(value: &'a mut f32, range: RangeInclusive<f32>) -> egui::Slider<'a> {
+fn float_np(value: &mut f32, range: RangeInclusive<f32>) -> egui::Slider<'_> {
     float(value, range).suffix(format!("res (={})", NP))
 }
 
-fn float_pi<'a>(value: &'a mut f32) -> egui::Slider<'a> {
+fn float_pi(value: &mut f32) -> egui::Slider<'_> {
     float(value, -PI..=PI).suffix("π")
 }
 
@@ -70,9 +70,9 @@ pub fn add_float_np(ui: &mut egui::Ui, value: &mut f32, range: RangeInclusive<f3
 }
 
 pub fn add_float_pi(ui: &mut egui::Ui, value: &mut f32) -> bool {
-    let mut val = *value / PI as f32;
+    let mut val = *value / PI;
     let changed = ui.add(float_pi(&mut val)).changed();
-    *value = val * PI as f32;
+    *value = val * PI;
     changed
 }
 
