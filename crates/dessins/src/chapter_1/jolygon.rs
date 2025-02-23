@@ -9,7 +9,7 @@ pub struct ParamsInner {
     pub k: u32, // # segments
     #[param(pi)]
     pub an: f32, // angle of two consecutive segments
-    #[param(length)]
+    #[param(range(0.9..=1.0))]
     pub ra: f32, // ratio of the lengths of two consecutive segments
     #[param(pi)]
     pub aa: f32, // angle of the first segment with horizontal

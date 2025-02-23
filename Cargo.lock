@@ -1040,16 +1040,17 @@ dependencies = [
 [[package]]
 name = "bevy_nannou"
 version = "0.1.0"
-source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
+source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
 dependencies = [
  "bevy",
+ "bevy_nannou_derive",
  "bevy_nannou_draw",
 ]
 
 [[package]]
 name = "bevy_nannou_derive"
 version = "0.1.0"
-source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
+source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -1058,7 +1059,7 @@ dependencies = [
 [[package]]
 name = "bevy_nannou_draw"
 version = "0.1.0"
-source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
+source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
 dependencies = [
  "bevy",
  "bitflags 2.8.0",
@@ -1598,9 +1599,9 @@ dependencies = [
 
 [[package]]
 name = "built"
-version = "0.7.6"
+version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73848a43c5d63a1251d17adf6c2bf78aa94830e60a335a95eeea45d6ba9e1e4d"
+checksum = "56ed6191a7e78c36abdb16ab65341eefd73d64d303fffccdbb00d51e4205967b"
 
 [[package]]
 name = "bumpalo"
@@ -2115,6 +2116,9 @@ dependencies = [
 name = "dessins"
 version = "0.1.0"
 dependencies = [
+ "bevy",
+ "bevy_egui",
+ "bevy_nannou",
  "evalexpr",
  "nannou",
  "ui-controlled-params",
@@ -3634,13 +3638,12 @@ dependencies = [
 [[package]]
 name = "nannou"
 version = "0.19.0"
-source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
+source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
  "bevy_egui",
  "bevy_nannou",
- "bevy_nannou_derive",
  "find_folder",
  "image 0.25.5",
  "lyon",
@@ -3656,7 +3659,7 @@ dependencies = [
 [[package]]
 name = "nannou_core"
 version = "0.19.0"
-source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
+source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
 dependencies = [
  "glam",
  "num-traits",
@@ -3666,7 +3669,7 @@ dependencies = [
 [[package]]
 name = "nannou_wgpu"
 version = "0.19.0"
-source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#387ec36f08f300e121f81e8f54960bfa652eaa96"
+source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
 dependencies = [
  "futures",
  "image 0.25.5",
@@ -6030,7 +6033,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]

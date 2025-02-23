@@ -37,6 +37,7 @@ pub enum DesignParams {
     SimpleDeformedFractal(chapter_7::simple_deformed_fractal::Params),
 }
 
+#[derive(Resource)]
 pub struct Model {
     pub params: DesignParams,
     pub points: Shapes,

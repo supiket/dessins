@@ -19,10 +19,7 @@ pub fn ui_color(ui: &mut egui::Ui) -> Option<Color> {
     }
 }
 
-fn numeric<T: egui::emath::Numeric>(
-    value: &mut T,
-    range: RangeInclusive<T>,
-) -> egui::Slider<'_> {
+fn numeric<T: egui::emath::Numeric>(value: &mut T, range: RangeInclusive<T>) -> egui::Slider<'_> {
     egui::Slider::new(value, range).custom_parser(|str| evalexpr::eval_number(str).ok())
 }
 

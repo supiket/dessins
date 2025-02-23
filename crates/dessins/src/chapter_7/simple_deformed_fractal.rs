@@ -1,4 +1,4 @@
-use crate::{chapter_1::polygon, Segment, Shape, Shapes, NP};
+use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
 use ui_controlled_params::UiControlledParams;
 
@@ -10,16 +10,12 @@ pub type InnerSegment = Segment;
 pub struct ParamsInner {
     #[param]
     pub deformation: Deformation,
-    #[param(range(3..=10))]
     pub m: usize, // # of segments in starting curve
-    #[param(range(1..=10))]
     pub n: usize, // # of sub-segments per segment
-    #[param(range(1..=10))]
+    #[param(range(1..=8))]
     pub k: usize, // depth
     pub positions: Vec<Point2>,
-    #[param(range(0.0..=30.0))]
     pub lengths: Vec<f32>,
-    #[param(pi)]
     pub angles: Vec<f32>,
 }
 
@@ -379,28 +375,19 @@ impl ParamsInner {
     }
 
     fn set_initials(&mut self) {
-        if self.positions.len() != self.m + 1 {
-            self.positions
-                .resize_with(Self::calculate_positions(self.m).len(), Default::default);
-        }
-        if self.lengths.len() != self.n {
-            self.lengths.resize_with(
-                Self::calculate_lengths(self.m, self.n).len(),
-                Default::default,
-            );
-        }
-        if self.angles.len() != self.n {
-            self.angles.resize_with(
-                Self::calculate_angles(self.m, self.n).len(),
-                Default::default,
+        self.m = 3;
+        self.n = 4;
+
+        self.positions.resize(self.m + 1, Default::default());
+        for ij in 0..=3 {
+            self.positions[ij] = pt2(
+                NP as f32 / 2.0 * (2.0 * ij as f32 * PI / 3.0).sin(),
+                NP as f32 / 2.0 * (2.0 * ij as f32 * PI / 3.0).cos(),
             );
         }
 
-        for ij in 0..=3 {
-            let x = NP as f32 / 2.0 * (2.0 * ij as f32 * PI / 3.0).sin();
-            let y = NP as f32 / 2.0 * (2.0 * ij as f32 * PI / 3.0).cos();
-            self.positions[ij] = pt2(x, y);
-        }
+        self.lengths = vec![1.0 / 3.0; self.n];
+        self.angles = vec![0.0, PI / 3.0, -PI / 3.0, 0.0];
     }
 
     fn set_initials_2(&mut self) {
@@ -418,37 +405,6 @@ impl ParamsInner {
         self.lengths = vec![1.0 / (2.0 + 2.0 * (0.48 * PI).cos()); self.n];
         self.angles = vec![0.0, 0.48 * PI, -0.48 * PI, 0.0];
     }
-
-    fn calculate_positions(m: usize) -> Vec<Point2> {
-        let params = polygon::ParamsInner {
-            k: m as u32,
-            r: NP as f32 * 0.5,
-            ad: 0.0,
-        };
-        let mut points = vec![];
-        for i in 0..m {
-            let point = params.calculate_point(i as u32);
-            points.push(point);
-        }
-        points.push(points[0]);
-        points
-    }
-
-    fn calculate_lengths(m: usize, n: usize) -> Vec<f32> {
-        vec![1.0 / (m as f32); n]
-    }
-
-    fn calculate_angles(m: usize, n: usize) -> Vec<f32> {
-        let mut angles = vec![0.0];
-
-        for i in 1..(n - 1) {
-            angles.push((PI / (m as f32)) * if i % 2 == 1 { 1.0 } else { -1.0 });
-        }
-
-        angles.push(0.0);
-
-        angles
-    }
 }
 
 impl Default for Params {
@@ -460,8 +416,8 @@ impl Default for Params {
                 n: 4,
                 k: 4,
                 positions: vec![],
-                lengths: vec![1.0 / 3.0; 4],
-                angles: vec![0.0, PI / 3.0, -PI / 3.0, 0.0],
+                lengths: vec![],
+                angles: vec![],
             },
             calculate_shapes: Box::new(ParamsInner::calculate_shapes),
             ui_elements: Box::new(ParamsInner::ui_elements),
