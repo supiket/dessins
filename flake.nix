@@ -23,7 +23,12 @@
           version = "0.1.0";
           src = ./.;
 
-          cargoLock.lockFile = ./Cargo.lock;
+          cargoLock = {
+            lockFile = ./Cargo.lock;
+            outputHashes = {
+              "bevy_nannou-0.1.0" = "sha256-C03XqdM+1lW49VqT8hwX3Lta0QIHtu5BYHfRgMzmJGQ=";
+            };
+          };
           cargoToml = ./crates/dessins/Cargo.toml;
           cargoBuildTarget = "wasm32-unknown-unknown";
           buildPhase = ''
