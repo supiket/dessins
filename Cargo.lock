@@ -1040,7 +1040,7 @@ dependencies = [
 [[package]]
 name = "bevy_nannou"
 version = "0.1.0"
-source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#c7e44053d20fee36cea8086719b04d1ee6b7e656"
 dependencies = [
  "bevy",
  "bevy_nannou_derive",
@@ -1050,7 +1050,7 @@ dependencies = [
 [[package]]
 name = "bevy_nannou_derive"
 version = "0.1.0"
-source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#c7e44053d20fee36cea8086719b04d1ee6b7e656"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -1059,7 +1059,7 @@ dependencies = [
 [[package]]
 name = "bevy_nannou_draw"
 version = "0.1.0"
-source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#c7e44053d20fee36cea8086719b04d1ee6b7e656"
 dependencies = [
  "bevy",
  "bitflags 2.8.0",
@@ -3638,7 +3638,7 @@ dependencies = [
 [[package]]
 name = "nannou"
 version = "0.19.0"
-source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#c7e44053d20fee36cea8086719b04d1ee6b7e656"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
@@ -3659,7 +3659,7 @@ dependencies = [
 [[package]]
 name = "nannou_core"
 version = "0.19.0"
-source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#c7e44053d20fee36cea8086719b04d1ee6b7e656"
 dependencies = [
  "glam",
  "num-traits",
@@ -3669,7 +3669,7 @@ dependencies = [
 [[package]]
 name = "nannou_wgpu"
 version = "0.19.0"
-source = "git+https://github.com/tychedelia/nannou.git?branch=bevy_examples#9f6e53b31296fcebe6fdd3bea5c869bb3bad332e"
+source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#c7e44053d20fee36cea8086719b04d1ee6b7e656"
 dependencies = [
  "futures",
  "image 0.25.5",

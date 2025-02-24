@@ -11,8 +11,8 @@ version = "0.1.0"
 anyhow = "1.0"
 bevy = "0.15"
 bevy_egui = "0.32.0"
-bevy_nannou = { git = "https://github.com/tychedelia/nannou.git", branch = "bevy_examples" }
-nannou = { git = "https://github.com/tychedelia/nannou.git", branch = "bevy_examples", features = [ "egui" ] }
+bevy_nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor" }
+nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor", features = [ "egui" ] }
 dessins = { path = "crates/dessins", version = "0.1.0" }
 ui-controlled-params = { path = "crates/ui-controlled-params", version = "0.1.0" }
 evalexpr = "12.0.2"
