@@ -9,7 +9,7 @@ pub struct ParamsInner {
     pub n: u32,
     #[param(label="fractal k", range(2..=12))]
     pub k: u32,
-    #[param(label = "fractal ra", length)]
+    #[param(label = "fractal ra", range(0.2..=1.8))]
     pub ra: f32,
     #[param(label = "fractal ll", length)]
     pub ll: f32,

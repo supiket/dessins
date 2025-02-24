@@ -15,7 +15,7 @@ pub struct ParamsInner {
     pub star: star::ParamsInner,
     #[param(range(1..=100))]
     pub n: u32, // # stars
-    #[param(length)]
+    #[param(range(0.7..=1.3))]
     pub rr: f32, // reduction coefficient from one star to the next & the distance between the center of the spiral and the center of successive stars
 }
 
