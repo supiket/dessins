@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libppv_lite86-dc5c64dfabf71b25.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/soft.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/types.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/generic.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libppv_lite86-dc5c64dfabf71b25.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/soft.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/types.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/generic.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/ppv_lite86-dc5c64dfabf71b25.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/soft.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/types.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/generic.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/soft.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/types.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/ppv-lite86-0.2.20/src/generic.rs:

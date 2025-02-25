@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/librusttype-f8a74111a52eb911.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/geometry.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/rasterizer.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/gpu_cache.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/librusttype-f8a74111a52eb911.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/geometry.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/rasterizer.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/gpu_cache.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/rusttype-f8a74111a52eb911.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/geometry.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/rasterizer.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/gpu_cache.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/geometry.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/rasterizer.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/rusttype-0.8.3/src/gpu_cache.rs:

@@ -1,0 +1,9 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libyazi-1fa8d2a3c782874b.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/decode.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/encode.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libyazi-1fa8d2a3c782874b.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/decode.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/encode.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/yazi-1fa8d2a3c782874b.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/decode.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/encode.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/decode.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/yazi-0.1.6/src/encode.rs:

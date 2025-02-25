@@ -1,0 +1,8 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libcrossbeam_deque-c3d8b651ad616431.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/deque.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libcrossbeam_deque-c3d8b651ad616431.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/deque.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/crossbeam_deque-c3d8b651ad616431.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/deque.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/crossbeam-deque-0.8.6/src/deque.rs:

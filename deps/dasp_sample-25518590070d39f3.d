@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libdasp_sample-25518590070d39f3.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/conv.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/ops.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/types.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libdasp_sample-25518590070d39f3.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/conv.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/ops.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/types.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/dasp_sample-25518590070d39f3.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/conv.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/ops.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/types.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/conv.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/ops.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dasp_sample-0.11.0/src/types.rs:

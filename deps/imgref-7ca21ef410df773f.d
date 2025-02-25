@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libimgref-7ca21ef410df773f.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/traits.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/iter.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/ops.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/libimgref-7ca21ef410df773f.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/traits.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/iter.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/ops.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/r1i4nqy39slk7lfkf4d6wqjsg57ygvb1-source/target/wasm32-unknown-unknown/wasm-release/deps/imgref-7ca21ef410df773f.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/traits.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/iter.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/ops.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/traits.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/iter.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/imgref-1.11.0/src/ops.rs:
