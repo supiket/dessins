@@ -19,3 +19,12 @@ evalexpr = "12.0.2"
 proc-macro2 = "1.0"
 quote = "1.0"
 syn = { version = "2.0", features = [ "full" ] }
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "s"
+strip = "debuginfo"
