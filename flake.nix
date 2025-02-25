@@ -14,7 +14,7 @@
       in {
         devShells.default = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
-            cargo rustc wasm-bindgen-cli miniserve
+            cargo rustc wasm-bindgen-cli miniserve lld
           ];
         };
 
@@ -31,11 +31,19 @@
           };
           cargoToml = ./crates/dessins/Cargo.toml;
           cargoBuildTarget = "wasm32-unknown-unknown";
+
+          nativeBuildInputs = with pkgs; [ wasm-bindgen-cli lld ];
+
           buildPhase = ''
             cargo build --release --bin dessins --target wasm32-unknown-unknown
             wasm-bindgen --out-name dessins \
               --out-dir target \
               --target web target/wasm32-unknown-unknown/release/dessins.wasm
+          '';
+
+          installPhase = ''
+            mkdir -p $out/target
+            cp -r target/wasm32-unknown-unknown/release/* $out/target/
           '';
 
           meta = with pkgs.lib; {
