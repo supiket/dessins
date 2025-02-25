@@ -43,7 +43,8 @@
 
           installPhase = ''
             mkdir -p $out/target
-            cp -r target/wasm32-unknown-unknown/release/* $out/target/
+            cp -r target/* $out/target/
+            cp index.html $out/target/
           '';
 
           meta = with pkgs.lib; {

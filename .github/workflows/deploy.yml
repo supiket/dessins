@@ -25,7 +25,7 @@ jobs:
       - name: Prepare GitHub Pages Artifact
         run: |
           mkdir -p public
-          cp -r target/* public/
+          cp -r result/target/* public/
           touch public/.nojekyll
 
       - name: Deploy to GitHub Pages
