@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/libavif_serialize-636a8bebf0853654.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/boxes.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/constants.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/writer.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/libavif_serialize-636a8bebf0853654.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/boxes.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/constants.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/writer.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/avif_serialize-636a8bebf0853654.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/boxes.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/constants.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/writer.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/boxes.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/constants.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/avif-serialize-0.8.2/src/writer.rs:

@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libowned_ttf_parser-19e54ca0e4881341.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/convert.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/owned.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/preparse.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libowned_ttf_parser-19e54ca0e4881341.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/convert.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/owned.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/preparse.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/owned_ttf_parser-19e54ca0e4881341.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/convert.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/owned.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/preparse.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/convert.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/owned.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/owned_ttf_parser-0.25.0/src/preparse.rs:

@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/liboffset_allocator-31a6ec57f37c8dc4.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/ext.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/small_float.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/../README.md
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/liboffset_allocator-31a6ec57f37c8dc4.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/ext.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/small_float.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/../README.md
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/offset_allocator-31a6ec57f37c8dc4.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/ext.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/small_float.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/../README.md
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/ext.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/small_float.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/offset-allocator-0.2.0/src/../README.md:

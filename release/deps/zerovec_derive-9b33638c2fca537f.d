@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/release/deps/libzerovec_derive-9b33638c2fca537f.dylib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/make_ule.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/make_varule.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/ule.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/utils.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/varule.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/release/deps/zerovec_derive-9b33638c2fca537f.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/make_ule.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/make_varule.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/ule.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/utils.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/varule.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/make_ule.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/make_varule.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/ule.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/utils.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/zerovec-derive-0.10.3/src/varule.rs:

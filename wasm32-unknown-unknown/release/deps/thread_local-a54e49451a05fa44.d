@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libthread_local-a54e49451a05fa44.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/cached.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/thread_id.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/unreachable.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libthread_local-a54e49451a05fa44.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/cached.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/thread_id.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/unreachable.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/thread_local-a54e49451a05fa44.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/cached.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/thread_id.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/unreachable.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/cached.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/thread_id.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/thread_local-1.1.8/src/unreachable.rs:

@@ -1,0 +1,11 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libv_frame-81788596a3035a49.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/frame.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/math.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/pixel.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/plane.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libv_frame-81788596a3035a49.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/frame.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/math.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/pixel.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/plane.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/v_frame-81788596a3035a49.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/frame.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/math.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/pixel.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/plane.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/frame.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/math.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/pixel.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/v_frame-0.3.8/src/plane.rs:

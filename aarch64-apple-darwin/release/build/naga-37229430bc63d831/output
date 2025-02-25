@@ -1,0 +1,3 @@
+cargo:rustc-cfg=glsl_out
+cargo:rustc-cfg=msl_out
+cargo:rustc-cfg=wgsl_out

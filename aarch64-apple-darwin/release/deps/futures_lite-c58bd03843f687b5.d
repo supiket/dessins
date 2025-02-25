@@ -1,0 +1,11 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/libfutures_lite-c58bd03843f687b5.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/future.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/prelude.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/stream.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/io.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/libfutures_lite-c58bd03843f687b5.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/future.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/prelude.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/stream.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/io.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/futures_lite-c58bd03843f687b5.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/future.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/prelude.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/stream.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/io.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/future.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/prelude.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/stream.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/futures-lite-2.6.0/src/io.rs:

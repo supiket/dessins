@@ -1,0 +1,11 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libhexasphere-585474a0957c87ff.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/interpolation.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/math.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/shapes.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/slice.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/libhexasphere-585474a0957c87ff.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/interpolation.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/math.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/shapes.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/slice.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/wasm32-unknown-unknown/release/deps/hexasphere-585474a0957c87ff.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/interpolation.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/math.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/shapes.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/slice.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/interpolation.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/math.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/shapes.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/hexasphere-15.1.0/src/slice.rs:

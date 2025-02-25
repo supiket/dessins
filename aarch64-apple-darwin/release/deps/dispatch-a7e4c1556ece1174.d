@@ -1,0 +1,12 @@
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/libdispatch-a7e4c1556ece1174.rmeta: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/ffi.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/group.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/queue.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/once.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/sem.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/libdispatch-a7e4c1556ece1174.rlib: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/ffi.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/group.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/queue.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/once.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/sem.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/fp2myb2zq97m3x7gg2n6k1yzv572m7zy-source/target/aarch64-apple-darwin/release/deps/dispatch-a7e4c1556ece1174.d: /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/lib.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/ffi.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/group.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/queue.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/once.rs /private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/sem.rs
+
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/lib.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/ffi.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/group.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/queue.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/once.rs:
+/private/tmp/nix-build-dessins-0.1.0.drv-0/cargo-vendor-dir/dispatch-0.2.0/src/sem.rs:

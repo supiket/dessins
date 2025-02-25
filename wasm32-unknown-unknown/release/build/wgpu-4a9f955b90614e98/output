@@ -1,0 +1,5 @@
+cargo:rustc-cfg=webgl
+cargo:rustc-cfg=webgpu
+cargo:rustc-cfg=wgpu_core
+cargo:rustc-cfg=send_sync
+cargo:rustc-cfg=naga
