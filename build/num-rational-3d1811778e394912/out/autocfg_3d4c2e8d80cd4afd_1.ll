@@ -1,5 +1,5 @@
-; ModuleID = 'autocfg_79947719ed96b36b_1.84d04e79ab1ce901-cgu.0'
-source_filename = "autocfg_79947719ed96b36b_1.84d04e79ab1ce901-cgu.0"
+; ModuleID = 'autocfg_3d4c2e8d80cd4afd_1.440bf69884143698-cgu.0'
+source_filename = "autocfg_3d4c2e8d80cd4afd_1.440bf69884143698-cgu.0"
 target datalayout = "e-m:e-p:32:32-p10:8:8-p20:8:8-i64:64-n32:64-S128-ni:1:10:20"
 target triple = "wasm32-unknown-unknown"
 
@@ -26,7 +26,7 @@ target triple = "wasm32-unknown-unknown"
 
 ; core::intrinsics::copy_nonoverlapping::precondition_check
 ; Function Attrs: inlinehint nounwind
-define internal void @_ZN4core10intrinsics19copy_nonoverlapping18precondition_check17hd40828dec9674f40E(ptr %src, ptr %dst, i32 %size, i32 %align, i32 %count) unnamed_addr #0 {
+define internal void @_ZN4core10intrinsics19copy_nonoverlapping18precondition_check17h996af9581ae5b824E(ptr %src, ptr %dst, i32 %size, i32 %align, i32 %count) unnamed_addr #0 {
 start:
   %0 = alloca [4 x i8], align 4
   %_27 = alloca [24 x i8], align 4
@@ -189,7 +189,7 @@ bb5:                                              ; preds = %bb18, %bb20
 
 bb4:                                              ; preds = %bb19, %bb20
 ; call core::ub_checks::maybe_is_nonoverlapping::runtime
-  %_6 = call zeroext i1 @_ZN4core9ub_checks23maybe_is_nonoverlapping7runtime17h7ba5bdb8bdd23e81E(ptr %src, ptr %dst, i32 %size, i32 %count) #11
+  %_6 = call zeroext i1 @_ZN4core9ub_checks23maybe_is_nonoverlapping7runtime17h2db3320a5fe0bf73E(ptr %src, ptr %dst, i32 %size, i32 %count) #11
   br i1 %_6, label %bb9, label %bb8
 
 bb8:                                              ; preds = %bb7, %bb4
@@ -206,14 +206,14 @@ bb7:                                              ; preds = %bb6, %bb5
 
 ; core::intrinsics::cold_path
 ; Function Attrs: cold nounwind
-define internal void @_ZN4core10intrinsics9cold_path17ha57efb381bfd589cE() unnamed_addr #1 {
+define internal void @_ZN4core10intrinsics9cold_path17h1d226cf385631395E() unnamed_addr #1 {
 start:
   ret void
 }
 
 ; core::fmt::Arguments::new_v1
 ; Function Attrs: inlinehint nounwind
-define dso_local void @_ZN4core3fmt9Arguments6new_v117h59d51ecbc9995a35E(ptr sret([24 x i8]) align 4 %_0, ptr align 4 %pieces, ptr align 4 %args) unnamed_addr #0 {
+define dso_local void @_ZN4core3fmt9Arguments6new_v117h4ea4fd11fcb9144eE(ptr sret([24 x i8]) align 4 %_0, ptr align 4 %pieces, ptr align 4 %args) unnamed_addr #0 {
 start:
   store ptr %pieces, ptr %_0, align 4
   %0 = getelementptr inbounds i8, ptr %_0, i32 4
@@ -233,7 +233,7 @@ start:
 
 ; core::num::<impl usize>::unchecked_mul::precondition_check
 ; Function Attrs: inlinehint nounwind
-define internal void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_mul18precondition_check17hac33533d89b397faE"(i32 %lhs, i32 %rhs) unnamed_addr #0 {
+define internal void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_mul18precondition_check17hb3685a9821262a81E"(i32 %lhs, i32 %rhs) unnamed_addr #0 {
 start:
   %0 = call { i32, i1 } @llvm.umul.with.overflow.i32(i32 %lhs, i32 %rhs)
   %_6.0 = extractvalue { i32, i1 } %0, 0
@@ -251,7 +251,7 @@ bb1:                                              ; preds = %start
 
 ; core::ops::function::FnOnce::call_once
 ; Function Attrs: inlinehint nounwind
-define internal void @_ZN4core3ops8function6FnOnce9call_once17h4406c943ae18852dE(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %0, i32 %1) unnamed_addr #0 {
+define internal void @_ZN4core3ops8function6FnOnce9call_once17hda02ba6a6288ad91E(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %0, i32 %1) unnamed_addr #0 {
 start:
   %_2 = alloca [8 x i8], align 4
   store ptr %0, ptr %_2, align 4
@@ -261,13 +261,13 @@ start:
   %4 = getelementptr inbounds i8, ptr %_2, i32 4
   %5 = load i32, ptr %4, align 4
 ; call alloc::str::<impl alloc::borrow::ToOwned for str>::to_owned
-  call void @"_ZN5alloc3str56_$LT$impl$u20$alloc..borrow..ToOwned$u20$for$u20$str$GT$8to_owned17hda4615db7e05c800E"(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %3, i32 %5) #11
+  call void @"_ZN5alloc3str56_$LT$impl$u20$alloc..borrow..ToOwned$u20$for$u20$str$GT$8to_owned17h6a81b949dcf15d46E"(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %3, i32 %5) #11
   ret void
 }
 
 ; core::ptr::read_volatile::precondition_check
 ; Function Attrs: inlinehint nounwind
-define internal void @_ZN4core3ptr13read_volatile18precondition_check17h28ca032ee4f390e1E(ptr %addr, i32 %align, i1 zeroext %is_zst) unnamed_addr #0 {
+define internal void @_ZN4core3ptr13read_volatile18precondition_check17haa354ea32f625bfdE(ptr %addr, i32 %align, i1 zeroext %is_zst) unnamed_addr #0 {
 start:
   %0 = alloca [4 x i8], align 4
   %_8 = alloca [24 x i8], align 4
@@ -327,36 +327,36 @@ bb1:                                              ; preds = %bb5, %bb6
 
 ; core::ptr::drop_in_place<alloc::string::String>
 ; Function Attrs: nounwind
-define dso_local void @"_ZN4core3ptr42drop_in_place$LT$alloc..string..String$GT$17h491e6870b70350f1E"(ptr align 4 %_1) unnamed_addr #2 {
+define dso_local void @"_ZN4core3ptr42drop_in_place$LT$alloc..string..String$GT$17h20d533ddabcabf83E"(ptr align 4 %_1) unnamed_addr #2 {
 start:
 ; call core::ptr::drop_in_place<alloc::vec::Vec<u8>>
-  call void @"_ZN4core3ptr46drop_in_place$LT$alloc..vec..Vec$LT$u8$GT$$GT$17hc00452d8798f8bcfE"(ptr align 4 %_1) #11
+  call void @"_ZN4core3ptr46drop_in_place$LT$alloc..vec..Vec$LT$u8$GT$$GT$17h896dd91b4b27aefcE"(ptr align 4 %_1) #11
   ret void
 }
 
 ; core::ptr::drop_in_place<alloc::vec::Vec<u8>>
 ; Function Attrs: nounwind
-define dso_local void @"_ZN4core3ptr46drop_in_place$LT$alloc..vec..Vec$LT$u8$GT$$GT$17hc00452d8798f8bcfE"(ptr align 4 %_1) unnamed_addr #2 {
+define dso_local void @"_ZN4core3ptr46drop_in_place$LT$alloc..vec..Vec$LT$u8$GT$$GT$17h896dd91b4b27aefcE"(ptr align 4 %_1) unnamed_addr #2 {
 start:
 ; call <alloc::vec::Vec<T,A> as core::ops::drop::Drop>::drop
-  call void @"_ZN70_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h9da233f693c09328E"(ptr align 4 %_1) #11
+  call void @"_ZN70_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h04619b4d80713362E"(ptr align 4 %_1) #11
 ; call core::ptr::drop_in_place<alloc::raw_vec::RawVec<u8>>
-  call void @"_ZN4core3ptr53drop_in_place$LT$alloc..raw_vec..RawVec$LT$u8$GT$$GT$17hd06a4405c77a9a56E"(ptr align 4 %_1) #11
+  call void @"_ZN4core3ptr53drop_in_place$LT$alloc..raw_vec..RawVec$LT$u8$GT$$GT$17h1a85dd4bfe083d0fE"(ptr align 4 %_1) #11
   ret void
 }
 
 ; core::ptr::drop_in_place<alloc::raw_vec::RawVec<u8>>
 ; Function Attrs: nounwind
-define dso_local void @"_ZN4core3ptr53drop_in_place$LT$alloc..raw_vec..RawVec$LT$u8$GT$$GT$17hd06a4405c77a9a56E"(ptr align 4 %_1) unnamed_addr #2 {
+define dso_local void @"_ZN4core3ptr53drop_in_place$LT$alloc..raw_vec..RawVec$LT$u8$GT$$GT$17h1a85dd4bfe083d0fE"(ptr align 4 %_1) unnamed_addr #2 {
 start:
 ; call <alloc::raw_vec::RawVec<T,A> as core::ops::drop::Drop>::drop
-  call void @"_ZN77_$LT$alloc..raw_vec..RawVec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17hb0b64101a9417b2eE"(ptr align 4 %_1) #11
+  call void @"_ZN77_$LT$alloc..raw_vec..RawVec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h8e0ec6e1b4a5d9b0E"(ptr align 4 %_1) #11
   ret void
 }
 
 ; core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
 ; Function Attrs: inlinehint nounwind
-define internal void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17hc5b92d881c3db97fE"(ptr %ptr) unnamed_addr #0 {
+define internal void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h16a6ad800716d47fE"(ptr %ptr) unnamed_addr #0 {
 start:
   %_5 = ptrtoint ptr %ptr to i32
   %0 = icmp eq i32 %_5, 0
@@ -373,7 +373,7 @@ bb2:                                              ; preds = %start
 
 ; core::hint::assert_unchecked::precondition_check
 ; Function Attrs: inlinehint nounwind
-define internal void @_ZN4core4hint16assert_unchecked18precondition_check17haaf53bbdd487f86bE(i1 zeroext %cond) unnamed_addr #0 {
+define internal void @_ZN4core4hint16assert_unchecked18precondition_check17h03d952c50092054eE(i1 zeroext %cond) unnamed_addr #0 {
 start:
   br i1 %cond, label %bb2, label %bb1
 
@@ -388,7 +388,7 @@ bb2:                                              ; preds = %start
 
 ; core::alloc::layout::Layout::repeat_packed
 ; Function Attrs: inlinehint nounwind
-define internal { i32, i32 } @_ZN4core5alloc6layout6Layout13repeat_packed17h712762bf111f8002E(ptr align 4 %self, i32 %n) unnamed_addr #0 {
+define internal { i32, i32 } @_ZN4core5alloc6layout6Layout13repeat_packed17h2deed32f55c8db84E(ptr align 4 %self, i32 %n) unnamed_addr #0 {
 start:
   %_18 = alloca [4 x i8], align 4
   %_3 = alloca [8 x i8], align 4
@@ -452,7 +452,7 @@ bb1:                                              ; preds = %bb2, %bb5
 
 ; core::alloc::layout::Layout::from_size_align_unchecked::precondition_check
 ; Function Attrs: inlinehint nounwind
-define internal void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17h04cd044537fbcaf9E(i32 %size, i32 %align) unnamed_addr #0 {
+define internal void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17h0e393bb0083b7fffE(i32 %size, i32 %align) unnamed_addr #0 {
 start:
 ; call core::alloc::layout::Layout::is_size_align_valid
   %_3 = call zeroext i1 @_ZN4core5alloc6layout6Layout19is_size_align_valid17h2390294e148adc40E(i32 %size, i32 %align) #11
@@ -469,7 +469,7 @@ bb2:                                              ; preds = %start
 
 ; core::alloc::layout::Layout::repeat
 ; Function Attrs: inlinehint nounwind
-define internal void @_ZN4core5alloc6layout6Layout6repeat17h23e526334d9b580cE(ptr sret([12 x i8]) align 4 %_0, ptr align 4 %self, i32 %n) unnamed_addr #0 {
+define internal void @_ZN4core5alloc6layout6Layout6repeat17hc862457a779d6686E(ptr sret([12 x i8]) align 4 %_0, ptr align 4 %self, i32 %n) unnamed_addr #0 {
 start:
   %_17 = alloca [4 x i8], align 4
   %_8 = alloca [12 x i8], align 4
@@ -491,7 +491,7 @@ start:
 
 bb5:                                              ; preds = %start
 ; call core::alloc::layout::Layout::from_size_align_unchecked::precondition_check
-  call void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17h04cd044537fbcaf9E(i32 %new_size, i32 %_18) #11
+  call void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17h0e393bb0083b7fffE(i32 %new_size, i32 %_18) #11
   br label %bb6
 
 bb6:                                              ; preds = %bb5
@@ -499,7 +499,7 @@ bb6:                                              ; preds = %bb5
   store i32 %new_size, ptr %1, align 4
   store i32 %_18, ptr %padded, align 4
 ; call core::alloc::layout::Layout::repeat_packed
-  %2 = call { i32, i32 } @_ZN4core5alloc6layout6Layout13repeat_packed17h712762bf111f8002E(ptr align 4 %padded, i32 %n) #11
+  %2 = call { i32, i32 } @_ZN4core5alloc6layout6Layout13repeat_packed17h2deed32f55c8db84E(ptr align 4 %padded, i32 %n) #11
   %3 = extractvalue { i32, i32 } %2, 0
   %4 = extractvalue { i32, i32 } %2, 1
   store i32 %3, ptr %_4, align 4
@@ -536,7 +536,7 @@ bb7:                                              ; No predecessors!
 
 ; core::ub_checks::maybe_is_nonoverlapping::runtime
 ; Function Attrs: inlinehint nounwind
-define internal zeroext i1 @_ZN4core9ub_checks23maybe_is_nonoverlapping7runtime17h7ba5bdb8bdd23e81E(ptr %src, ptr %dst, i32 %size, i32 %count) unnamed_addr #0 {
+define internal zeroext i1 @_ZN4core9ub_checks23maybe_is_nonoverlapping7runtime17h2db3320a5fe0bf73E(ptr %src, ptr %dst, i32 %size, i32 %count) unnamed_addr #0 {
 start:
   %diff = alloca [4 x i8], align 4
   %_9 = alloca [8 x i8], align 4
@@ -579,11 +579,11 @@ bb6:                                              ; preds = %bb4, %bb5
 
 ; <T as alloc::slice::hack::ConvertVec>::to_vec
 ; Function Attrs: inlinehint nounwind
-define dso_local void @"_ZN52_$LT$T$u20$as$u20$alloc..slice..hack..ConvertVec$GT$6to_vec17h6b83ec8c63081eedE"(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %s.0, i32 %s.1) unnamed_addr #0 {
+define dso_local void @"_ZN52_$LT$T$u20$as$u20$alloc..slice..hack..ConvertVec$GT$6to_vec17h6770588a582e217dE"(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %s.0, i32 %s.1) unnamed_addr #0 {
 start:
   %v = alloca [12 x i8], align 4
 ; call alloc::raw_vec::RawVecInner<A>::with_capacity_in
-  %0 = call { i32, ptr } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$16with_capacity_in17hb5411a1cea503099E"(i32 %s.1, i32 1, i32 1, ptr align 4 @alloc_8d2fc9b7e6466a1a921972301f45b856) #11
+  %0 = call { i32, ptr } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$16with_capacity_in17h813d91196702beacE"(i32 %s.1, i32 1, i32 1, ptr align 4 @alloc_8d2fc9b7e6466a1a921972301f45b856) #11
   %_10.0 = extractvalue { i32, ptr } %0, 0
   %_10.1 = extractvalue { i32, ptr } %0, 1
   store i32 %_10.0, ptr %v, align 4
@@ -597,7 +597,7 @@ start:
 
 bb2:                                              ; preds = %start
 ; call core::intrinsics::copy_nonoverlapping::precondition_check
-  call void @_ZN4core10intrinsics19copy_nonoverlapping18precondition_check17hd40828dec9674f40E(ptr %s.0, ptr %self, i32 1, i32 1, i32 %s.1) #11
+  call void @_ZN4core10intrinsics19copy_nonoverlapping18precondition_check17h996af9581ae5b824E(ptr %s.0, ptr %self, i32 1, i32 1, i32 %s.1) #11
   br label %bb4
 
 bb4:                                              ; preds = %bb2
@@ -611,7 +611,7 @@ bb4:                                              ; preds = %bb2
 
 ; alloc::fmt::format
 ; Function Attrs: inlinehint nounwind
-define internal void @_ZN5alloc3fmt6format17h7cfdae27e9e28de4E(ptr sret([12 x i8]) align 4 %_0, ptr align 4 %args) unnamed_addr #0 {
+define internal void @_ZN5alloc3fmt6format17h7b0eddf707828d3fE(ptr sret([12 x i8]) align 4 %_0, ptr align 4 %args) unnamed_addr #0 {
 start:
   %0 = alloca [24 x i8], align 4
   %default = alloca [4 x i8], align 4
@@ -664,7 +664,7 @@ bb8:                                              ; preds = %bb5, %bb6
   %13 = getelementptr inbounds i8, ptr %self, i32 4
   %t.1 = load i32, ptr %13, align 4
 ; call core::ops::function::FnOnce::call_once
-  call void @_ZN4core3ops8function6FnOnce9call_once17h4406c943ae18852dE(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %t.0, i32 %t.1) #11
+  call void @_ZN4core3ops8function6FnOnce9call_once17hda02ba6a6288ad91E(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %t.0, i32 %t.1) #11
   br label %bb7
 
 bb4:                                              ; preds = %bb3
@@ -691,18 +691,18 @@ bb7:                                              ; preds = %bb1, %bb8
 
 ; alloc::str::<impl alloc::borrow::ToOwned for str>::to_owned
 ; Function Attrs: inlinehint nounwind
-define internal void @"_ZN5alloc3str56_$LT$impl$u20$alloc..borrow..ToOwned$u20$for$u20$str$GT$8to_owned17hda4615db7e05c800E"(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %self.0, i32 %self.1) unnamed_addr #0 {
+define internal void @"_ZN5alloc3str56_$LT$impl$u20$alloc..borrow..ToOwned$u20$for$u20$str$GT$8to_owned17h6a81b949dcf15d46E"(ptr sret([12 x i8]) align 4 %_0, ptr align 1 %self.0, i32 %self.1) unnamed_addr #0 {
 start:
   %bytes = alloca [12 x i8], align 4
 ; call <T as alloc::slice::hack::ConvertVec>::to_vec
-  call void @"_ZN52_$LT$T$u20$as$u20$alloc..slice..hack..ConvertVec$GT$6to_vec17h6b83ec8c63081eedE"(ptr sret([12 x i8]) align 4 %bytes, ptr align 1 %self.0, i32 %self.1) #11
+  call void @"_ZN52_$LT$T$u20$as$u20$alloc..slice..hack..ConvertVec$GT$6to_vec17h6770588a582e217dE"(ptr sret([12 x i8]) align 4 %bytes, ptr align 1 %self.0, i32 %self.1) #11
   call void @llvm.memcpy.p0.p0.i32(ptr align 4 %_0, ptr align 4 %bytes, i32 12, i1 false)
   ret void
 }
 
 ; alloc::alloc::alloc_zeroed
 ; Function Attrs: inlinehint nounwind
-define internal ptr @_ZN5alloc5alloc12alloc_zeroed17h18209a997460e8a3E(i32 %0, i32 %1) unnamed_addr #0 {
+define internal ptr @_ZN5alloc5alloc12alloc_zeroed17h1406516fde111bd3E(i32 %0, i32 %1) unnamed_addr #0 {
 start:
   %2 = alloca [1 x i8], align 1
   %_11 = alloca [4 x i8], align 4
@@ -714,7 +714,7 @@ start:
 
 bb3:                                              ; preds = %start
 ; call core::ptr::read_volatile::precondition_check
-  call void @_ZN4core3ptr13read_volatile18precondition_check17h28ca032ee4f390e1E(ptr @__rust_no_alloc_shim_is_unstable, i32 1, i1 zeroext false) #11
+  call void @_ZN4core3ptr13read_volatile18precondition_check17haa354ea32f625bfdE(ptr @__rust_no_alloc_shim_is_unstable, i32 1, i1 zeroext false) #11
   br label %bb5
 
 bb5:                                              ; preds = %bb3
@@ -735,7 +735,7 @@ bb5:                                              ; preds = %bb3
 
 ; alloc::alloc::alloc
 ; Function Attrs: inlinehint nounwind
-define internal ptr @_ZN5alloc5alloc5alloc17h20a2806c549f0cbaE(i32 %0, i32 %1) unnamed_addr #0 {
+define internal ptr @_ZN5alloc5alloc5alloc17hcc39377a0a48e89eE(i32 %0, i32 %1) unnamed_addr #0 {
 start:
   %2 = alloca [1 x i8], align 1
   %_11 = alloca [4 x i8], align 4
@@ -747,7 +747,7 @@ start:
 
 bb3:                                              ; preds = %start
 ; call core::ptr::read_volatile::precondition_check
-  call void @_ZN4core3ptr13read_volatile18precondition_check17h28ca032ee4f390e1E(ptr @__rust_no_alloc_shim_is_unstable, i32 1, i1 zeroext false) #11
+  call void @_ZN4core3ptr13read_volatile18precondition_check17haa354ea32f625bfdE(ptr @__rust_no_alloc_shim_is_unstable, i32 1, i1 zeroext false) #11
   br label %bb5
 
 bb5:                                              ; preds = %bb3
@@ -768,7 +768,7 @@ bb5:                                              ; preds = %bb3
 
 ; alloc::alloc::Global::alloc_impl
 ; Function Attrs: inlinehint nounwind
-define internal { ptr, i32 } @_ZN5alloc5alloc6Global10alloc_impl17h7e19483ac5fe626aE(ptr align 1 %self, i32 %0, i32 %1, i1 zeroext %zeroed) unnamed_addr #0 {
+define internal { ptr, i32 } @_ZN5alloc5alloc6Global10alloc_impl17h9081aa45cb7303d0E(ptr align 1 %self, i32 %0, i32 %1, i1 zeroext %zeroed) unnamed_addr #0 {
 start:
   %ptr = alloca [8 x i8], align 4
   %_19 = alloca [4 x i8], align 4
@@ -801,7 +801,7 @@ bb1:                                              ; preds = %start
 
 bb7:                                              ; preds = %bb2
 ; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
-  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17hc5b92d881c3db97fE"(ptr %ptr4) #11
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h16a6ad800716d47fE"(ptr %ptr4) #11
   store ptr %ptr4, ptr %ptr, align 4
   %5 = getelementptr inbounds i8, ptr %ptr, i32 4
   store i32 0, ptr %5, align 4
@@ -809,7 +809,7 @@ bb7:                                              ; preds = %bb2
 
 bb10:                                             ; preds = %bb7
 ; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
-  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17hc5b92d881c3db97fE"(ptr %ptr4) #11
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h16a6ad800716d47fE"(ptr %ptr4) #11
   br label %bb12
 
 bb12:                                             ; preds = %bb10
@@ -834,7 +834,7 @@ bb4:                                              ; preds = %bb1
   %14 = getelementptr inbounds i8, ptr %layout, i32 4
   %15 = load i32, ptr %14, align 4
 ; call alloc::alloc::alloc
-  %16 = call ptr @_ZN5alloc5alloc5alloc17h20a2806c549f0cbaE(i32 %13, i32 %15) #11
+  %16 = call ptr @_ZN5alloc5alloc5alloc17hcc39377a0a48e89eE(i32 %13, i32 %15) #11
   store ptr %16, ptr %raw_ptr, align 4
   br label %bb5
 
@@ -843,7 +843,7 @@ bb3:                                              ; preds = %bb1
   %18 = getelementptr inbounds i8, ptr %layout, i32 4
   %19 = load i32, ptr %18, align 4
 ; call alloc::alloc::alloc_zeroed
-  %20 = call ptr @_ZN5alloc5alloc12alloc_zeroed17h18209a997460e8a3E(i32 %17, i32 %19) #11
+  %20 = call ptr @_ZN5alloc5alloc12alloc_zeroed17h1406516fde111bd3E(i32 %17, i32 %19) #11
   store ptr %20, ptr %raw_ptr, align 4
   br label %bb5
 
@@ -868,7 +868,7 @@ bb14:                                             ; preds = %bb5
 
 bb15:                                             ; preds = %bb14
 ; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
-  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17hc5b92d881c3db97fE"(ptr %ptr5) #11
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h16a6ad800716d47fE"(ptr %ptr5) #11
   br label %bb17
 
 bb17:                                             ; preds = %bb15
@@ -882,7 +882,7 @@ bb17:                                             ; preds = %bb15
 
 bb18:                                             ; preds = %bb17
 ; call core::ptr::non_null::NonNull<T>::new_unchecked::precondition_check
-  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17hc5b92d881c3db97fE"(ptr %ptr7) #11
+  call void @"_ZN4core3ptr8non_null16NonNull$LT$T$GT$13new_unchecked18precondition_check17h16a6ad800716d47fE"(ptr %ptr7) #11
   br label %bb20
 
 bb20:                                             ; preds = %bb18
@@ -897,11 +897,11 @@ bb9:                                              ; No predecessors!
 
 ; alloc::raw_vec::RawVecInner<A>::deallocate
 ; Function Attrs: nounwind
-define dso_local void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$10deallocate17h5fa80ae03553681dE"(ptr align 4 %self, i32 %elem_layout.0, i32 %elem_layout.1) unnamed_addr #2 {
+define dso_local void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$10deallocate17he2915d9b8c2eeef0E"(ptr align 4 %self, i32 %elem_layout.0, i32 %elem_layout.1) unnamed_addr #2 {
 start:
   %_3 = alloca [12 x i8], align 4
 ; call alloc::raw_vec::RawVecInner<A>::current_memory
-  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$14current_memory17h1db132f97894b76cE"(ptr sret([12 x i8]) align 4 %_3, ptr align 4 %self, i32 %elem_layout.0, i32 %elem_layout.1) #11
+  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$14current_memory17hfc413e34294e9f76E"(ptr sret([12 x i8]) align 4 %_3, ptr align 4 %self, i32 %elem_layout.0, i32 %elem_layout.1) #11
   %0 = getelementptr inbounds i8, ptr %_3, i32 4
   %1 = load i32, ptr %0, align 4
   %2 = icmp eq i32 %1, 0
@@ -917,7 +917,7 @@ bb2:                                              ; preds = %start
   %layout.1 = load i32, ptr %5, align 4
   %_9 = getelementptr inbounds i8, ptr %self, i32 8
 ; call <alloc::alloc::Global as core::alloc::Allocator>::deallocate
-  call void @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$10deallocate17hb5c82f4af8ee5db7E"(ptr align 1 %_9, ptr %ptr, i32 %layout.0, i32 %layout.1) #11
+  call void @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$10deallocate17h3ac3b385f944cee1E"(ptr align 1 %_9, ptr %ptr, i32 %layout.0, i32 %layout.1) #11
   br label %bb4
 
 bb4:                                              ; preds = %bb2, %start
@@ -929,7 +929,7 @@ bb5:                                              ; No predecessors!
 
 ; alloc::raw_vec::RawVecInner<A>::current_memory
 ; Function Attrs: inlinehint nounwind
-define dso_local void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$14current_memory17h1db132f97894b76cE"(ptr sret([12 x i8]) align 4 %_0, ptr align 4 %self, i32 %0, i32 %1) unnamed_addr #0 {
+define dso_local void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$14current_memory17hfc413e34294e9f76E"(ptr sret([12 x i8]) align 4 %_0, ptr align 4 %self, i32 %0, i32 %1) unnamed_addr #0 {
 start:
   %_17 = alloca [4 x i8], align 4
   %_13 = alloca [12 x i8], align 4
@@ -966,7 +966,7 @@ bb5:                                              ; preds = %bb9, %bb3
 
 bb6:                                              ; preds = %bb4
 ; call core::num::<impl usize>::unchecked_mul::precondition_check
-  call void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_mul18precondition_check17hac33533d89b397faE"(i32 %self1, i32 %rhs) #11
+  call void @"_ZN4core3num23_$LT$impl$u20$usize$GT$13unchecked_mul18precondition_check17hb3685a9821262a81E"(i32 %self1, i32 %rhs) #11
   %7 = mul nuw i32 %self1, %rhs
   store i32 %7, ptr %alloc_size, align 4
   %size = load i32, ptr %alloc_size, align 4
@@ -983,7 +983,7 @@ bb8:                                              ; preds = %bb6
   %8 = load i32, ptr %alloc_size, align 4
   %9 = load i32, ptr %align, align 4
 ; call core::alloc::layout::Layout::from_size_align_unchecked::precondition_check
-  call void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17h04cd044537fbcaf9E(i32 %8, i32 %9) #11
+  call void @_ZN4core5alloc6layout6Layout25from_size_align_unchecked18precondition_check17h0e393bb0083b7fffE(i32 %8, i32 %9) #11
   br label %bb9
 
 bb9:                                              ; preds = %bb8
@@ -1005,7 +1005,7 @@ bb7:                                              ; No predecessors!
 
 ; alloc::raw_vec::RawVecInner<A>::try_allocate_in
 ; Function Attrs: nounwind
-define dso_local void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$15try_allocate_in17h204e3ebe8890803eE"(ptr sret([12 x i8]) align 4 %_0, i32 %capacity, i1 zeroext %0, i32 %1, i32 %2) unnamed_addr #2 {
+define dso_local void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$15try_allocate_in17h2a9f7e716ba6af6cE"(ptr sret([12 x i8]) align 4 %_0, i32 %capacity, i1 zeroext %0, i32 %1, i32 %2) unnamed_addr #2 {
 start:
   %_40 = alloca [4 x i8], align 4
   %self3 = alloca [12 x i8], align 4
@@ -1031,7 +1031,7 @@ start:
   %8 = getelementptr inbounds i8, ptr %elem_layout1, i32 4
   store i32 %7, ptr %8, align 4
 ; call core::alloc::layout::Layout::repeat
-  call void @_ZN4core5alloc6layout6Layout6repeat17h23e526334d9b580cE(ptr sret([12 x i8]) align 4 %self3, ptr align 4 %elem_layout1, i32 %capacity) #11
+  call void @_ZN4core5alloc6layout6Layout6repeat17hc862457a779d6686E(ptr sret([12 x i8]) align 4 %self3, ptr align 4 %elem_layout1, i32 %capacity) #11
   %9 = load i32, ptr %self3, align 4
   %10 = icmp eq i32 %9, 0
   %_35 = select i1 %10, i32 1, i32 0
@@ -1127,7 +1127,7 @@ bb17:                                             ; preds = %bb3
 
 bb5:                                              ; preds = %bb18
 ; call <alloc::alloc::Global as core::alloc::Allocator>::allocate
-  %40 = call { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$8allocate17h085f7b99d1d2cf6aE"(ptr align 1 %alloc, i32 %layout.0, i32 %layout.1) #11
+  %40 = call { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$8allocate17hef1865a8e0a46b90E"(ptr align 1 %alloc, i32 %layout.0, i32 %layout.1) #11
   %41 = extractvalue { ptr, i32 } %40, 0
   %42 = extractvalue { ptr, i32 } %40, 1
   store ptr %41, ptr %result, align 4
@@ -1137,7 +1137,7 @@ bb5:                                              ; preds = %bb18
 
 bb4:                                              ; preds = %bb18
 ; call <alloc::alloc::Global as core::alloc::Allocator>::allocate_zeroed
-  %44 = call { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$15allocate_zeroed17h5cf9a8d2e483c20bE"(ptr align 1 %alloc, i32 %layout.0, i32 %layout.1) #11
+  %44 = call { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$15allocate_zeroed17h196c75a10366902dE"(ptr align 1 %alloc, i32 %layout.0, i32 %layout.1) #11
   %45 = extractvalue { ptr, i32 } %44, 0
   %46 = extractvalue { ptr, i32 } %44, 1
   store ptr %45, ptr %result, align 4
@@ -1190,14 +1190,14 @@ bb1:                                              ; No predecessors!
 
 ; alloc::raw_vec::RawVecInner<A>::with_capacity_in
 ; Function Attrs: inlinehint nounwind
-define dso_local { i32, ptr } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$16with_capacity_in17hb5411a1cea503099E"(i32 %capacity, i32 %elem_layout.0, i32 %elem_layout.1, ptr align 4 %0) unnamed_addr #0 {
+define dso_local { i32, ptr } @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$16with_capacity_in17h813d91196702beacE"(i32 %capacity, i32 %elem_layout.0, i32 %elem_layout.1, ptr align 4 %0) unnamed_addr #0 {
 start:
   %self = alloca [4 x i8], align 4
   %elem_layout = alloca [8 x i8], align 4
   %this = alloca [8 x i8], align 4
   %_4 = alloca [12 x i8], align 4
 ; call alloc::raw_vec::RawVecInner<A>::try_allocate_in
-  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$15try_allocate_in17h204e3ebe8890803eE"(ptr sret([12 x i8]) align 4 %_4, i32 %capacity, i1 zeroext false, i32 %elem_layout.0, i32 %elem_layout.1) #11
+  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$15try_allocate_in17h2a9f7e716ba6af6cE"(ptr sret([12 x i8]) align 4 %_4, i32 %capacity, i1 zeroext false, i32 %elem_layout.0, i32 %elem_layout.1) #11
   %_5 = load i32, ptr %_4, align 4
   %1 = icmp eq i32 %_5, 0
   br i1 %1, label %bb4, label %bb3
@@ -1243,7 +1243,7 @@ bb5:                                              ; preds = %bb7, %bb6
 
 bb8:                                              ; preds = %bb5
 ; call core::hint::assert_unchecked::precondition_check
-  call void @_ZN4core4hint16assert_unchecked18precondition_check17haaf53bbdd487f86bE(i1 zeroext %cond) #11
+  call void @_ZN4core4hint16assert_unchecked18precondition_check17h03d952c50092054eE(i1 zeroext %cond) #11
   br label %bb9
 
 bb9:                                              ; preds = %bb8
@@ -1260,7 +1260,7 @@ bb2:                                              ; No predecessors!
 
 ; <alloc::alloc::Global as core::alloc::Allocator>::deallocate
 ; Function Attrs: inlinehint nounwind
-define internal void @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$10deallocate17hb5c82f4af8ee5db7E"(ptr align 1 %self, ptr %ptr, i32 %0, i32 %1) unnamed_addr #0 {
+define internal void @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$10deallocate17h3ac3b385f944cee1E"(ptr align 1 %self, ptr %ptr, i32 %0, i32 %1) unnamed_addr #0 {
 start:
   %_13 = alloca [4 x i8], align 4
   %layout1 = alloca [8 x i8], align 4
@@ -1295,10 +1295,10 @@ bb1:                                              ; preds = %start
 
 ; <alloc::alloc::Global as core::alloc::Allocator>::allocate_zeroed
 ; Function Attrs: inlinehint nounwind
-define internal { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$15allocate_zeroed17h5cf9a8d2e483c20bE"(ptr align 1 %self, i32 %layout.0, i32 %layout.1) unnamed_addr #0 {
+define internal { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$15allocate_zeroed17h196c75a10366902dE"(ptr align 1 %self, i32 %layout.0, i32 %layout.1) unnamed_addr #0 {
 start:
 ; call alloc::alloc::Global::alloc_impl
-  %0 = call { ptr, i32 } @_ZN5alloc5alloc6Global10alloc_impl17h7e19483ac5fe626aE(ptr align 1 %self, i32 %layout.0, i32 %layout.1, i1 zeroext true) #11
+  %0 = call { ptr, i32 } @_ZN5alloc5alloc6Global10alloc_impl17h9081aa45cb7303d0E(ptr align 1 %self, i32 %layout.0, i32 %layout.1, i1 zeroext true) #11
   %_0.0 = extractvalue { ptr, i32 } %0, 0
   %_0.1 = extractvalue { ptr, i32 } %0, 1
   %1 = insertvalue { ptr, i32 } poison, ptr %_0.0, 0
@@ -1308,10 +1308,10 @@ start:
 
 ; <alloc::alloc::Global as core::alloc::Allocator>::allocate
 ; Function Attrs: inlinehint nounwind
-define internal { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$8allocate17h085f7b99d1d2cf6aE"(ptr align 1 %self, i32 %layout.0, i32 %layout.1) unnamed_addr #0 {
+define internal { ptr, i32 } @"_ZN63_$LT$alloc..alloc..Global$u20$as$u20$core..alloc..Allocator$GT$8allocate17hef1865a8e0a46b90E"(ptr align 1 %self, i32 %layout.0, i32 %layout.1) unnamed_addr #0 {
 start:
 ; call alloc::alloc::Global::alloc_impl
-  %0 = call { ptr, i32 } @_ZN5alloc5alloc6Global10alloc_impl17h7e19483ac5fe626aE(ptr align 1 %self, i32 %layout.0, i32 %layout.1, i1 zeroext false) #11
+  %0 = call { ptr, i32 } @_ZN5alloc5alloc6Global10alloc_impl17h9081aa45cb7303d0E(ptr align 1 %self, i32 %layout.0, i32 %layout.1, i1 zeroext false) #11
   %_0.0 = extractvalue { ptr, i32 } %0, 0
   %_0.1 = extractvalue { ptr, i32 } %0, 1
   %1 = insertvalue { ptr, i32 } poison, ptr %_0.0, 0
@@ -1321,7 +1321,7 @@ start:
 
 ; <alloc::vec::Vec<T,A> as core::ops::drop::Drop>::drop
 ; Function Attrs: nounwind
-define dso_local void @"_ZN70_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h9da233f693c09328E"(ptr align 4 %self) unnamed_addr #2 {
+define dso_local void @"_ZN70_$LT$alloc..vec..Vec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h04619b4d80713362E"(ptr align 4 %self) unnamed_addr #2 {
 start:
   %_12 = alloca [4 x i8], align 4
   %0 = getelementptr inbounds i8, ptr %self, i32 4
@@ -1350,16 +1350,16 @@ bb1:                                              ; preds = %bb3
 
 ; <alloc::raw_vec::RawVec<T,A> as core::ops::drop::Drop>::drop
 ; Function Attrs: nounwind
-define dso_local void @"_ZN77_$LT$alloc..raw_vec..RawVec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17hb0b64101a9417b2eE"(ptr align 4 %self) unnamed_addr #2 {
+define dso_local void @"_ZN77_$LT$alloc..raw_vec..RawVec$LT$T$C$A$GT$$u20$as$u20$core..ops..drop..Drop$GT$4drop17h8e0ec6e1b4a5d9b0E"(ptr align 4 %self) unnamed_addr #2 {
 start:
 ; call alloc::raw_vec::RawVecInner<A>::deallocate
-  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$10deallocate17h5fa80ae03553681dE"(ptr align 4 %self, i32 1, i32 1) #11
+  call void @"_ZN5alloc7raw_vec20RawVecInner$LT$A$GT$10deallocate17he2915d9b8c2eeef0E"(ptr align 4 %self, i32 1, i32 1) #11
   ret void
 }
 
-; autocfg_79947719ed96b36b_1::probe
+; autocfg_3d4c2e8d80cd4afd_1::probe
 ; Function Attrs: nounwind
-define dso_local void @_ZN26autocfg_79947719ed96b36b_15probe17h3edec9189103b391E() unnamed_addr #2 {
+define dso_local void @_ZN26autocfg_3d4c2e8d80cd4afd_15probe17h176ecedbb1cf4ca2E() unnamed_addr #2 {
 start:
   %_3.i = alloca [8 x i8], align 4
   %_7 = alloca [8 x i8], align 4
@@ -1374,12 +1374,12 @@ start:
   %1 = getelementptr inbounds [1 x %"core::fmt::rt::Argument<'_>"], ptr %_6, i32 0, i32 0
   call void @llvm.memcpy.p0.p0.i32(ptr align 4 %1, ptr align 4 %_7, i32 8, i1 false)
 ; call core::fmt::Arguments::new_v1
-  call void @_ZN4core3fmt9Arguments6new_v117h59d51ecbc9995a35E(ptr sret([24 x i8]) align 4 %_3, ptr align 4 @alloc_4b9523bd3933225a2ba132a1dcbebd94, ptr align 4 %_6) #11
+  call void @_ZN4core3fmt9Arguments6new_v117h4ea4fd11fcb9144eE(ptr sret([24 x i8]) align 4 %_3, ptr align 4 @alloc_4b9523bd3933225a2ba132a1dcbebd94, ptr align 4 %_6) #11
 ; call alloc::fmt::format
-  call void @_ZN5alloc3fmt6format17h7cfdae27e9e28de4E(ptr sret([12 x i8]) align 4 %res, ptr align 4 %_3) #11
+  call void @_ZN5alloc3fmt6format17h7b0eddf707828d3fE(ptr sret([12 x i8]) align 4 %res, ptr align 4 %_3) #11
   call void @llvm.memcpy.p0.p0.i32(ptr align 4 %_1, ptr align 4 %res, i32 12, i1 false)
 ; call core::ptr::drop_in_place<alloc::string::String>
-  call void @"_ZN4core3ptr42drop_in_place$LT$alloc..string..String$GT$17h491e6870b70350f1E"(ptr align 4 %_1) #11
+  call void @"_ZN4core3ptr42drop_in_place$LT$alloc..string..String$GT$17h20d533ddabcabf83E"(ptr align 4 %_1) #11
   ret void
 }
 
