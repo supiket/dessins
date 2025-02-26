@@ -112,16 +112,6 @@ fn expand(ep: ExpandParams) -> TokenStream {
         pub type UiElements = Box<dyn Fn(&mut ParamsInner, &mut crate::egui::Ui) -> bool + Send + Sync>;
 
         impl ParamsInner {
-            pub fn model(self, app: &App) -> crate::Model {
-                let params = crate::DesignParams::#struct_type(Params {
-                    inner: self,
-                    calculate_shapes: Box::new(Self::calculate_shapes),
-                    ui_elements: Box::new(Self::ui_elements),
-                });
-
-                crate::model(params, app)
-            }
-
             pub fn ui_elements(&mut self, ui: &mut crate::egui::Ui) -> bool {
                 let mut changed = false;
                 #(changed |= #params;)*

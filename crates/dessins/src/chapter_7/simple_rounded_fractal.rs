@@ -46,7 +46,7 @@ impl ParamsInner {
             );
         }
 
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
         let mut shape = Shape::new();
 
         for ii in 0..self.m {
@@ -56,6 +56,7 @@ impl ParamsInner {
             let destination = self.positions[ii + 1];
             let diff = destination - source;
 
+            #[allow(unused_assignments)]
             let mut point0 = source;
             let mut point1 = source;
             let mut point2 = source;

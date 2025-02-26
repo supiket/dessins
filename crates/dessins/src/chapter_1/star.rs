@@ -17,7 +17,7 @@ pub struct ParamsInner {
 
 impl ParamsInner {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 

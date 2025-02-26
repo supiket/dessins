@@ -25,7 +25,7 @@ pub struct RParams {
 
 impl ParamsInner {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
         let mut shape = Shape::new();
 
         let n = self.n as f32;

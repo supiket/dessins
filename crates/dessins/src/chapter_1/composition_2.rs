@@ -3,7 +3,6 @@ use super::{
     star::{self},
 };
 use crate::{Segment, Shape, Shapes, NP};
-use nannou::prelude::*;
 use ui_controlled_params::UiControlledParams;
 
 #[derive(UiControlledParams)]
@@ -21,7 +20,7 @@ pub struct ParamsInner {
 
 impl ParamsInner {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
         let mut shape = Shape::new();
 
         let mut polygon = polygon::ParamsInner {

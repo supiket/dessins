@@ -4,27 +4,42 @@ use bevy_nannou::prelude::*;
 use bevy_nannou::NannouPlugin;
 use dessins::{
     draw_segment, match_calculate_shapes, match_ui_elements, ui::ui_color, DesignParams, Model,
+    Shapes,
 };
 use nannou::prelude::random;
 
 fn main() {
+    let window_plugin = WindowPlugin {
+        primary_window: Some(Window {
+            fit_canvas_to_parent: true,
+            ..default()
+        }),
+        ..default()
+    };
+
+    #[allow(unused_mut)]
+    let mut default_plugins = DefaultPlugins.set(window_plugin);
+
+    // #[cfg(target_arch = "wasm32")]
+    // {
+    //     let render_plugin = bevy::render::RenderPlugin {
+    //         render_creation: bevy::render::settings::WgpuSettings {
+    //             backends: Some(nannou::wgpu::Backends::GL),
+    //             ..default()
+    //         }
+    //         .into(),
+    //         ..default()
+    //     };
+    //     default_plugins = default_plugins.set(render_plugin);
+    // }
+
     App::new()
-        .add_plugins((
-            DefaultPlugins.set(WindowPlugin {
-                primary_window: Some(Window {
-                    fit_canvas_to_parent: true,
-                    ..default()
-                }),
-                ..default()
-            }),
-            NannouPlugin,
-            EguiPlugin,
-        ))
+        .add_plugins((default_plugins, NannouPlugin, EguiPlugin))
         .insert_resource(Model {
             params: DesignParams::SimpleDeformedFractal(
                 dessins::chapter_7::simple_deformed_fractal::Params::default(),
             ),
-            points: Default::default(),
+            points: Shapes::default(),
             color: Color::srgb(random(), random(), random()),
         })
         .add_systems(Startup, setup)
@@ -57,7 +72,7 @@ fn update_egui(mut model: ResMut<Model>, mut egui_ctx: EguiContexts) {
     if let Some(new_design) = new_design {
         model.params = new_design;
         model.points = match_calculate_shapes(&mut model.params);
-    } else if recalculate || model.points.is_empty() {
+    } else if recalculate || model.points == Shapes::default() {
         model.points = match_calculate_shapes(&mut model.params);
     }
 }

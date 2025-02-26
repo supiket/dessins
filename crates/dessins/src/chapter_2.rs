@@ -247,7 +247,7 @@ impl ParamsInner {
     }
 
     fn program_1(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
@@ -270,7 +270,7 @@ impl ParamsInner {
     }
 
     fn program_2(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 0..=5 {
             let mut shape = Shape::new();
@@ -303,7 +303,7 @@ impl ParamsInner {
     }
 
     fn program_3(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 0..=5 {
             for j in 0..=1 {
@@ -336,7 +336,7 @@ impl ParamsInner {
     }
 
     fn program_4(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 0..=15 {
             let mut shape = Shape::new();
@@ -371,7 +371,7 @@ impl ParamsInner {
     }
 
     fn program_5(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 0..=5 {
             for j in 0..pow(2, i as usize) {
@@ -406,7 +406,7 @@ impl ParamsInner {
     }
 
     fn program_6(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 0..=2 {
             for j in 0..=2 {
@@ -437,7 +437,7 @@ impl ParamsInner {
     }
 
     fn program_7(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in -4..=4 {
             for j in -abs(i)..=abs(i) {
@@ -470,7 +470,7 @@ impl ParamsInner {
     }
 
     fn program_8(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in -4..=4 {
             for j in -4..=4 {
@@ -503,7 +503,7 @@ impl ParamsInner {
     }
 
     fn program_9(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in -4..=4 {
             for j in -4..=4 {
@@ -548,7 +548,7 @@ impl ParamsInner {
     }
 
     fn program_10(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in -4..=4 {
             for j in -4..=4 {
@@ -582,7 +582,7 @@ impl ParamsInner {
     }
 
     fn program_11(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 0..=4 {
             for j in 0..=2 {
@@ -623,7 +623,7 @@ impl ParamsInner {
     }
 
     fn program_12(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 1..=4 {
             for j in 1..=4 {
@@ -657,7 +657,7 @@ impl ParamsInner {
     }
 
     fn program_13(&mut self, design_shape: &mut DesignShape) -> Shapes {
-        let mut shapes = Shapes::new();
+        let mut shapes = Shapes::default();
 
         for i in 0..=6 {
             let mut shape = Shape::new();

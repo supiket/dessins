@@ -1,3 +1,4 @@
+use bevy_egui::egui;
 use nannou::prelude::*;
 
 pub mod chapter_1;
@@ -7,13 +8,13 @@ pub mod chapter_4;
 pub mod chapter_5;
 pub mod chapter_6;
 pub mod chapter_7;
-pub mod no_params;
 pub mod ui;
 
 pub const NP: usize = 480; // # elementary steps, i.e. resolution
 pub const WEIGHT: f32 = 1.0; // point weight
 
-pub type Shapes = Vec<Shape>;
+#[derive(PartialEq)]
+pub struct Shapes(Vec<Shape>);
 pub type Shape = Vec<Segment>;
 pub type Segment = Vec<Point2>;
 
@@ -42,48 +43,6 @@ pub struct Model {
     pub params: DesignParams,
     pub points: Shapes,
     pub color: Color,
-}
-
-pub fn model(params: DesignParams, app: &App) -> Model {
-    app.new_window().view(view).build();
-
-    Model {
-        params,
-        points: Default::default(),
-        color: Color::srgb(random(), random(), random()),
-    }
-}
-
-pub fn view(app: &App, model: &Model) {
-    let draw = app.draw();
-    draw.background().color(BLACK);
-
-    model.points.iter().for_each(|shape| {
-        shape
-            .iter()
-            .for_each(|segment| draw_segment(&draw, model.color, segment))
-    });
-}
-
-pub fn update(app: &App, model: &mut Model) {
-    let mut recalculate = false;
-
-    {
-        let mut egui_ctx = app.egui();
-        let ctx = egui_ctx.get_mut();
-
-        egui::SidePanel::left("params").show(ctx, |ui| {
-            recalculate = match_ui_elements(&mut model.params, ui);
-
-            if let Some(color) = ui::ui_color(ui) {
-                model.color = color;
-            }
-        });
-    }
-
-    if recalculate || model.points.is_empty() {
-        model.points = match_calculate_shapes(&mut model.params)
-    }
 }
 
 pub fn draw_segment(draw: &Draw, color: Color, points: &[Point2]) {
@@ -144,5 +103,24 @@ pub fn match_calculate_shapes(params: &mut DesignParams) -> Shapes {
         DesignParams::SimpleFractal(params) => (params.calculate_shapes)(&mut params.inner),
         DesignParams::SimpleRoundedFractal(params) => (params.calculate_shapes)(&mut params.inner),
         DesignParams::SimpleDeformedFractal(params) => (params.calculate_shapes)(&mut params.inner),
+    }
+}
+
+impl Default for Shapes {
+    fn default() -> Self {
+        Self(vec![vec![vec![Point2::default()]]])
+    }
+}
+
+impl core::ops::Deref for Shapes {
+    type Target = Vec<Shape>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl core::ops::DerefMut for Shapes {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
     }
 }

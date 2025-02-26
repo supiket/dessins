@@ -11,15 +11,9 @@
       let
         pkgs = import nixpkgs { inherit system; };
         rustPlatform = pkgs.rustPlatform;
-      in {
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [
-            cargo rustc wasm-bindgen-cli lld pkg-config binaryen
-          ];
-        };
 
-        packages.wasm = rustPlatform.buildRustPackage {
-          pname = "dessins";
+        mkWasmPackage = { pname, optimizeWasm }: rustPlatform.buildRustPackage {
+          pname = pname;
           version = "0.1.0";
           src = ./.;
 
@@ -38,12 +32,11 @@
             set -e
             mkdir -p target
 
-            cargo build --profile wasm-release --bin dessins --target wasm32-unknown-unknown --verbose
+            cargo build --profile wasm-release --bin dessins --target wasm32-unknown-unknown
 
             WASM_RELEASE_DIR="target/wasm32-unknown-unknown/wasm-release"
             DESSINS_WASM=$WASM_RELEASE_DIR/dessins.wasm
             DESSINS_BG_WASM=$WASM_RELEASE_DIR/dessins_bg.wasm
-            OPTIMIZED_DESSINS_BG_WASM=$WASM_RELEASE_DIR/dessins_bg.optimized.wasm
 
             if [ ! -f $DESSINS_WASM ]; then
                 echo "error: $DESSINS_WASM not found"
@@ -58,15 +51,22 @@
                 echo "error: $DESSINS_BG_WASM not found after wasm-bindgen"
                 exit 1
             fi
+          '' + (if optimizeWasm then ''
+            OPTIMIZED_DESSINS_BG_WASM=$WASM_RELEASE_DIR/dessins_bg.optimized.wasm
+            echo "size of $DESSINS_BG_WASM pre-wasm-opt:$(du -h $DESSINS_BG_WASM | cut -f1)"
 
             wasm-opt -Oz --output $OPTIMIZED_DESSINS_BG_WASM $DESSINS_BG_WASM
             mv $OPTIMIZED_DESSINS_BG_WASM $DESSINS_BG_WASM
-          '';
+
+            echo "size of $DESSINS_BG_WASM post-wasm-opt:$(du -h $DESSINS_BG_WASM | cut -f1)"
+          '' else "");
 
           installPhase = ''
             mkdir -p $out/target
             cp -r target/wasm32-unknown-unknown/wasm-release/* $out/target/
             cp index.html $out/target/
+            cp favicon.ico $out/target/
+            cp favicon.png $out/target/
           '';
 
           meta = with pkgs.lib; {
@@ -74,6 +74,15 @@
             license = licenses.mit;
           };
         };
+      in {
+        devShells.default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            cargo rustc wasm-bindgen-cli lld pkg-config binaryen
+          ];
+        };
+
+        packages.wasm = mkWasmPackage { pname = "dessins-wasm"; optimizeWasm = false; };
+        packages.wasm-opt = mkWasmPackage { pname = "dessins-wasm-opt"; optimizeWasm = true; };
       }
     );
 }
