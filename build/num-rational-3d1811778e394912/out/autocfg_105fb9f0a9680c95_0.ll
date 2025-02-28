@@ -1,5 +1,5 @@
-; ModuleID = 'autocfg_3d4c2e8d80cd4afd_0.11a71f4732bd8880-cgu.0'
-source_filename = "autocfg_3d4c2e8d80cd4afd_0.11a71f4732bd8880-cgu.0"
+; ModuleID = 'autocfg_105fb9f0a9680c95_0.235c72f5ce48868c-cgu.0'
+source_filename = "autocfg_105fb9f0a9680c95_0.235c72f5ce48868c-cgu.0"
 target datalayout = "e-m:e-p:32:32-p10:8:8-p20:8:8-i64:64-n32:64-S128-ni:1:10:20"
 target triple = "wasm32-unknown-unknown"
 
