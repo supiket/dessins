@@ -36,7 +36,7 @@ fn float_np(value: &mut f32, range: RangeInclusive<f32>) -> egui::Slider<'_> {
 }
 
 fn float_pi(value: &mut f32) -> egui::Slider<'_> {
-    float(value, -PI..=PI).suffix("π")
+    float(value, -2.0..=2.0).suffix("π")
 }
 
 pub fn add_numeric<T: egui::emath::Numeric>(
@@ -74,7 +74,7 @@ pub fn add_float_pi(ui: &mut egui::Ui, value: &mut f32) -> bool {
 }
 
 pub fn add_float_position(ui: &mut egui::Ui, value: &mut f32) -> bool {
-    add_float_np(ui, value, -0.5..=0.5)
+    add_float_np(ui, value, -1.0..=1.0)
 }
 
 pub fn add_float_length(ui: &mut egui::Ui, value: &mut f32) -> bool {
