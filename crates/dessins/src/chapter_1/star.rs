@@ -1,21 +1,15 @@
 use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
-#[derive(UiControlledParams)]
-#[params(Star)]
-pub struct ParamsInner {
-    #[param(label = "star k", range(5..=100))]
-    pub k: u32, // # vertices
-    #[param(label = "star h", range(3..=50))]
-    pub h: u32, // # vertices to skip (clockwise) before connecting two dots
-    #[param(label = "star r", length)]
-    pub r: f32, // radius of the circle C on which the vertices are
-    #[param(label = "star ad", pi)]
+#[derive(Clone)]
+pub struct Params {
+    pub k: u32,  // # vertices
+    pub h: u32,  // # vertices to skip (clockwise) before connecting two dots
+    pub r: f32,  // radius of the circle C on which the vertices are
     pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
 }
 
-impl ParamsInner {
+impl Params {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::default();
         let mut shape = Shape::new();
@@ -44,14 +38,10 @@ impl ParamsInner {
 impl Default for Params {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                k: 5,
-                h: 3,
-                r: NP as f32 * 0.45,
-                ad: PI / 2.0,
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            k: 5,
+            h: 3,
+            r: NP as f32 * 0.45,
+            ad: PI / 2.0,
         }
     }
 }

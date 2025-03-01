@@ -1,23 +1,15 @@
 use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
-#[derive(UiControlledParams)]
-#[params(Jolygon)]
-pub struct ParamsInner {
-    #[param(range(1..=2500))]
-    pub k: u32, // # segments
-    #[param(pi)]
+pub struct Params {
+    pub k: u32,  // # segments
     pub an: f32, // angle of two consecutive segments
-    #[param(range(0.9..=1.0))]
     pub ra: f32, // ratio of the lengths of two consecutive segments
-    #[param(pi)]
     pub aa: f32, // angle of the first segment with horizontal
-    #[param(length)]
     pub rr: f32, // length of the first segment
 }
 
-impl ParamsInner {
+impl Params {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::default();
         let mut shape = Shape::new();
@@ -70,15 +62,11 @@ impl ParamsInner {
 impl Default for Params {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                k: 200,
-                an: 15.0 * PI / 31.0,
-                ra: 0.98,
-                aa: 0_f32,
-                rr: 0.80 * NP as f32,
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            k: 200,
+            an: 15.0 * PI / 31.0,
+            ra: 0.98,
+            aa: 0_f32,
+            rr: 0.80 * NP as f32,
         }
     }
 }

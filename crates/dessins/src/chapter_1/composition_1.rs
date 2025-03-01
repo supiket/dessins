@@ -4,18 +4,13 @@ use super::{
 };
 use crate::{Segment, Shape, Shapes, NP};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
-#[derive(UiControlledParams)]
-#[params(Composition1)]
-pub struct ParamsInner {
-    #[param]
-    pub polygon: polygon::ParamsInner,
-    #[param]
-    pub star: star::ParamsInner,
+pub struct Params {
+    pub polygon: polygon::Params,
+    pub star: star::Params,
 }
 
-impl ParamsInner {
+impl Params {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::default();
         let mut shape = Shape::new();
@@ -44,21 +39,18 @@ impl ParamsInner {
 impl Default for Params {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                polygon: polygon::ParamsInner {
-                    k: 5,
-                    r: NP as f32 * 0.27,
-                    ad: PI / 2.0,
-                },
-                star: star::ParamsInner {
-                    k: 25,
-                    h: 12,
-                    r: NP as f32 * 0.22,
-                    ad: PI / 2.0,
-                },
+            polygon: polygon::Params {
+                k: 5,
+                r: NP as f32 * 0.27,
+                ad: PI / 2.0,
+                k_animation: None,
             },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            star: star::Params {
+                k: 25,
+                h: 12,
+                r: NP as f32 * 0.22,
+                ad: PI / 2.0,
+            },
         }
     }
 }

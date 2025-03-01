@@ -3,37 +3,21 @@ use super::{
     star::{self},
 };
 use crate::{Segment, Shape, Shapes, NP};
-use ui_controlled_params::UiControlledParams;
 
-#[derive(UiControlledParams)]
-#[params(Composition2)]
-pub struct ParamsInner {
-    #[param]
-    pub polygon: polygon::ParamsInner,
-    #[param]
-    pub star: star::ParamsInner,
-    #[param(range(1..=100))]
-    pub n: u32, // # stars
-    #[param(range(0.7..=1.3))]
+pub struct Params {
+    pub polygon: polygon::Params,
+    pub star: star::Params,
+    pub n: u32,  // # stars
     pub rr: f32, // reduction coefficient from one star to the next & the distance between the center of the spiral and the center of successive stars
 }
 
-impl ParamsInner {
+impl Params {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::default();
         let mut shape = Shape::new();
 
-        let mut polygon = polygon::ParamsInner {
-            k: self.polygon.k,
-            r: self.polygon.r,
-            ad: self.polygon.ad,
-        };
-        let mut star = star::ParamsInner {
-            k: self.star.k,
-            h: self.star.h,
-            r: self.star.r,
-            ad: self.star.ad,
-        };
+        let mut polygon = self.polygon.clone();
+        let mut star = self.star.clone();
 
         for i in 0..self.n {
             let r2 = self.polygon.r * self.rr.powi(i as i32);
@@ -65,23 +49,20 @@ impl ParamsInner {
 impl Default for Params {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                n: 32,
-                rr: 0.9,
-                polygon: polygon::ParamsInner {
-                    k: 8,
-                    r: NP as f32 * 0.36,
-                    ad: 0_f32,
-                },
-                star: star::ParamsInner {
-                    k: 16,
-                    h: 5,
-                    r: NP as f32 * 0.14,
-                    ad: 0_f32,
-                },
+            n: 32,
+            rr: 0.9,
+            polygon: polygon::Params {
+                k: 8,
+                r: NP as f32 * 0.36,
+                ad: 0_f32,
+                ..Default::default()
             },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            star: star::Params {
+                k: 16,
+                h: 5,
+                r: NP as f32 * 0.14,
+                ad: 0_f32,
+            },
         }
     }
 }

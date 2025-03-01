@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/dessins", "crates/ui-controlled-params"]
+members = ["crates/dessins"]
 resolver = "2"
 
 [workspace.package]
@@ -12,9 +12,9 @@ anyhow = "1.0"
 bevy = { version = "0.15", default-features = false, features = [ "webgl2" ] }
 bevy_egui = "0.32.0"
 bevy_nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor" }
+bevy_reflect = { version = "0.15", features = [ "documentation" ] }
 nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor", features = [ "egui" ] }
 dessins = { path = "crates/dessins", version = "0.1.0" }
-ui-controlled-params = { path = "crates/ui-controlled-params", version = "0.1.0" }
 evalexpr = "12.0.2"
 proc-macro2 = "1.0"
 quote = "1.0"
