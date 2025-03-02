@@ -1,4 +1,7 @@
-use crate::NP;
+use crate::{
+    meta::{RangeStep, Subtype},
+    shapes::NP,
+};
 use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
 use std::{collections::HashMap, f32::consts::PI, ops::RangeInclusive};
@@ -104,6 +107,22 @@ pub fn add_float_position_with_label(ui: &mut egui::Ui, label: &str, value: &mut
 pub fn add_float_length_with_label(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
     ui.label(label);
     add_float_length(ui, value)
+}
+
+pub fn add_float_with_label(
+    ui: &mut egui::Ui,
+    label: &str,
+    value: &mut f32,
+    subtype: &Subtype,
+) -> bool {
+    match subtype {
+        Subtype::None(RangeStep { range, step: _step }) => {
+            add_float(ui, label, value, range.clone())
+        }
+        Subtype::Position => add_float_position_with_label(ui, label, value),
+        Subtype::Length => add_float_length_with_label(ui, label, value),
+        Subtype::Angle => add_float_pi_with_label(ui, label, value),
+    }
 }
 
 pub fn add_point2(

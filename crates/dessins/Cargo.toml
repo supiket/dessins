@@ -12,9 +12,9 @@ name = "dessins"
 path = "src/main.rs"
 
 [dependencies]
+anyhow.workspace = true # TODO: replace with thiserror
 bevy.workspace = true
 bevy_egui.workspace = true
 bevy_nannou.workspace = true
-bevy_reflect.workspace = true
 evalexpr.workspace = true
 nannou.workspace = true

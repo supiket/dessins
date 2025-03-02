@@ -2116,10 +2116,10 @@ dependencies = [
 name = "dessins"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "bevy",
  "bevy_egui",
  "bevy_nannou",
- "bevy_reflect",
  "evalexpr",
  "nannou",
 ]
