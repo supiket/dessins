@@ -2,16 +2,16 @@ use crate::animation::AnimationState;
 use bevy::reflect::Reflect;
 use std::{collections::HashMap, ops::RangeInclusive};
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct ParamsMeta(pub HashMap<String, ParamMeta>);
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct ParamMeta {
     pub animation: Option<AnimationState>,
     pub subtype: Subtype,
 }
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect)]
 pub enum Subtype {
     None(RangeStep),
     Angle,
@@ -19,7 +19,7 @@ pub enum Subtype {
     Position,
 }
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct RangeStep {
     pub range: RangeInclusive<f32>,
     pub step: f32,

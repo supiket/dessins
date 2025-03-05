@@ -1,19 +1,23 @@
-use crate::params::DesignParams;
+use crate::params::{DesignController, DesignVariant};
 use crate::shapes::{draw_segment, Shapes};
 use bevy_egui::EguiContexts;
 use nannou::prelude::*;
 
 #[derive(Resource)]
 pub struct Model {
-    params: DesignParams,
+    dessin: DesignController,
     points: Shapes,
+    // TODO: animate
     pub color: Color,
 }
 
 impl Model {
-    pub fn new(params: DesignParams) -> Self {
+    pub fn new(dessin: DesignVariant) -> Self {
         Self {
-            params,
+            dessin: DesignController {
+                selected: dessin,
+                params: dessin.get_params(),
+            },
             points: Shapes::new_non_empty(),
             color: Color::srgb(random(), random(), random()),
         }
@@ -24,13 +28,7 @@ impl Model {
     }
 
     pub fn calculate_shapes(&mut self) {
-        self.points = match &mut self.params {
-            DesignParams::Polygon(params) => params.calculate_shapes(),
-            DesignParams::Star(params) => params.calculate_shapes(),
-            DesignParams::Composition1(params) => params.calculate_shapes(),
-            DesignParams::Composition2(params) => params.calculate_shapes(),
-            DesignParams::Jolygon(params) => params.calculate_shapes(),
-        };
+        self.points = self.dessin.params.calculate_shapes();
     }
 
     pub fn draw_points(&self, draw: Single<&Draw>) {
@@ -41,13 +39,18 @@ impl Model {
         });
     }
 
-    pub fn change_design(&mut self, params: DesignParams) {
-        self.params = params;
+    pub fn change_design(&mut self, variant: DesignVariant) {
+        self.dessin.params = variant.get_params();
     }
 
-    pub fn control_params(&mut self, egui_ctx: EguiContexts) -> (bool, Option<Color>) {
-        // TODO: add buttons for different designs
+    pub fn control_params(&mut self, mut egui_ctx: EguiContexts) -> (bool, Option<Color>) {
+        let ctx = egui_ctx.ctx_mut();
 
-        self.params.control(egui_ctx)
+        let mut changed = false;
+        changed |= self.dessin.control(ctx);
+        let control_res = self.dessin.params.control(ctx);
+        changed |= control_res.0;
+
+        (changed, control_res.1)
     }
 }

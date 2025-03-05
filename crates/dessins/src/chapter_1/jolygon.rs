@@ -5,7 +5,7 @@ use crate::{
 };
 use nannou::prelude::*;
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
 pub struct Jolygon {
     pub k: f32,  // # segments

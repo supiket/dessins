@@ -5,7 +5,7 @@ use crate::{
 use bevy::reflect::Reflect;
 use std::{f32::consts::TAU, time::Instant};
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct AnimationState {
     start_time: Instant,
     phase_offset: f32,
@@ -37,7 +37,7 @@ impl AnimationState {
     }
 
     pub fn animate_float(&self, subtype: &Subtype) -> f32 {
-        // TODO: transfer between coefficients and actual values
+        // TODO: transform between coefficients and actual values
         // and use range_step here
         let range = match subtype {
             Subtype::None(RangeStep { range, step: _step }) => range,

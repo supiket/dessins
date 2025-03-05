@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_egui::{EguiContexts, EguiPlugin};
 use bevy_nannou::prelude::*;
 use bevy_nannou::NannouPlugin;
-use dessins::{model::Model, params::DesignParams};
+use dessins::{model::Model, params::DesignVariant};
 
 fn main() {
     let window_plugin = WindowPlugin {
@@ -15,9 +15,7 @@ fn main() {
 
     let default_plugins = DefaultPlugins.set(window_plugin);
 
-    let dessin = DesignParams::Composition2(dessins::chapter_1::Composition2::default());
-
-    let model = Model::new(dessin);
+    let model = Model::new(DesignVariant::Star);
 
     App::new()
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))

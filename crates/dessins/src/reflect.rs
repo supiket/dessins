@@ -52,7 +52,7 @@ fn get_field_names<T: ControllableParams>(data: &T) -> Vec<&'static str> {
 pub fn control_reflect<T: ControllableParams>(
     data: &mut T,
     ctx: &mut egui::Context,
-) -> anyhow::Result<(bool, Option<Color>)> {
+) -> (bool, Option<Color>) {
     let type_name = std::any::type_name::<T>();
     let meta = extract_params_meta(data);
     let mut changed = false;
@@ -65,9 +65,7 @@ pub fn control_reflect<T: ControllableParams>(
         }
 
         for field_name in get_field_names(data) {
-            if data.get_field_mut::<ParamsMeta>(&field_name).is_some() {
-                continue;
-            } else if data
+            if data
                 .get_field_mut::<Option<ParamsMeta>>(&field_name)
                 .is_some()
             {
@@ -96,7 +94,7 @@ pub fn control_reflect<T: ControllableParams>(
         data.toggle_animation_state(&key);
     }
 
-    Ok((changed, color))
+    (changed, color)
 }
 
 pub fn extract_params_meta<T: ControllableParams>(data: &mut T) -> ParamsMeta {

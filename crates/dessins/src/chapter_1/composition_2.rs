@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::{Polygon, Star};
 use crate::{
     meta::{ParamMeta, ParamsMeta},
@@ -7,8 +5,9 @@ use crate::{
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
+use std::collections::HashMap;
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
 pub struct Composition2 {
     pub polygon_k: f32,
@@ -60,7 +59,6 @@ impl Composition2 {
             }
 
             segment.push(segment[0]);
-
             shape.push(segment);
         }
 
