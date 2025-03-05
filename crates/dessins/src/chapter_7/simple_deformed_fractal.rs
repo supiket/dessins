@@ -1,6 +1,9 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{
+    meta::{ParamMeta, ParamsMeta},
+    reflect::ControllableParams,
+    shapes::{sign, Segment, Shape, Shapes, NP},
+};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
 pub type OuterSegment = Segment;
 pub type InnerSegment = Segment;
@@ -33,16 +36,6 @@ pub enum Deformation {
     Program10,
     Program11,
     Program12,
-}
-
-fn sign(val: f32) -> f32 {
-    if val < 0.0 {
-        -1.0
-    } else if val == 0.0 {
-        val
-    } else {
-        1.0
-    }
 }
 
 impl Deformation {

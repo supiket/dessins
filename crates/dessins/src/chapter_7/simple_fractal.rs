@@ -1,9 +1,9 @@
 use crate::{
-    chapter_1::polygon::{self},
-    Segment, Shape, Shapes, NP,
+    meta::{ParamMeta, ParamsMeta},
+    reflect::ControllableParams,
+    shapes::{sign, Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
 pub type OuterSegment = Segment;
 pub type InnerSegment = Segment;
@@ -23,16 +23,6 @@ pub struct ParamsInner {
     pub lengths: Vec<f32>,
     #[param(pi)]
     pub angles: Vec<f32>,
-}
-
-fn sign(val: f32) -> f32 {
-    if val < 0.0 {
-        -1.0
-    } else if val == 0.0 {
-        val
-    } else {
-        1.0
-    }
 }
 
 impl ParamsInner {

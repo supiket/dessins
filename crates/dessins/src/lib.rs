@@ -1,5 +1,7 @@
 pub mod animation;
 pub mod chapter_1;
+pub mod chapter_2;
+pub mod chapter_3;
 pub mod meta;
 pub mod model;
 pub mod params;

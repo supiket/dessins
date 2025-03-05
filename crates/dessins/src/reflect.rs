@@ -12,7 +12,32 @@ pub struct FieldControl {
 }
 
 pub trait ControllableParams: Reflect + GetField {
-    fn set_meta(&mut self, path: &str);
+    fn control_params(&mut self, ctx: &mut egui::Context) -> (bool, Option<Color>)
+    where
+        Self: Sized,
+    {
+        let mut changed = false;
+        let mut color = None;
+
+        egui::SidePanel::left("params").show(ctx, |ui| {
+            if let Some(new_color) = ui_color(ui) {
+                color = Some(new_color);
+            }
+
+            changed |= self.control(ui)
+        });
+
+        (changed, color)
+    }
+
+    fn control(&mut self, ui: &mut egui::Ui) -> bool
+    where
+        Self: Sized,
+    {
+        control_reflect(self, ui)
+    }
+
+    fn set_meta(&mut self, _path: &str) {}
 
     fn get_meta(&self) -> Option<ParamsMeta> {
         self.get_field::<Option<ParamsMeta>>("meta").cloned()?
@@ -49,52 +74,42 @@ fn get_field_names<T: ControllableParams>(data: &T) -> Vec<&'static str> {
     }
 }
 
-pub fn control_reflect<T: ControllableParams>(
-    data: &mut T,
-    ctx: &mut egui::Context,
-) -> (bool, Option<Color>) {
+pub fn control_reflect<T: ControllableParams>(data: &mut T, ui: &mut egui::Ui) -> bool {
     let type_name = std::any::type_name::<T>();
     let meta = extract_params_meta(data);
     let mut changed = false;
-    let mut color = None;
     let mut keys_to_toggle_animation_state = vec![];
 
-    egui::SidePanel::left("params").show(ctx, |ui| {
-        if let Some(new_color) = ui_color(ui) {
-            color = Some(new_color);
-        }
+    for field_name in get_field_names(data) {
+        if data
+            .get_field_mut::<Option<ParamsMeta>>(&field_name)
+            .is_some()
+        {
+            continue;
+        } else if let Some(v) = data.get_field_mut::<f32>(&field_name) {
+            let key = format!("{}.{}", type_name, field_name);
+            let field_meta = meta.get(key.as_str()).unwrap();
 
-        for field_name in get_field_names(data) {
-            if data
-                .get_field_mut::<Option<ParamsMeta>>(&field_name)
-                .is_some()
-            {
-                continue;
-            } else if let Some(v) = data.get_field_mut::<f32>(&field_name) {
-                let key = format!("{}.{}", type_name, field_name);
-                let field_meta = meta.get(key.as_str()).unwrap();
+            let FieldControl {
+                changed: field_changed,
+                toggle_animate,
+            } = control_f32_field(v, ui, &field_name, &field_meta);
 
-                let FieldControl {
-                    changed: field_changed,
-                    toggle_animate,
-                } = control_f32_field(v, ui, &field_name, &field_meta);
-
-                if toggle_animate {
-                    keys_to_toggle_animation_state.push(key);
-                }
-
-                changed |= field_changed;
-            } else {
-                todo!("unsupported field type: {field_name}");
+            if toggle_animate {
+                keys_to_toggle_animation_state.push(key);
             }
+
+            changed |= field_changed;
+        } else {
+            todo!("unsupported field type: {field_name}");
         }
-    });
+    }
 
     for key in keys_to_toggle_animation_state.iter() {
         data.toggle_animation_state(&key);
     }
 
-    (changed, color)
+    changed
 }
 
 pub fn extract_params_meta<T: ControllableParams>(data: &mut T) -> ParamsMeta {

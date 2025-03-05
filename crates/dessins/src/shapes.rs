@@ -25,6 +25,16 @@ pub fn draw_segment(draw: &Draw, color: Color, points: &[Point2]) {
     }
 }
 
+pub fn sign(val: f32) -> f32 {
+    if val < 0.0 {
+        -1.0
+    } else if val == 0.0 {
+        val
+    } else {
+        1.0
+    }
+}
+
 impl Shapes {
     pub fn new_non_empty() -> Self {
         Self(vec![vec![vec![Point2::default()]]])
