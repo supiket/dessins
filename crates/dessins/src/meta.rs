@@ -1,15 +1,17 @@
 use crate::animation::AnimationState;
+use bevy::reflect::Reflect;
 use std::{collections::HashMap, ops::RangeInclusive};
 
-pub type FieldsMeta = HashMap<String, FieldMeta>;
+#[derive(Clone, Debug, Reflect)]
+pub struct ParamsMeta(pub HashMap<String, ParamMeta>);
 
-#[derive(Clone, Debug)]
-pub struct FieldMeta {
+#[derive(Clone, Debug, Reflect)]
+pub struct ParamMeta {
     pub animation: Option<AnimationState>,
     pub subtype: Subtype,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Reflect)]
 pub enum Subtype {
     None(RangeStep),
     Angle,
@@ -17,23 +19,17 @@ pub enum Subtype {
     Position,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Reflect)]
 pub struct RangeStep {
     pub range: RangeInclusive<f32>,
     pub step: f32,
 }
 
-pub trait ParamMeta {
-    fn get_fields_meta(&self) -> Option<FieldsMeta>;
-    fn set_fields_meta(&mut self, path: &str);
-    fn toggle_field_animation_state(&mut self, field_key: &str) -> anyhow::Result<()>;
-}
-
-impl FieldMeta {
-    pub fn new(range: RangeInclusive<f32>, step: f32) -> Self {
+impl ParamMeta {
+    pub fn new(range: RangeInclusive<f32>) -> Self {
         Self {
             animation: None,
-            subtype: Subtype::None(RangeStep { range, step }),
+            subtype: Subtype::None(RangeStep { range, step: 1.0 }),
         }
     }
 
@@ -60,12 +56,34 @@ impl FieldMeta {
 }
 
 impl Subtype {
-    pub fn get_range(&self) -> RangeInclusive<f32> {
+    pub fn get_range_step(&self) -> RangeStep {
         match self {
-            Subtype::None(RangeStep { range, step: _ }) => range.clone(),
-            Subtype::Angle => -2.0..=2.0,
-            Subtype::Length => 0.0..=1.0,
-            Subtype::Position => -1.0..=1.0,
+            Subtype::None(range_step) => range_step.clone(),
+            Subtype::Angle => RangeStep {
+                range: -2.0..=2.0,
+                step: 0.1,
+            },
+            Subtype::Length => RangeStep {
+                range: 0.0..=1.0,
+                step: 0.1,
+            },
+            Subtype::Position => RangeStep {
+                range: -1.0..=1.0,
+                step: 0.1,
+            },
         }
+    }
+}
+
+impl core::ops::Deref for ParamsMeta {
+    type Target = HashMap<String, ParamMeta>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl core::ops::DerefMut for ParamsMeta {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
     }
 }

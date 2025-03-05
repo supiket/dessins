@@ -15,9 +15,9 @@ fn main() {
 
     let default_plugins = DefaultPlugins.set(window_plugin);
 
-    let model = Model::new(DesignParams::Polygon(
-        dessins::chapter_1::polygon::Polygon::default(),
-    ));
+    let dessin = DesignParams::Composition2(dessins::chapter_1::Composition2::default());
+
+    let model = Model::new(dessin);
 
     App::new()
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))

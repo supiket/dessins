@@ -1,6 +1,6 @@
 use crate::{
-    animation::AnimationState,
-    meta::{FieldMeta, FieldsMeta, ParamMeta},
+    meta::{ParamMeta, ParamsMeta},
+    reflect::ControllableParams,
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -13,8 +13,7 @@ pub struct Jolygon {
     pub ra: f32, // ratio of the lengths of two consecutive segments
     pub aa: f32, // angle of the first segment with horizontal
     pub rr: f32, // length of the first segment
-    #[reflect(ignore)]
-    pub fields_meta: Option<FieldsMeta>,
+    pub meta: Option<ParamsMeta>,
 }
 
 impl Jolygon {
@@ -67,48 +66,19 @@ impl Jolygon {
     }
 }
 
-impl ParamMeta for Jolygon {
-    fn get_fields_meta(&self) -> Option<FieldsMeta> {
-        self.fields_meta.clone()
-    }
-
-    fn set_fields_meta(&mut self, path: &str) {
-        self.fields_meta = Some(
+impl ControllableParams for Jolygon {
+    fn set_meta(&mut self, path: &str) {
+        self.meta = Some(ParamsMeta(
             [
-                (format!("{}.k", path), FieldMeta::new(1.0..=2500.0, 100.0)),
-                (format!("{}.an", path), FieldMeta::new_angle()),
-                (format!("{}.ra", path), FieldMeta::new(0.9..=1.0, 0.01)),
-                (format!("{}.aa", path), FieldMeta::new_angle()),
-                (format!("{}.rr", path), FieldMeta::new_length()),
+                (format!("{}.k", path), ParamMeta::new(1.0..=2500.0)),
+                (format!("{}.an", path), ParamMeta::new_angle()),
+                (format!("{}.ra", path), ParamMeta::new(0.9..=1.0)),
+                (format!("{}.aa", path), ParamMeta::new_angle()),
+                (format!("{}.rr", path), ParamMeta::new_length()),
             ]
             .into_iter()
             .collect(),
-        );
-    }
-
-    fn toggle_field_animation_state(&mut self, field_key: &str) -> anyhow::Result<()> {
-        if let Some(fields_meta) = &mut self.fields_meta {
-            if let Some(FieldMeta { animation, subtype }) = fields_meta.get_mut(field_key) {
-                *animation = match animation {
-                    Some(_) => None,
-                    None => {
-                        // TODO: change
-                        let freq = 1.0;
-                        let range = subtype.get_range();
-                        Some(AnimationState::new(freq, *range.start(), *range.end()))
-                    }
-                }
-            } else {
-                return Err(anyhow::anyhow!(format!(
-                    "fields_meta entry at key {} is none",
-                    field_key
-                )));
-            }
-        } else {
-            return Err(anyhow::anyhow!("fields_meta is none"));
-        }
-
-        Ok(())
+        ));
     }
 }
 
@@ -120,7 +90,7 @@ impl Default for Jolygon {
             ra: 0.98,
             aa: 0_f32,
             rr: 0.80 * NP as f32,
-            fields_meta: None,
+            meta: None,
         }
     }
 }

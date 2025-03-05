@@ -1,7 +1,9 @@
+use std::collections::HashMap;
+
 use super::{Polygon, Star};
 use crate::{
-    animation::AnimationState,
-    meta::{FieldMeta, FieldsMeta, ParamMeta},
+    meta::ParamsMeta,
+    reflect::ControllableParams,
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -9,8 +11,14 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, Reflect)]
 #[reflect(Default)]
 pub struct Composition1 {
-    pub polygon: Polygon,
-    pub star: Star,
+    pub polygon_k: f32,
+    pub polygon_r: f32,
+    pub polygon_ad: f32,
+    pub star_k: f32,
+    pub star_h: f32,
+    pub star_r: f32,
+    pub star_ad: f32,
+    pub meta: Option<ParamsMeta>,
 }
 
 impl Composition1 {
@@ -18,13 +26,28 @@ impl Composition1 {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        for i in 0..self.polygon.k as u32 {
-            let polygon_point = self.polygon.calculate_point(i);
+        let polygon = Polygon {
+            k: self.polygon_k,
+            r: self.polygon_r,
+            ad: self.polygon_ad,
+            meta: None,
+        };
+
+        let star = Star {
+            k: self.star_k,
+            h: self.star_h,
+            r: self.star_r,
+            ad: self.star_ad,
+            meta: None,
+        };
+
+        for i in 0..polygon.k as u32 {
+            let polygon_point = polygon.calculate_point(i);
 
             let mut segment = Segment::new();
 
-            for j in 0..self.star.k as u32 {
-                let star_point = self.star.calculate_point(j);
+            for j in 0..star.k as u32 {
+                let star_point = star.calculate_point(j);
                 let point = star_point + polygon_point;
                 segment.push(point);
             }
@@ -39,71 +62,55 @@ impl Composition1 {
     }
 }
 
-impl ParamMeta for Composition1 {
-    fn get_fields_meta(&self) -> Option<FieldsMeta> {
-        if let Some(polygon_fields_meta) = &self.polygon.fields_meta {
-            if let Some(star_fields_meta) = &self.star.fields_meta {
-                let mut fields_meta = FieldsMeta::new();
-                fields_meta.extend(polygon_fields_meta.clone());
-                fields_meta.extend(star_fields_meta.clone());
-                Some(fields_meta)
-            } else {
-                None
-            }
-        } else {
-            None
-        }
-    }
+impl ControllableParams for Composition1 {
+    fn set_meta(&mut self, path: &str) {
+        let mut polygon = Polygon {
+            k: self.polygon_k,
+            r: self.polygon_r,
+            ad: self.polygon_ad,
+            meta: None,
+        };
 
-    fn set_fields_meta(&mut self, path: &str) {
-        self.polygon
-            .set_fields_meta(format!("{}.polygon", path).as_str());
-        self.star.set_fields_meta(format!("{}.star", path).as_str());
-    }
+        let mut star = Star {
+            k: self.star_k,
+            h: self.star_h,
+            r: self.star_r,
+            ad: self.star_ad,
+            meta: None,
+        };
 
-    // TODO: adapt
-    fn toggle_field_animation_state(&mut self, field_key: &str) -> anyhow::Result<()> {
-        if let Some(fields_meta) = &mut self.get_fields_meta() {
-            if let Some(FieldMeta { animation, subtype }) = fields_meta.get_mut(field_key) {
-                *animation = match animation {
-                    Some(_) => None,
-                    None => {
-                        // TODO: change
-                        let freq = 1.0;
-                        let range = subtype.get_range();
-                        Some(AnimationState::new(freq, *range.start(), *range.end()))
-                    }
-                }
-            } else {
-                return Err(anyhow::anyhow!(format!(
-                    "fields_meta entry at key {} is none",
-                    field_key
-                )));
-            }
-        } else {
-            return Err(anyhow::anyhow!("fields_meta is none"));
+        polygon.set_meta(format!("{}.polygon", path).as_str());
+        star.set_meta(format!("{}.star", path).as_str());
+
+        let mut meta = ParamsMeta(HashMap::new());
+
+        for (k, v) in polygon.get_meta().expect("set just now").iter() {
+            let new_k = k.replace("polygon.", "polygon_");
+            meta.insert(new_k, v.clone());
         }
 
-        Ok(())
+        for (k, v) in star.get_meta().expect("set just now").iter() {
+            let new_k = k.replace("star.", "star_");
+            meta.insert(new_k, v.clone());
+        }
+
+        self.meta = Some(meta);
     }
 }
 
 impl Default for Composition1 {
     fn default() -> Self {
         Self {
-            polygon: Polygon {
-                k: 5.0,
-                r: NP as f32 * 0.27,
-                ad: PI / 2.0,
-                fields_meta: None,
-            },
-            star: Star {
-                k: 25.0,
-                h: 12.0,
-                r: NP as f32 * 0.22,
-                ad: PI / 2.0,
-                fields_meta: None,
-            },
+            polygon_k: 5.0,
+            polygon_r: NP as f32 * 0.27,
+            polygon_ad: PI / 2.0,
+
+            star_k: 25.0,
+            star_h: 12.0,
+            star_r: NP as f32 * 0.22,
+            star_ad: PI / 2.0,
+
+            meta: None,
         }
     }
 }
