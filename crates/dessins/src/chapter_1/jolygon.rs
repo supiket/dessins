@@ -1,5 +1,5 @@
 use crate::{
-    meta::{ParamMeta, ParamsMeta},
+    meta::{f32::F32Type, ParamMeta, ParamsMeta},
     reflect::ControllableParams,
     shapes::{Segment, Shape, Shapes, NP},
 };
@@ -26,10 +26,10 @@ impl Jolygon {
         let mut current_pos = pt2(0.0, 0.0);
         segment.push(current_pos);
 
-        let mut min_x = 0.0;
-        let mut max_x = 0.0;
-        let mut min_y = 0.0;
-        let mut max_y = 0.0;
+        let mut min_x: f32 = 0.0;
+        let mut max_x: f32 = 0.0;
+        let mut min_y: f32 = 0.0;
+        let mut max_y: f32 = 0.0;
 
         for i in 0..self.k as u32 {
             let angle = self.aa + i as f32 * self.an;
@@ -70,11 +70,17 @@ impl ControllableParams for Jolygon {
     fn set_meta(&mut self, path: &str) {
         self.meta = Some(ParamsMeta(
             [
-                (format!("{}.k", path), ParamMeta::new(1.0..=2500.0)),
-                (format!("{}.an", path), ParamMeta::new_angle()),
-                (format!("{}.ra", path), ParamMeta::new(0.9..=1.0)),
-                (format!("{}.aa", path), ParamMeta::new_angle()),
-                (format!("{}.rr", path), ParamMeta::new_length()),
+                (
+                    format!("{}.k", path),
+                    ParamMeta::new_f32_from_range(1.0..=2500.0),
+                ),
+                (format!("{}.an", path), ParamMeta::new_f32(F32Type::Angle)),
+                (
+                    format!("{}.ra", path),
+                    ParamMeta::new_f32_from_range(0.9..=1.0),
+                ),
+                (format!("{}.aa", path), ParamMeta::new_f32(F32Type::Angle)),
+                (format!("{}.rr", path), ParamMeta::new_f32(F32Type::Length)),
             ]
             .into_iter()
             .collect(),

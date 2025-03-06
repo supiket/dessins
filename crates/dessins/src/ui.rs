@@ -1,17 +1,7 @@
-use crate::{
-    meta::{RangeStep, Subtype},
-    shapes::NP,
-};
+use crate::shapes::NP;
 use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
-use std::{collections::HashMap, f32::consts::PI, ops::RangeInclusive};
-
-pub struct ExpressionF32 {
-    pub expr: String,
-    pub ctx: HashMapContext,
-    pub ctx_ext: HashMap<String, ()>,
-    pub val: f32,
-}
+use std::{f32::consts::PI, ops::RangeInclusive};
 
 pub fn ui_color(ui: &mut egui::Ui) -> Option<Color> {
     let clicked = ui.button("random color").clicked();
@@ -26,7 +16,7 @@ fn numeric<T: egui::emath::Numeric>(value: &mut T, range: RangeInclusive<T>) -> 
     egui::Slider::new(value, range).custom_parser(|str| evalexpr::eval_number(str).ok())
 }
 
-fn float(value: &mut f32, range: RangeInclusive<f32>) -> egui::Slider<'_> {
+pub fn float(value: &mut f32, range: RangeInclusive<f32>) -> egui::Slider<'_> {
     let mut ctx: HashMapContext<evalexpr::DefaultNumericTypes> = HashMapContext::new();
     ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
         .expect("setting to value of same type each time");
@@ -52,16 +42,6 @@ pub fn add_numeric<T: egui::emath::Numeric>(
     ui.add(numeric(value, range)).changed()
 }
 
-pub fn add_float(
-    ui: &mut egui::Ui,
-    label: &str,
-    value: &mut f32,
-    range: RangeInclusive<f32>,
-) -> bool {
-    ui.label(label);
-    ui.add(float(value, range)).changed()
-}
-
 pub fn add_float_np(ui: &mut egui::Ui, value: &mut f32, range: RangeInclusive<f32>) -> bool {
     let mut val = *value / NP as f32;
     let changed = ui.add(float_np(&mut val, range)).changed();
@@ -82,47 +62,6 @@ pub fn add_float_position(ui: &mut egui::Ui, value: &mut f32) -> bool {
 
 pub fn add_float_length(ui: &mut egui::Ui, value: &mut f32) -> bool {
     add_float_np(ui, value, 0.0..=1.0)
-}
-
-pub fn add_float_np_with_label(
-    ui: &mut egui::Ui,
-    label: &str,
-    value: &mut f32,
-    range: RangeInclusive<f32>,
-) -> bool {
-    ui.label(label);
-    add_float_np(ui, value, range)
-}
-
-pub fn add_float_pi_with_label(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
-    ui.label(label);
-    add_float_pi(ui, value)
-}
-
-pub fn add_float_position_with_label(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
-    ui.label(label);
-    add_float_position(ui, value)
-}
-
-pub fn add_float_length_with_label(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
-    ui.label(label);
-    add_float_length(ui, value)
-}
-
-pub fn add_float_with_label(
-    ui: &mut egui::Ui,
-    label: &str,
-    value: &mut f32,
-    subtype: &Subtype,
-) -> bool {
-    match subtype {
-        Subtype::None(RangeStep { range, step: _step }) => {
-            add_float(ui, label, value, range.clone())
-        }
-        Subtype::Position => add_float_position_with_label(ui, label, value),
-        Subtype::Length => add_float_length_with_label(ui, label, value),
-        Subtype::Angle => add_float_pi_with_label(ui, label, value),
-    }
 }
 
 pub fn add_point2(
@@ -222,41 +161,5 @@ pub fn add_point2_vector(
             changed |= add_point2(ui, &index.to_string(), val, range.clone());
         }
     });
-    changed
-}
-
-pub fn add_expression_f32(
-    ui: &mut egui::Ui,
-    label: &str,
-    value: &mut ExpressionF32,
-    default: &str,
-    range: RangeInclusive<f32>,
-) -> bool {
-    let mut changed = false;
-    ui.label(label);
-
-    if ui
-        .add(egui::Slider::new(&mut value.val, range).show_value(false))
-        .on_hover_text(format!("default: {}", default))
-        .changed()
-    {
-        changed = true;
-        value.expr = format!("{}", value.val);
-    }
-
-    let response = egui::TextEdit::singleline(&mut value.expr)
-        .desired_width(120.0)
-        .show(ui);
-
-    if response.response.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-        if value.ctx_ext.is_empty() {
-            if let Ok(val) = evalexpr::eval_number_with_context(&value.expr, &value.ctx) {
-                value.val = val as f32;
-                changed = true;
-            }
-        } else {
-            changed = true;
-        }
-    }
     changed
 }

@@ -25,7 +25,7 @@ pub struct ParamsInner {
 
 impl ParamsInner {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
         let points = self.calculate_points();

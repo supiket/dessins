@@ -46,7 +46,7 @@ impl ParamsInner {
             );
         }
 
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
         for ii in 0..self.m {

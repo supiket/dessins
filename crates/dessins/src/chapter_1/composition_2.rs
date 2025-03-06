@@ -100,8 +100,14 @@ impl ControllableParams for Composition2 {
             meta.insert(new_k, v.clone());
         }
 
-        meta.insert(format!("{}.n", path), ParamMeta::new(1.0..=100.0));
-        meta.insert(format!("{}.rr", path), ParamMeta::new(0.7..=1.3));
+        meta.insert(
+            format!("{}.n", path),
+            ParamMeta::new_f32_from_range(1.0..=100.0),
+        );
+        meta.insert(
+            format!("{}.rr", path),
+            ParamMeta::new_f32_from_range(0.7..=1.3),
+        );
 
         self.meta = Some(meta);
     }

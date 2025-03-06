@@ -1,9 +1,5 @@
-use crate::{
-    meta::{RangeStep, Subtype},
-    shapes::NP,
-};
 use bevy::reflect::Reflect;
-use std::{f32::consts::TAU, time::Instant};
+use std::time::Instant;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct AnimationState {
@@ -34,18 +30,5 @@ impl AnimationState {
         let sine_val = (dt * freq * std::f32::consts::TAU + self.phase_offset).sin();
         let new_val = min + (max - min) * (0.5 + 0.5 * sine_val);
         new_val.round()
-    }
-
-    pub fn animate_float(&self, subtype: &Subtype) -> f32 {
-        // TODO: transform between coefficients and actual values
-        // and use range_step here
-        let range = match subtype {
-            Subtype::None(RangeStep { range, step: _step }) => range,
-            Subtype::Position => &(-(NP as f32)..=NP as f32),
-            Subtype::Length => &(0.0..=NP as f32),
-            Subtype::Angle => &(-TAU..=TAU),
-        };
-        let step = 1.0;
-        self.update_value(step, *range.start(), *range.end())
     }
 }

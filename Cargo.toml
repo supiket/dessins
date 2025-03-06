@@ -12,12 +12,9 @@ anyhow = "1.0"
 bevy = { version = "0.15", default-features = false, features = [ "webgl2" ] }
 bevy_egui = "0.32.0"
 bevy_nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor" }
-nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor", features = [ "egui" ] }
 dessins = { path = "crates/dessins", version = "0.1.0" }
-evalexpr = "12.0.2"
-proc-macro2 = "1.0"
-quote = "1.0"
-syn = { version = "2.0", features = [ "full" ] }
+evalexpr = { version = "12.0.2", features = [ "serde" ] }
+nannou = { git = "https://github.com/nannou-org/nannou.git", branch = "bevy-refactor", features = [ "egui" ] }
 
 [profile.release]
 codegen-units = 1

@@ -1,5 +1,5 @@
 use crate::{
-    meta::{ParamMeta, ParamsMeta},
+    meta::{f32::F32Type, ParamMeta, ParamsMeta},
     reflect::ControllableParams,
     shapes::{Segment, Shape, Shapes, NP},
 };
@@ -45,9 +45,12 @@ impl ControllableParams for Polygon {
     fn set_meta(&mut self, path: &str) {
         self.meta = Some(ParamsMeta(
             [
-                (format!("{}.k", path), ParamMeta::new(3.0..=20.0)),
-                (format!("{}.r", path), ParamMeta::new_length()),
-                (format!("{}.ad", path), ParamMeta::new_angle()),
+                (
+                    format!("{}.k", path),
+                    ParamMeta::new_f32_from_range(3.0..=20.0),
+                ),
+                (format!("{}.r", path), ParamMeta::new_f32(F32Type::Length)),
+                (format!("{}.ad", path), ParamMeta::new_f32(F32Type::Angle)),
             ]
             .into_iter()
             .collect(),

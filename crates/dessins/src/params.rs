@@ -6,7 +6,7 @@ pub struct DesignController {
     pub params: DesignParams,
 }
 
-#[derive(PartialEq, Reflect)]
+#[derive(Reflect)]
 pub enum DesignParams {
     Polygon(crate::chapter_1::Polygon),
     Star(crate::chapter_1::Star),
@@ -14,6 +14,7 @@ pub enum DesignParams {
     Composition2(crate::chapter_1::Composition2),
     Jolygon(crate::chapter_1::Jolygon),
     Shape(crate::chapter_2::Params),
+    Dragon(crate::chapter_3::Dragon),
 }
 
 #[derive(PartialEq, Eq, Clone, Copy)]
@@ -24,6 +25,7 @@ pub enum DesignVariant {
     Composition2,
     Jolygon,
     Shape,
+    Dragon,
 }
 
 impl DesignController {
@@ -58,6 +60,9 @@ impl DesignController {
                 changed |= ui
                     .selectable_value(&mut self.selected, DesignVariant::Shape, "shape")
                     .changed();
+                changed |= ui
+                    .selectable_value(&mut self.selected, DesignVariant::Dragon, "dragon")
+                    .changed();
             });
         });
 
@@ -82,6 +87,7 @@ impl DesignVariant {
             }
             Self::Jolygon => DesignParams::Jolygon(crate::chapter_1::Jolygon::default()),
             Self::Shape => DesignParams::Shape(crate::chapter_2::Params::default()),
+            Self::Dragon => DesignParams::Dragon(crate::chapter_3::Dragon::default()),
         }
     }
 }
@@ -95,6 +101,7 @@ impl DesignParams {
             DesignParams::Composition2(params) => params.calculate_shapes(),
             DesignParams::Jolygon(params) => params.calculate_shapes(),
             DesignParams::Shape(params) => params.calculate_shapes(),
+            DesignParams::Dragon(params) => params.calculate_shapes(),
         }
     }
 
@@ -106,6 +113,7 @@ impl DesignParams {
             DesignParams::Composition2(params) => params.control_params(ctx),
             DesignParams::Jolygon(params) => params.control_params(ctx),
             DesignParams::Shape(params) => params.control_params(ctx),
+            DesignParams::Dragon(params) => params.control_params(ctx),
         }
     }
 }

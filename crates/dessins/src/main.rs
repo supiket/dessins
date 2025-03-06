@@ -15,18 +15,13 @@ fn main() {
 
     let default_plugins = DefaultPlugins.set(window_plugin);
 
-    let model = Model::new(DesignVariant::Star);
+    let model = Model::new(DesignVariant::Dragon);
 
     App::new()
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))
         .insert_resource(model)
         .add_systems(Startup, setup)
         .add_systems(Update, (control_params, draw_dessin))
-        .register_type::<dessins::chapter_1::Polygon>()
-        .register_type::<dessins::chapter_1::Star>()
-        .register_type::<dessins::chapter_1::Composition1>()
-        .register_type::<dessins::chapter_1::Composition2>()
-        .register_type::<dessins::chapter_1::Jolygon>()
         .run();
 }
 
@@ -52,7 +47,11 @@ fn control_params(mut model: ResMut<Model>, egui_ctx: EguiContexts) {
 }
 
 fn draw_dessin(draw: Single<&Draw>, model: Res<Model>) {
-    draw.background().color(BLACK);
+    draw.background().srgba(0.1, 0.1, 0.1, 0.1); // TODO: alpha does not work as I expect
+
+    // draw.rect()
+    //     .w_h(200.0, 200.0)
+    //     .color(Color::linear_rgba(0.1, 0.1, 0.1, 0.001));
 
     model.draw_points(draw);
 }
