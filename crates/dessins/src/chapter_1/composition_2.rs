@@ -1,25 +1,21 @@
 use super::{Polygon, Star};
 use crate::{
-    meta::{ParamMeta, ParamsMeta},
-    reflect::ControllableParams,
-    shapes::{Segment, Shape, Shapes, NP},
+    meta::f32::{F32Variant, F32}, reflect::ControllableParams, shapes::{Segment, Shape, Shapes}
 };
 use nannou::prelude::*;
-use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
 pub struct Composition2 {
-    pub polygon_k: f32,
-    pub polygon_r: f32,
-    pub polygon_ad: f32,
-    pub star_k: f32,
-    pub star_h: f32,
-    pub star_r: f32,
-    pub star_ad: f32,
-    pub n: f32,  // # stars
-    pub rr: f32, // reduction coefficient from one star to the next & the distance between the center of the spiral and the center of successive stars
-    pub meta: Option<ParamsMeta>,
+    pub polygon_k: F32,
+    pub polygon_r: F32,
+    pub polygon_ad: F32,
+    pub star_k: F32,
+    pub star_h: F32,
+    pub star_r: F32,
+    pub star_ad: F32,
+    pub n: F32,  // # stars
+    pub rr: F32, // reduction coefficient from one star to the next & the distance between the center of the spiral and the center of successive stars
 }
 
 impl Composition2 {
@@ -28,31 +24,29 @@ impl Composition2 {
         let mut shape = Shape::new();
 
         let mut polygon = Polygon {
-            k: self.polygon_k,
-            r: self.polygon_r,
-            ad: self.polygon_ad,
-            meta: None,
+            k: self.polygon_k.clone(),
+            r: self.polygon_r.clone(),
+            ad: self.polygon_ad.clone(),
         };
 
         let mut star = Star {
-            k: self.star_k,
-            h: self.star_h,
-            r: self.star_r,
-            ad: self.star_ad,
-            meta: None,
+            k: self.star_k.clone(),
+            h: self.star_h.clone(),
+            r: self.star_r.clone(),
+            ad: self.star_ad.clone(),
         };
 
-        for i in 0..self.n as u32 {
-            let r2 = polygon.r * self.rr.powi(i as i32);
-            let r3 = star.r * self.rr.powi(i as i32);
+        for i in 0..self.n.value as u32 {
+            let r2 = polygon.r.value * self.rr.value.powi(i as i32);
+            let r3 = star.r.value * self.rr.value.powi(i as i32);
 
-            polygon.r = r2;
+            polygon.r.value = r2;
             let polygon_point = polygon.calculate_point(i);
 
             let mut segment = Segment::new();
 
-            for j in 0..star.k as u32 {
-                star.r = r3;
+            for j in 0..star.k.value as u32 {
+                star.r.value = r3;
                 let star_point = star.calculate_point(j);
                 let point = star_point + polygon_point;
                 segment.push(point);
@@ -68,67 +62,20 @@ impl Composition2 {
     }
 }
 
-impl ControllableParams for Composition2 {
-    fn set_meta(&mut self, path: &str) {
-        let mut polygon = Polygon {
-            k: self.polygon_k,
-            r: self.polygon_r,
-            ad: self.polygon_ad,
-            meta: None,
-        };
-
-        let mut star = Star {
-            k: self.star_k,
-            h: self.star_h,
-            r: self.star_r,
-            ad: self.star_ad,
-            meta: None,
-        };
-
-        polygon.set_meta(format!("{}.polygon", path).as_str());
-        star.set_meta(format!("{}.star", path).as_str());
-
-        let mut meta = ParamsMeta(HashMap::new());
-
-        for (k, v) in polygon.get_meta().expect("set just now").iter() {
-            let new_k = k.replace("polygon.", "polygon_");
-            meta.insert(new_k, v.clone());
-        }
-
-        for (k, v) in star.get_meta().expect("set just now").iter() {
-            let new_k = k.replace("star.", "star_");
-            meta.insert(new_k, v.clone());
-        }
-
-        meta.insert(
-            format!("{}.n", path),
-            ParamMeta::new_f32_from_range(1.0..=100.0),
-        );
-        meta.insert(
-            format!("{}.rr", path),
-            ParamMeta::new_f32_from_range(0.7..=1.3),
-        );
-
-        self.meta = Some(meta);
-    }
-}
+impl ControllableParams for Composition2 {}
 
 impl Default for Composition2 {
     fn default() -> Self {
         Self {
-            polygon_k: 5.0,
-            polygon_r: NP as f32 * 0.27,
-            polygon_ad: PI / 2.0,
-
-            star_k: 25.0,
-            star_h: 12.0,
-            star_r: NP as f32 * 0.22,
-            star_ad: PI / 2.0,
-
-            n: 32.0,
-            rr: 0.9,
-
-            meta: None,
+            polygon_k: F32::new_from_range(5.0, 3.0..=20.0),
+            polygon_r: F32::new(0.27, F32Variant::Length),
+            polygon_ad: F32::new(0.5, F32Variant::Angle),
+            star_k: F32::new_from_range(25.0, 5.0..=100.0),
+            star_h: F32::new_from_range(12.0, 3.0..=5.0),
+            star_r: F32::new(0.22, F32Variant::Length),
+            star_ad: F32::new(0.5, F32Variant::Angle),
+            n: F32::new_from_range(32.0, 1.0..=100.0),
+            rr: F32::new_from_range(0.9, 0.7..=1.3),
         }
     }
 }

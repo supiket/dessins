@@ -1,52 +1,40 @@
-use crate::animation::AnimationState;
+use crate::reflect::ControllableParam;
 use bevy::reflect::Reflect;
 use expression_f32::ExpressionF32;
-use f32::F32Type;
-use std::{collections::HashMap, ops::RangeInclusive};
+use f32::F32;
+use nannou::prelude::*;
+use std::collections::HashMap;
 
 pub mod expression_f32;
 pub mod f32;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
-pub struct ParamsMeta(pub HashMap<String, ParamMeta>);
-
-#[derive(Clone, Debug, PartialEq, Reflect)]
-pub struct ParamMeta {
-    pub animation: Option<AnimationState>,
-    pub param_type: ParamType,
-}
+pub struct ParamsMeta(pub HashMap<String, ParamType>);
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub enum ParamType {
-    F32(F32Type),
+    F32(F32),
     ExpressionF32(ExpressionF32),
 }
 
-impl ParamMeta {
-    pub fn new(param_type: ParamType, animation: Option<AnimationState>) -> Self {
-        Self {
-            animation,
-            param_type,
+impl ControllableParam for ParamType {
+    fn control(&mut self, ui: &mut egui::Ui, name: &str) -> bool {
+        match self {
+            Self::F32(param) => param.control(ui, name),
+            Self::ExpressionF32(param) => param.control(ui, name),
         }
     }
 
-    pub fn new_f32(f32_type: F32Type) -> Self {
-        Self {
-            animation: None,
-            param_type: ParamType::F32(f32_type),
-        }
-    }
-
-    pub fn new_f32_from_range(range: RangeInclusive<f32>) -> Self {
-        Self {
-            animation: None,
-            param_type: ParamType::F32(F32Type::new_from_range(range)),
+    fn toggle_animation_state(&mut self) {
+        match self {
+            Self::F32(param) => param.toggle_animation_state(),
+            Self::ExpressionF32(param) => param.toggle_animation_state(),
         }
     }
 }
 
 impl core::ops::Deref for ParamsMeta {
-    type Target = HashMap<String, ParamMeta>;
+    type Target = HashMap<String, ParamType>;
     fn deref(&self) -> &Self::Target {
         &self.0
     }

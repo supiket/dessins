@@ -1,3 +1,4 @@
+use crate::reflect::ControllableParam;
 use bevy::reflect::Reflect;
 use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
@@ -70,5 +71,15 @@ impl ExpressionF32 {
             }
         }
         changed
+    }
+}
+
+impl ControllableParam for ExpressionF32 {
+    fn control(&mut self, _ui: &mut egui::Ui, _name: &str) -> bool {
+        todo!();
+    }
+
+    fn toggle_animation_state(&mut self) {
+        todo!();
     }
 }

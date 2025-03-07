@@ -1,5 +1,6 @@
 use crate::{
     animation::AnimationState,
+    reflect::{ControlAction, ControllableParam},
     shapes::NP,
     ui::{add_float_length, add_float_pi, add_float_position, float},
 };
@@ -8,7 +9,14 @@ use nannou::prelude::*;
 use std::ops::RangeInclusive;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
-pub enum F32Type {
+pub struct F32 {
+    pub value: f32,
+    pub variant: F32Variant,
+    pub animation: Option<AnimationState>,
+}
+
+#[derive(Clone, Debug, PartialEq, Reflect)]
+pub enum F32Variant {
     None(RangeStep),
     Angle,
     Length,
@@ -21,7 +29,61 @@ pub struct RangeStep {
     pub step: f32,
 }
 
-impl F32Type {
+impl F32 {
+    pub fn new(value: f32, variant: F32Variant) -> Self {
+        let value = match variant {
+            F32Variant::Length | F32Variant::Position => value * NP as f32,
+            F32Variant::Angle => value * TAU,
+            _ => value,
+        };
+        Self {
+            value,
+            variant,
+            animation: None,
+        }
+    }
+
+    pub fn new_from_range(value: f32, range: RangeInclusive<f32>) -> Self {
+        Self {
+            value,
+            variant: F32Variant::new_from_range(range),
+            animation: None,
+        }
+    }
+}
+
+impl ControllableParam for F32 {
+    fn control(&mut self, ui: &mut egui::Ui, name: &str) -> bool {
+        let ControlAction {
+            mut changed,
+            toggle_animate,
+        } = self
+            .variant
+            .control_ui(&mut self.value, self.animation.clone(), ui, name);
+
+        if toggle_animate {
+            self.toggle_animation_state();
+        }
+
+        changed |= self
+            .variant
+            .control_animate(&mut self.value, self.animation.clone());
+        changed
+    }
+
+    fn toggle_animation_state(&mut self) {
+        self.animation = match self.animation {
+            Some(_) => None,
+            None => {
+                let RangeStep { range, step } = self.variant.get_range_step();
+                let freq = step;
+                Some(AnimationState::new(freq, *range.start(), *range.end()))
+            }
+        }
+    }
+}
+
+impl F32Variant {
     pub fn new_from_range(range: RangeInclusive<f32>) -> Self {
         Self::None(RangeStep { range, step: 1.0 })
     }
@@ -45,7 +107,40 @@ impl F32Type {
     }
 }
 
-impl F32Type {
+impl F32Variant {
+    pub fn control_ui(
+        &self,
+        v: &mut f32,
+        animation: Option<AnimationState>,
+        ui: &mut egui::Ui,
+        name: &str,
+    ) -> ControlAction {
+        let changed = self.add_with_label(ui, name, v);
+
+        let mut animate = animation.is_some();
+        let initial_animate = animate;
+
+        ui.checkbox(&mut animate, "animate");
+
+        let toggle_animate = animate != initial_animate;
+
+        ControlAction {
+            changed,
+            toggle_animate,
+        }
+    }
+
+    pub fn control_animate(&self, v: &mut f32, animation: Option<AnimationState>) -> bool {
+        if let Some(animation_state) = animation {
+            *v = self.animate(&animation_state);
+            true
+        } else {
+            false
+        }
+    }
+}
+
+impl F32Variant {
     pub fn add_with_label(&self, ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
         match self {
             Self::None(RangeStep { range, step: _step }) => {
@@ -58,23 +153,23 @@ impl F32Type {
     }
 
     pub fn animate(&self, animation: &AnimationState) -> f32 {
-        // TODO: transform between coefficients and actual values
-        let RangeStep { range, step } = match self {
-            F32Type::None(range_step) => range_step,
-            F32Type::Position => &RangeStep {
-                range: -(NP as f32)..=NP as f32,
-                step: 1.0,
-            },
-            F32Type::Length => &RangeStep {
-                range: 0.0..=NP as f32,
-                step: 1.0,
-            },
-            F32Type::Angle => &RangeStep {
-                range: -TAU..=TAU,
-                step: 1.0,
-            },
+        let RangeStep {
+            mut range,
+            mut step,
+        } = self.get_range_step();
+        match self {
+            F32Variant::None(_) => {}
+            F32Variant::Position | F32Variant::Length => {
+                let np = NP as f32;
+                range = (*range.start() * np)..=(*range.end() * np);
+                step *= np;
+            }
+            F32Variant::Angle => {
+                range = (*range.start() * TAU)..=(*range.end() * TAU);
+                step *= TAU;
+            }
         };
-        animation.update_value(*step, *range.start(), *range.end())
+        animation.update_value(step, *range.start(), *range.end())
     }
 
     pub fn add_variant_none(
