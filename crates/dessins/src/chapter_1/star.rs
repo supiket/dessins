@@ -33,8 +33,7 @@ impl Star {
     }
 
     pub fn calculate_point(&self, i: u32) -> Point2 {
-        let angle =
-            (2.0 * i as f32 * self.h.value as f32 * PI) / self.k.value as f32 + self.ad.value;
+        let angle = (2.0 * i as f32 * self.h.value * PI) / self.k.value + self.ad.value;
         let x = self.r.value * angle.cos();
         let y = self.r.value * angle.sin();
         pt2(x, y)

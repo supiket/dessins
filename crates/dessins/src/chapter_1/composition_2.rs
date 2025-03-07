@@ -1,6 +1,8 @@
 use super::{Polygon, Star};
 use crate::{
-    meta::f32::{F32Variant, F32}, reflect::ControllableParams, shapes::{Segment, Shape, Shapes}
+    meta::f32::{F32Variant, F32},
+    reflect::ControllableParams,
+    shapes::{Segment, Shape, Shapes},
 };
 use nannou::prelude::*;
 

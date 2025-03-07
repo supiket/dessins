@@ -1,45 +1,40 @@
 use crate::{
-    meta::{ParamMeta, ParamsMeta},
+    chapter_1::Polygon,
+    meta::f32::F32,
     reflect::ControllableParams,
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
 
-pub type OuterSegment = Segment;
-pub type InnerSegment = Segment;
-
-#[derive(UiControlledParams)]
-#[params(SimpleFractal)]
-pub struct ParamsInner {
-    #[param(range(1..=10))]
-    pub m: usize, // # of segments in starting curve
-    #[param(range(1..=10))]
-    pub n: usize, // # of sub-segments per segment
-    #[param(range(1..=10))]
-    pub k: usize, // depth
-    #[param]
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct SimpleFractal {
+    pub m: F32, // # of segments in starting curve
+    pub n: F32, // # of sub-segments per segment
+    pub k: F32, // depth
+    #[reflect(ignore)]
     pub positions: Vec<Point2>,
-    #[param(range(0.0..=30.0))]
+    #[reflect(ignore)]
     pub lengths: Vec<f32>,
-    #[param(pi)]
+    #[reflect(ignore)]
     pub angles: Vec<f32>,
 }
 
-impl ParamsInner {
+impl SimpleFractal {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        if self.positions.len() != self.m + 1 {
+        if self.positions.len() != self.m.value as usize + 1 {
             self.positions
-                .resize_with(Self::calculate_positions(self.m).len(), Default::default);
+                .resize_with(Self::calculate_positions(&self.m).len(), Default::default);
         }
-        if self.lengths.len() != self.n {
+        if self.lengths.len() != self.n.value as usize {
             self.lengths.resize_with(
-                Self::calculate_lengths(self.m, self.n).len(),
+                Self::calculate_lengths(self.m.value, self.n.value as usize).len(),
                 Default::default,
             );
         }
-        if self.angles.len() != self.n {
+        if self.angles.len() != self.n.value as usize {
             self.angles.resize_with(
-                Self::calculate_angles(self.m, self.n).len(),
+                Self::calculate_angles(self.m.value, self.n.value as usize).len(),
                 Default::default,
             );
         }
@@ -47,7 +42,7 @@ impl ParamsInner {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        for ii in 0..self.m {
+        for ii in 0..self.m.value as usize {
             let mut segment = Segment::new();
 
             let source = self.positions[ii];
@@ -65,13 +60,13 @@ impl ParamsInner {
 
             let length = diff.length();
 
-            for i in 0..(self.n).pow(self.k as u32) {
+            for i in 0..(self.n.value as usize).pow(self.k.value as u32) {
                 let mut current_length = length;
                 let mut current_angle = angle;
                 let mut t1 = i;
-                if self.k != 0 {
-                    for j in (0..self.k).rev() {
-                        let r = (self.n).pow(j as u32);
+                if self.k.value as usize != 0 {
+                    for j in (0..self.k.value as usize).rev() {
+                        let r = (self.n.value as usize).pow(j as u32);
                         let t2 = t1 / r;
                         current_angle += self.angles[t2];
                         current_length *= self.lengths[t2];
@@ -92,30 +87,32 @@ impl ParamsInner {
         shapes
     }
 
-    fn calculate_positions(m: usize) -> Vec<Point2> {
-        let params = polygon::ParamsInner {
-            k: m as u32,
-            r: NP as f32 * 0.5,
-            ad: 0.0,
+    fn calculate_positions(m: &F32) -> Vec<Point2> {
+        let mut polygon = Polygon {
+            k: m.clone(),
+            ..Default::default()
         };
+        polygon.r.value = NP as f32 * 0.5;
+        polygon.ad.value = 0.0;
+
         let mut points = vec![];
-        for i in 0..m {
-            let point = params.calculate_point(i as u32);
+        for i in 0..m.value as usize {
+            let point = polygon.calculate_point(i as u32);
             points.push(point);
         }
         points.push(points[0]);
         points
     }
 
-    fn calculate_lengths(m: usize, n: usize) -> Vec<f32> {
-        vec![1.0 / (m as f32); n]
+    fn calculate_lengths(m: f32, n: usize) -> Vec<f32> {
+        vec![1.0 / m; n]
     }
 
-    fn calculate_angles(m: usize, n: usize) -> Vec<f32> {
+    fn calculate_angles(m: f32, n: usize) -> Vec<f32> {
         let mut angles = vec![0.0];
 
         for i in 1..(n - 1) {
-            angles.push((PI / (m as f32)) * if i % 2 == 1 { 1.0 } else { -1.0 });
+            angles.push((PI / m) * if i % 2 == 1 { 1.0 } else { -1.0 });
         }
 
         angles.push(0.0);
@@ -124,26 +121,24 @@ impl ParamsInner {
     }
 }
 
-impl Default for Params {
+impl ControllableParams for SimpleFractal {}
+
+impl Default for SimpleFractal {
     fn default() -> Self {
         let np = NP as f32;
         let y0 = (f32::sqrt(3.0) / 2.0 - 0.5) * np;
         Self {
-            inner: ParamsInner {
-                m: 3,
-                n: 4,
-                k: 4,
-                positions: vec![
-                    pt2(-0.5 * np, y0),
-                    pt2(0.5 * np, y0),
-                    pt2(0.0 * np, -0.5 * np),
-                    pt2(-0.5 * np, y0),
-                ],
-                lengths: vec![1.0 / 3.0; 4],
-                angles: vec![0.0, PI / 3.0, -PI / 3.0, 0.0],
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            m: F32::new_from_range(3.0, 1.0..=10.0),
+            n: F32::new_from_range(4.0, 1.0..=10.0),
+            k: F32::new_from_range(4.0, 1.0..=10.0),
+            positions: vec![
+                pt2(-0.5 * np, y0),
+                pt2(0.5 * np, y0),
+                pt2(0.0 * np, -0.5 * np),
+                pt2(-0.5 * np, y0),
+            ],
+            lengths: vec![1.0 / 3.0; 4],
+            angles: vec![0.0, PI / 3.0, -PI / 3.0, 0.0],
         }
     }
 }

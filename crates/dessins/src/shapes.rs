@@ -35,6 +35,12 @@ pub fn sign(val: f32) -> f32 {
     }
 }
 
+impl Default for Shapes {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Shapes {
     pub fn new_non_empty() -> Self {
         Self(vec![vec![vec![Point2::default()]]])
