@@ -1,4 +1,4 @@
-use crate::params::{ActiveDessin, DessinVariant};
+use crate::active_dessin::{ActiveDessin, DessinVariant};
 use crate::shapes::{draw_segment, Shapes};
 use bevy_egui::EguiContexts;
 use nannou::prelude::*;
