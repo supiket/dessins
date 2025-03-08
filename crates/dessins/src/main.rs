@@ -47,15 +47,8 @@ fn control_params(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: 
 }
 
 fn draw_dessin(draw: Single<&Draw>, model: Res<Model>) {
-    draw.background().srgba(0.1, 0.1, 0.1, 0.1); // TODO: alpha does not work as I expect
-
-    // draw.rect()
-    //     .w_h(200.0, 200.0)
-    //     .color(Color::linear_rgba(0.1, 0.1, 0.1, 0.001));
+    // TODO: alpha does not work https://github.com/supiket/dessins/issues/61
+    draw.background().srgba(0.1, 0.1, 0.1, 0.85);
 
     model.draw_points(draw);
 }
-
-// fn update_time(mut game_time: ResMut<GameTime>, time: Res<Time<Virtual>>) {
-// game_time.0 = time.elapsed_secs_f64();
-// }
