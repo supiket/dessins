@@ -21,7 +21,7 @@ fn main() {
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))
         .insert_resource(model)
         .add_systems(Startup, setup)
-        .add_systems(Update, (control_params, draw_dessin))
+        .add_systems(Update, (control_variables, draw_dessin))
         .run();
 }
 
@@ -29,10 +29,10 @@ fn setup(mut commands: Commands) {
     commands.spawn(render::NannouCamera);
 }
 
-fn control_params(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: EguiContexts) {
+fn control_variables(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: EguiContexts) {
     let new_design = None;
 
-    let (changed, color) = model.control_params(egui_ctx, *time);
+    let (changed, color) = model.control_variables(egui_ctx, *time);
 
     if let Some(new_color) = color {
         model.color = new_color;
