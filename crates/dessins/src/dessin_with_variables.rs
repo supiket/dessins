@@ -33,9 +33,9 @@ macro_rules! dessin_with_variables {
                 }
             }
 
-            pub fn control(&mut self, ctx: &mut egui::Context, time: Time<Virtual>) -> (bool, Option<Color>) {
+            pub fn update(&mut self, ctx: &mut egui::Context, time: Time<Virtual>) -> (bool, Option<Color>) {
                 match self {
-                    $(DessinVariables::$variant(variables) => variables.control_variables(ctx, time),)*
+                    $(DessinVariables::$variant(variables) => variables.update_dessin(ctx, time),)*
                 }
             }
         }
@@ -85,7 +85,7 @@ impl DessinVariant {
 }
 
 impl DessinWithVariables {
-    pub fn control(&mut self, ctx: &mut egui::Context) -> bool {
+    pub fn update(&mut self, ctx: &mut egui::Context) -> bool {
         let mut changed = false;
 
         egui::TopBottomPanel::top("active dessin").show(ctx, |ui| {

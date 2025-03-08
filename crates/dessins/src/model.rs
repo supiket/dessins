@@ -41,7 +41,7 @@ impl Model {
         });
     }
 
-    pub fn control_variables(
+    pub fn update_active_dessin(
         &mut self,
         mut egui_ctx: EguiContexts,
         time: Time<Virtual>,
@@ -49,10 +49,10 @@ impl Model {
         let ctx = egui_ctx.ctx_mut();
 
         let mut changed = false;
-        changed |= self.active_dessin.control(ctx);
-        let control_res = self.active_dessin.variables.control(ctx, time);
-        changed |= control_res.0;
+        changed |= self.active_dessin.update(ctx);
+        let res = self.active_dessin.variables.update(ctx, time);
+        changed |= res.0;
 
-        (changed, control_res.1)
+        (changed, res.1)
     }
 }

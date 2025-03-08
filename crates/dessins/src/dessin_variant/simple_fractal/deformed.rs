@@ -44,7 +44,7 @@ pub enum Deformation {
 }
 
 impl Deformation {
-    fn control(&mut self, ui: &mut egui::Ui) -> bool {
+    fn update(&mut self, ui: &mut egui::Ui) -> bool {
         let mut changed = false;
 
         ui.label("deformation");
@@ -408,10 +408,10 @@ impl Deformed {
 }
 
 impl AdjustableDessin for Deformed {
-    fn control(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
+    fn update_variables(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
         let mut changed = false;
-        changed |= self.deformation.control(ui);
-        changed |= self.k.control(ui, "k", time);
+        changed |= self.deformation.update(ui);
+        changed |= self.k.update(ui, "k", time);
         changed
     }
 }

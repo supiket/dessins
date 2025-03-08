@@ -14,10 +14,10 @@ pub enum VariableType {
 }
 
 impl AdjustableVariable for VariableType {
-    fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
+    fn update(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
         match self {
-            Self::F32(inner) => inner.control(ui, name, time),
-            Self::ExpressionF32(inner) => inner.control(ui, name, time),
+            Self::F32(inner) => inner.update(ui, name, time),
+            Self::ExpressionF32(inner) => inner.update(ui, name, time),
         }
     }
 

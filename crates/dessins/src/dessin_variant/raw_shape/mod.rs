@@ -24,10 +24,10 @@ impl RawShape {
 }
 
 impl AdjustableDessin for RawShape {
-    fn control(&mut self, ui: &mut egui::Ui, _time: Time<Virtual>) -> bool {
+    fn update_variables(&mut self, ui: &mut egui::Ui, _time: Time<Virtual>) -> bool {
         let mut changed = false;
-        changed |= self.shape_variant.control(ui);
-        changed |= self.program_variant.control(ui);
+        changed |= self.shape_variant.update(ui);
+        changed |= self.program_variant.update(ui);
         changed
     }
 }
