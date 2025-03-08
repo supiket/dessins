@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_egui::{EguiContexts, EguiPlugin};
 use bevy_nannou::prelude::*;
 use bevy_nannou::NannouPlugin;
-use dessins::{model::Model, params::DesignVariant};
+use dessins::{params::DesignVariant, resources::Model};
 
 fn main() {
     let window_plugin = WindowPlugin {
@@ -29,10 +29,10 @@ fn setup(mut commands: Commands) {
     commands.spawn(render::NannouCamera);
 }
 
-fn control_params(mut model: ResMut<Model>, egui_ctx: EguiContexts) {
+fn control_params(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: EguiContexts) {
     let new_design = None;
 
-    let (changed, color) = model.control_params(egui_ctx);
+    let (changed, color) = model.control_params(egui_ctx, *time);
 
     if let Some(new_color) = color {
         model.color = new_color;
@@ -47,11 +47,8 @@ fn control_params(mut model: ResMut<Model>, egui_ctx: EguiContexts) {
 }
 
 fn draw_dessin(draw: Single<&Draw>, model: Res<Model>) {
-    draw.background().srgba(0.1, 0.1, 0.1, 0.1); // TODO: alpha does not work as I expect
-
-    // draw.rect()
-    //     .w_h(200.0, 200.0)
-    //     .color(Color::linear_rgba(0.1, 0.1, 0.1, 0.001));
+    // TODO: alpha does not work https://github.com/supiket/dessins/issues/61
+    draw.background().srgba(0.1, 0.1, 0.1, 0.85);
 
     model.draw_points(draw);
 }
