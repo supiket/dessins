@@ -1,6 +1,6 @@
 use crate::{
-    meta::{expression_f32::ExpressionF32, f32::F32},
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -17,7 +17,7 @@ pub struct Dragon {
     #[reflect(ignore)]
     pub p0: Point2, // initial position
     #[reflect(ignore)]
-    pub rules: Vec<i32>, // turning rules TODO: #[param(range(0..=1))]
+    pub rules: Vec<i32>, // turning rules
 }
 
 impl Dragon {
@@ -125,7 +125,7 @@ impl Dragon {
     }
 }
 
-impl ControllableParams for Dragon {}
+impl AdjustableDessin for Dragon {}
 
 impl Default for Dragon {
     fn default() -> Self {

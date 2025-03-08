@@ -1,6 +1,6 @@
 use crate::{
-    meta::f32::{F32Variant, F32},
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::f32::{F32Variant, F32},
     shapes::{Segment, Shape, Shapes},
 };
 use nannou::prelude::*;
@@ -65,7 +65,7 @@ impl Jolygon {
     }
 }
 
-impl ControllableParams for Jolygon {}
+impl AdjustableDessin for Jolygon {}
 
 impl Default for Jolygon {
     fn default() -> Self {

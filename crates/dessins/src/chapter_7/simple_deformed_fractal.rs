@@ -1,6 +1,7 @@
 use crate::{
-    meta::f32::F32,
-    reflect::{ControllableParam, ControllableParams},
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::f32::F32,
+    adjustable_variable::AdjustableVariable,
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -406,7 +407,7 @@ impl SimpleDeformedFractal {
     }
 }
 
-impl ControllableParams for SimpleDeformedFractal {
+impl AdjustableDessin for SimpleDeformedFractal {
     fn control(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
         let mut changed = false;
         changed |= self.deformation.control(ui);

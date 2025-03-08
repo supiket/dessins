@@ -1,6 +1,6 @@
 use crate::{
-    meta::f32::F32,
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::f32::F32,
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -56,7 +56,7 @@ impl Spiral {
     }
 }
 
-impl ControllableParams for Spiral {}
+impl AdjustableDessin for Spiral {}
 
 impl Default for Spiral {
     fn default() -> Self {

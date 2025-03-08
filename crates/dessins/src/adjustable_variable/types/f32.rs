@@ -1,6 +1,6 @@
 use crate::{
+    adjustable_variable::AdjustableVariable,
     animation::Animation,
-    reflect::{ControlAction, ControllableParam},
     shapes::NP,
     ui::{add_float_length, add_float_pi, add_float_position, float},
 };
@@ -29,6 +29,11 @@ pub struct RangeStep {
     pub step: f32,
 }
 
+struct AdjustVariable {
+    pub recalculate_points: bool,
+    pub toggle_animate: bool,
+}
+
 impl F32 {
     pub fn new(value: f32, variant: F32Variant) -> Self {
         let value = match variant {
@@ -52,10 +57,10 @@ impl F32 {
     }
 }
 
-impl ControllableParam for F32 {
+impl AdjustableVariable for F32 {
     fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
-        let ControlAction {
-            mut changed,
+        let AdjustVariable {
+            mut recalculate_points,
             toggle_animate,
         } = self
             .variant
@@ -65,10 +70,10 @@ impl ControllableParam for F32 {
             self.toggle_animation(time);
         }
 
-        changed |= self
-            .variant
-            .control_animate(&mut self.value, self.animation.clone(), time);
-        changed
+        recalculate_points |=
+            self.variant
+                .control_animate(&mut self.value, self.animation.clone(), time);
+        recalculate_points
     }
 
     fn toggle_animation(&mut self, time: Time<Virtual>) {
@@ -108,14 +113,14 @@ impl F32Variant {
 }
 
 impl F32Variant {
-    pub fn control_ui(
+    fn control_ui(
         &self,
         v: &mut f32,
         animation: Option<Animation>,
         ui: &mut egui::Ui,
         name: &str,
-    ) -> ControlAction {
-        let changed = self.add_with_label(ui, name, v);
+    ) -> AdjustVariable {
+        let recalculate_points = self.add_with_label(ui, name, v);
 
         let mut animate = animation.is_some();
         let initial_animate = animate;
@@ -124,13 +129,13 @@ impl F32Variant {
 
         let toggle_animate = animate != initial_animate;
 
-        ControlAction {
-            changed,
+        AdjustVariable {
+            recalculate_points,
             toggle_animate,
         }
     }
 
-    pub fn control_animate(
+    fn control_animate(
         &self,
         v: &mut f32,
         animation: Option<Animation>,
@@ -146,7 +151,7 @@ impl F32Variant {
 }
 
 impl F32Variant {
-    pub fn add_with_label(&self, ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_with_label(&self, ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
         match self {
             Self::None(RangeStep { range, step: _step }) => {
                 Self::add_variant_none(ui, label, value, range.clone())
@@ -157,7 +162,7 @@ impl F32Variant {
         }
     }
 
-    pub fn animate(&self, time: Time<Virtual>, animation: &Animation) -> f32 {
+    fn animate(&self, time: Time<Virtual>, animation: &Animation) -> f32 {
         let RangeStep {
             mut range,
             mut step,
@@ -177,7 +182,7 @@ impl F32Variant {
         animation.update_value(time, step, *range.start(), *range.end())
     }
 
-    pub fn add_variant_none(
+    fn add_variant_none(
         ui: &mut egui::Ui,
         label: &str,
         value: &mut f32,
@@ -187,17 +192,17 @@ impl F32Variant {
         ui.add(float(value, range)).changed()
     }
 
-    pub fn add_variant_position(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_variant_position(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
         ui.label(label);
         add_float_position(ui, value)
     }
 
-    pub fn add_variant_length(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_variant_length(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
         ui.label(label);
         add_float_length(ui, value)
     }
 
-    pub fn add_variant_angle(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_variant_angle(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
         ui.label(label);
         add_float_pi(ui, value)
     }

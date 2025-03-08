@@ -1,6 +1,6 @@
 use crate::{
-    meta::{expression_f32::ExpressionF32, f32::F32},
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
     shapes::{Shape, Shapes},
 };
 use nannou::prelude::*;
@@ -16,10 +16,6 @@ pub struct LinearSticks {
     pub r1: ExpressionF32,
     #[reflect(ignore)]
     pub r2: ExpressionF32,
-}
-
-pub struct RParams {
-    pub i: f32,
 }
 
 impl LinearSticks {
@@ -95,7 +91,7 @@ impl LinearSticks {
     }
 }
 
-impl ControllableParams for LinearSticks {}
+impl AdjustableDessin for LinearSticks {}
 
 impl Default for LinearSticks {
     fn default() -> Self {

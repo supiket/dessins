@@ -1,4 +1,6 @@
 pub mod active_dessin;
+pub mod adjustable_dessin;
+pub mod adjustable_variable;
 pub mod animation;
 pub mod chapter_1;
 pub mod chapter_2;
@@ -7,8 +9,6 @@ pub mod chapter_4;
 pub mod chapter_5;
 pub mod chapter_6;
 pub mod chapter_7;
-pub mod meta;
-pub mod reflect;
 pub mod resources;
 pub mod shapes;
 pub mod ui;

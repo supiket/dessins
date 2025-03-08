@@ -1,6 +1,6 @@
 use crate::{
-    meta::f32::{F32Variant, F32},
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::f32::{F32Variant, F32},
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -55,7 +55,7 @@ impl Fractal {
     }
 }
 
-impl ControllableParams for Fractal {}
+impl AdjustableDessin for Fractal {}
 
 impl Default for Fractal {
     fn default() -> Self {

@@ -1,16 +1,12 @@
 use crate::{
-    meta::{expression_f32::ExpressionF32, f32::F32},
+    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
+    adjustable_variable::AdjustableVariable,
     ui::ui_color,
 };
 use bevy_reflect::{Reflect, TypeInfo};
 use nannou::prelude::*;
 
-pub struct ControlAction {
-    pub changed: bool,
-    pub toggle_animate: bool,
-}
-
-pub trait ControllableParams: Reflect + GetField {
+pub trait AdjustableDessin: Reflect + GetField {
     fn control_variables(
         &mut self,
         ctx: &mut egui::Context,
@@ -22,7 +18,7 @@ pub trait ControllableParams: Reflect + GetField {
         let mut changed = false;
         let mut color = None;
 
-        egui::SidePanel::left("params").show(ctx, |ui| {
+        egui::SidePanel::left("variables").show(ctx, |ui| {
             if let Some(new_color) = ui_color(ui) {
                 color = Some(new_color);
             }
@@ -41,13 +37,7 @@ pub trait ControllableParams: Reflect + GetField {
     }
 }
 
-pub trait ControllableParam: Reflect {
-    fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool;
-
-    fn toggle_animation(&mut self, time: Time<Virtual>);
-}
-
-fn get_field_names<T: ControllableParams>(data: &T) -> Vec<&'static str> {
+fn get_field_names<T: AdjustableDessin>(data: &T) -> Vec<&'static str> {
     let type_info = data.as_reflect().reflect_type_info();
 
     if let TypeInfo::Struct(info) = type_info {
@@ -57,7 +47,7 @@ fn get_field_names<T: ControllableParams>(data: &T) -> Vec<&'static str> {
     }
 }
 
-pub fn control_reflect<T: ControllableParams>(
+pub fn control_reflect<T: AdjustableDessin>(
     data: &mut T,
     ui: &mut egui::Ui,
     time: Time<Virtual>,
@@ -65,10 +55,10 @@ pub fn control_reflect<T: ControllableParams>(
     let mut changed = false;
 
     for field_name in get_field_names(data) {
-        if let Some(param) = data.get_field_mut::<F32>(field_name) {
-            changed |= param.control(ui, field_name, time);
-        } else if let Some(param) = data.get_field_mut::<ExpressionF32>(field_name) {
-            changed |= param.control(ui, field_name, time);
+        if let Some(inner) = data.get_field_mut::<F32>(field_name) {
+            changed |= inner.control(ui, field_name, time);
+        } else if let Some(inner) = data.get_field_mut::<ExpressionF32>(field_name) {
+            changed |= inner.control(ui, field_name, time);
         } else {
             let type_name = std::any::type_name::<T>();
             todo!("unsupported field type: {field_name} in {type_name}");

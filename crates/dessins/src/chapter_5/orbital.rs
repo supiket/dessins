@@ -1,9 +1,9 @@
 use crate::{
-    meta::{
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::{
         expression_f32::ExpressionF32,
         f32::{F32Variant, F32},
     },
-    reflect::ControllableParams,
     shapes::{Segment, Shape, Shapes},
 };
 use nannou::prelude::*;
@@ -79,7 +79,7 @@ impl Orbital {
     }
 }
 
-impl ControllableParams for Orbital {}
+impl AdjustableDessin for Orbital {}
 
 impl Default for Orbital {
     fn default() -> Self {
