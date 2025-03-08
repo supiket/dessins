@@ -16,7 +16,7 @@ pub struct Fractal {
     #[reflect(ignore)]
     pub p0: Point2,
     #[reflect(ignore)]
-    pub a0: f32,
+    pub a0: F32,
 }
 
 impl Fractal {
@@ -26,7 +26,7 @@ impl Fractal {
         let mut segment = Segment::new();
 
         let mut p0 = self.p0;
-        let mut a0 = self.a0;
+        let mut a0 = self.a0.value;
 
         let nn = self.n.value as u32 * (self.n.value as u32 - 1).pow(self.k.value as u32 - 1) - 1;
 
@@ -59,18 +59,19 @@ impl ControllableParams for Fractal {}
 
 impl Default for Fractal {
     fn default() -> Self {
-        let aa = 4.0 * PI / 5.0;
-        let ll = NP as f32;
+        let aa = F32::new(4.0 / 5.0, F32Variant::Angle);
+        let ll = F32::new(1.0, F32Variant::Length);
 
-        let a0 = -aa;
-        let p0 = pt2((-ll) / 2.0, 0.0);
+        let mut a0 = aa.clone();
+        a0.value = -a0.value;
+        let p0 = pt2((-ll.value) / 2.0, (NP as f32) * (0.5));
 
         Self {
             n: F32::new_from_range(5.0, 3.0..=20.0),
             k: F32::new_from_range(5.0, 2.0..=12.0),
             ra: F32::new_from_range(0.35, 0.2..=1.8),
-            ll: F32::new(ll, F32Variant::Length),
-            aa: F32::new(aa, F32Variant::Angle),
+            ll,
+            aa,
             a0,
             p0,
         }
