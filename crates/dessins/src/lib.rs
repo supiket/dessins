@@ -3,6 +3,6 @@ pub mod adjustable_variable;
 pub mod animation;
 pub mod dessin_variant;
 pub mod dessin_with_variables;
-pub mod resources;
+pub mod model;
 pub mod shapes;
 pub mod ui;
