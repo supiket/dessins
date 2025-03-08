@@ -18,17 +18,17 @@ pub enum ParamType {
 }
 
 impl ControllableParam for ParamType {
-    fn control(&mut self, ui: &mut egui::Ui, name: &str) -> bool {
+    fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
         match self {
-            Self::F32(param) => param.control(ui, name),
-            Self::ExpressionF32(param) => param.control(ui, name),
+            Self::F32(param) => param.control(ui, name, time),
+            Self::ExpressionF32(param) => param.control(ui, name, time),
         }
     }
 
-    fn toggle_animation_state(&mut self) {
+    fn toggle_animation_state(&mut self, time: Time<Virtual>) {
         match self {
-            Self::F32(param) => param.toggle_animation_state(),
-            Self::ExpressionF32(param) => param.toggle_animation_state(),
+            Self::F32(param) => param.toggle_animation_state(time),
+            Self::ExpressionF32(param) => param.toggle_animation_state(time),
         }
     }
 }

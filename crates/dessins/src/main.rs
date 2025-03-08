@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_egui::{EguiContexts, EguiPlugin};
 use bevy_nannou::prelude::*;
 use bevy_nannou::NannouPlugin;
-use dessins::{model::Model, params::DesignVariant};
+use dessins::{params::DesignVariant, resources::Model};
 
 fn main() {
     let window_plugin = WindowPlugin {
@@ -29,10 +29,10 @@ fn setup(mut commands: Commands) {
     commands.spawn(render::NannouCamera);
 }
 
-fn control_params(mut model: ResMut<Model>, egui_ctx: EguiContexts) {
+fn control_params(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: EguiContexts) {
     let new_design = None;
 
-    let (changed, color) = model.control_params(egui_ctx);
+    let (changed, color) = model.control_params(egui_ctx, *time);
 
     if let Some(new_color) = color {
         model.color = new_color;
@@ -55,3 +55,7 @@ fn draw_dessin(draw: Single<&Draw>, model: Res<Model>) {
 
     model.draw_points(draw);
 }
+
+// fn update_time(mut game_time: ResMut<GameTime>, time: Res<Time<Virtual>>) {
+// game_time.0 = time.elapsed_secs_f64();
+// }

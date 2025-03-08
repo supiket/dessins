@@ -53,7 +53,7 @@ impl F32 {
 }
 
 impl ControllableParam for F32 {
-    fn control(&mut self, ui: &mut egui::Ui, name: &str) -> bool {
+    fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
         let ControlAction {
             mut changed,
             toggle_animate,
@@ -62,22 +62,27 @@ impl ControllableParam for F32 {
             .control_ui(&mut self.value, self.animation.clone(), ui, name);
 
         if toggle_animate {
-            self.toggle_animation_state();
+            self.toggle_animation_state(time);
         }
 
         changed |= self
             .variant
-            .control_animate(&mut self.value, self.animation.clone());
+            .control_animate(&mut self.value, self.animation.clone(), time);
         changed
     }
 
-    fn toggle_animation_state(&mut self) {
+    fn toggle_animation_state(&mut self, time: Time<Virtual>) {
         self.animation = match self.animation {
             Some(_) => None,
             None => {
                 let RangeStep { range, step } = self.variant.get_range_step();
                 let freq = step;
-                Some(AnimationState::new(freq, *range.start(), *range.end()))
+                Some(AnimationState::new(
+                    time,
+                    freq,
+                    *range.start(),
+                    *range.end(),
+                ))
             }
         }
     }
@@ -130,9 +135,14 @@ impl F32Variant {
         }
     }
 
-    pub fn control_animate(&self, v: &mut f32, animation: Option<AnimationState>) -> bool {
+    pub fn control_animate(
+        &self,
+        v: &mut f32,
+        animation: Option<AnimationState>,
+        time: Time<Virtual>,
+    ) -> bool {
         if let Some(animation_state) = animation {
-            *v = self.animate(&animation_state);
+            *v = self.animate(time, &animation_state);
             true
         } else {
             false
@@ -152,7 +162,7 @@ impl F32Variant {
         }
     }
 
-    pub fn animate(&self, animation: &AnimationState) -> f32 {
+    pub fn animate(&self, time: Time<Virtual>, animation: &AnimationState) -> f32 {
         let RangeStep {
             mut range,
             mut step,
@@ -169,7 +179,7 @@ impl F32Variant {
                 step *= TAU;
             }
         };
-        animation.update_value(step, *range.start(), *range.end())
+        animation.update_value(time, step, *range.start(), *range.end())
     }
 
     pub fn add_variant_none(
