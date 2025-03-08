@@ -1,11 +1,13 @@
-use crate::active_dessin::{ActiveDessin, DessinVariant};
-use crate::shapes::{draw_segment, Shapes};
+use crate::{
+    dessin_with_variables::{DessinVariant, DessinWithVariables},
+    shapes::{draw_segment, Shapes},
+};
 use bevy_egui::EguiContexts;
 use nannou::prelude::*;
 
 #[derive(Resource)]
 pub struct Model {
-    active_dessin: ActiveDessin,
+    active_dessin: DessinWithVariables,
     points: Shapes,
     // TODO: animate
     pub color: Color,
@@ -14,7 +16,7 @@ pub struct Model {
 impl Model {
     pub fn new(variant: DessinVariant) -> Self {
         Self {
-            active_dessin: ActiveDessin {
+            active_dessin: DessinWithVariables {
                 variant,
                 variables: variant.get_variables(),
             },

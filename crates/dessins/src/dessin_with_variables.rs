@@ -1,7 +1,7 @@
 use crate::{adjustable_dessin::AdjustableDessin, shapes::Shapes};
 use nannou::prelude::*;
 
-pub struct ActiveDessin {
+pub struct DessinWithVariables {
     pub variant: DessinVariant,
     pub variables: DessinVariables,
 }
@@ -43,23 +43,23 @@ macro_rules! dessin_with_variables {
 }
 
 dessin_with_variables! {
-    Polygon => crate::chapter_1::Polygon,
-    Star => crate::chapter_1::Star,
-    Composition1 => crate::chapter_1::Composition1,
-    Composition2 => crate::chapter_1::Composition2,
-    Jolygon => crate::chapter_1::Jolygon,
-    Shape => crate::chapter_2::RawShape,
-    Dragon => crate::chapter_3::Dragon,
-    Fractal => crate::chapter_4::Fractal,
-    Orbital => crate::chapter_5::Orbital,
-    Rotating => crate::chapter_5::Rotating,
-    Spiral => crate::chapter_5::Spiral,
-    Bipartite => crate::chapter_6::Bipartite,
-    LinearModulo => crate::chapter_6::LinearModulo,
-    LinearSticks => crate::chapter_6::LinearSticks,
-    SimpleFractal => crate::chapter_7::SimpleFractal,
-    SimpleRoundedFractal => crate::chapter_7::SimpleRoundedFractal,
-    SimpleDeformedFractal => crate::chapter_7::SimpleDeformedFractal,
+    Polygon => crate::dessin_variant::Polygon,
+    Star => crate::dessin_variant::Star,
+    Composition1 => crate::dessin_variant::Composition1,
+    Composition2 => crate::dessin_variant::Composition2,
+    Jolygon => crate::dessin_variant::Jolygon,
+    RawShape => crate::dessin_variant::RawShape,
+    Dragon => crate::dessin_variant::Dragon,
+    FractalStar => crate::dessin_variant::FractalStar,
+    OrbitalCurve => crate::dessin_variant::curve::Orbital,
+    RotatingCurve => crate::dessin_variant::curve::Rotating,
+    SpiralCurve => crate::dessin_variant::curve::Spiral,
+    LinearBipartite => crate::dessin_variant::linear::Bipartite,
+    LinearModulo => crate::dessin_variant::linear::Modulo,
+    LinearStick => crate::dessin_variant::linear::Stick,
+    RegularSimpleFractal => crate::dessin_variant::simple_fractal::Regular,
+    RoundedSimpleFractal => crate::dessin_variant::simple_fractal::Rounded,
+    DeformedSimpleFractal => crate::dessin_variant::simple_fractal::Deformed,
 }
 
 impl DessinVariant {
@@ -69,22 +69,22 @@ impl DessinVariant {
         (Self::Composition1, "composition 1"),
         (Self::Composition2, "composition 2"),
         (Self::Jolygon, "jolygon"),
-        (Self::Shape, "shape"),
+        (Self::RawShape, "raw shape"),
         (Self::Dragon, "dragon"),
-        (Self::Fractal, "fractal"),
-        (Self::Orbital, "orbital"),
-        (Self::Rotating, "rotating"),
-        (Self::Spiral, "spiral"),
-        (Self::Bipartite, "bipartite"),
+        (Self::FractalStar, "fractal star"),
+        (Self::OrbitalCurve, "orbital curve"),
+        (Self::RotatingCurve, "rotating curve"),
+        (Self::SpiralCurve, "spiral curve"),
+        (Self::LinearBipartite, "linear bipartite"),
         (Self::LinearModulo, "linear modulo"),
-        (Self::LinearSticks, "linear sticks"),
-        (Self::SimpleFractal, "simple fractal"),
-        (Self::SimpleRoundedFractal, "simple rounded fractal"),
-        (Self::SimpleDeformedFractal, "simple deformed fractal"),
+        (Self::LinearStick, "linear stick"),
+        (Self::RegularSimpleFractal, "regular simple fractal"),
+        (Self::RoundedSimpleFractal, "rounded simple fractal"),
+        (Self::DeformedSimpleFractal, "deformed simple fractal"),
     ];
 }
 
-impl ActiveDessin {
+impl DessinWithVariables {
     pub fn control(&mut self, ctx: &mut egui::Context) -> bool {
         let mut changed = false;
 
