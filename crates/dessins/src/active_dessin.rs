@@ -1,7 +1,7 @@
 use crate::{reflect::ControllableParams, shapes::Shapes};
 use nannou::prelude::*;
 
-pub struct DesignController {
+pub struct ActiveDessin {
     pub variant: DessinVariant,
     pub variables: DessinVariables,
 }
@@ -84,11 +84,11 @@ impl DessinVariant {
     ];
 }
 
-impl DesignController {
+impl ActiveDessin {
     pub fn control(&mut self, ctx: &mut egui::Context) -> bool {
         let mut changed = false;
 
-        egui::TopBottomPanel::top("dessins").show(ctx, |ui| {
+        egui::TopBottomPanel::top("dessin variants").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 for (variant, name) in DessinVariant::ALL {
                     changed |= ui

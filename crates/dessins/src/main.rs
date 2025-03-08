@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_egui::{EguiContexts, EguiPlugin};
 use bevy_nannou::prelude::*;
 use bevy_nannou::NannouPlugin;
-use dessins::{params::DessinVariant, resources::Model};
+use dessins::{active_dessin::DessinVariant, resources::Model};
 
 fn main() {
     let window_plugin = WindowPlugin {

@@ -1,11 +1,11 @@
-use crate::params::{DesignController, DessinVariant};
+use crate::params::{ActiveDessin, DessinVariant};
 use crate::shapes::{draw_segment, Shapes};
 use bevy_egui::EguiContexts;
 use nannou::prelude::*;
 
 #[derive(Resource)]
 pub struct Model {
-    dessin: DesignController,
+    active_dessin: ActiveDessin,
     points: Shapes,
     // TODO: animate
     pub color: Color,
@@ -14,7 +14,7 @@ pub struct Model {
 impl Model {
     pub fn new(variant: DessinVariant) -> Self {
         Self {
-            dessin: DesignController {
+            active_dessin: ActiveDessin {
                 variant,
                 variables: variant.get_variables(),
             },
@@ -28,7 +28,7 @@ impl Model {
     }
 
     pub fn calculate_shapes(&mut self) {
-        self.points = self.dessin.variables.calculate_shapes();
+        self.points = self.active_dessin.variables.calculate_shapes();
     }
 
     pub fn draw_points(&self, draw: Single<&Draw>) {
@@ -40,7 +40,7 @@ impl Model {
     }
 
     pub fn change_design(&mut self, variant: DessinVariant) {
-        self.dessin.variables = variant.get_variables();
+        self.active_dessin.variables = variant.get_variables();
     }
 
     pub fn control_variables(
@@ -51,8 +51,8 @@ impl Model {
         let ctx = egui_ctx.ctx_mut();
 
         let mut changed = false;
-        changed |= self.dessin.control(ctx);
-        let control_res = self.dessin.variables.control(ctx, time);
+        changed |= self.active_dessin.control(ctx);
+        let control_res = self.active_dessin.variables.control(ctx, time);
         changed |= control_res.0;
 
         (changed, control_res.1)
