@@ -21,10 +21,10 @@ impl ControllableParam for VariableType {
         }
     }
 
-    fn toggle_animation_state(&mut self, time: Time<Virtual>) {
+    fn toggle_animation(&mut self, time: Time<Virtual>) {
         match self {
-            Self::F32(param) => param.toggle_animation_state(time),
-            Self::ExpressionF32(param) => param.toggle_animation_state(time),
+            Self::F32(param) => param.toggle_animation(time),
+            Self::ExpressionF32(param) => param.toggle_animation(time),
         }
     }
 }

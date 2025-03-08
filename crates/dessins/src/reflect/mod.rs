@@ -44,7 +44,7 @@ pub trait ControllableParams: Reflect + GetField {
 pub trait ControllableParam: Reflect {
     fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool;
 
-    fn toggle_animation_state(&mut self, time: Time<Virtual>);
+    fn toggle_animation(&mut self, time: Time<Virtual>);
 }
 
 fn get_field_names<T: ControllableParams>(data: &T) -> Vec<&'static str> {
