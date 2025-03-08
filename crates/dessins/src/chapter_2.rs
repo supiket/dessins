@@ -23,7 +23,7 @@ impl Params {
 }
 
 impl ControllableParams for Params {
-    fn control(&mut self, ui: &mut egui::Ui) -> bool {
+    fn control(&mut self, ui: &mut egui::Ui, _time: Time<Virtual>) -> bool {
         let mut changed = false;
         changed |= self.raw_shape.control(ui);
         changed |= self.shape_program.control(ui);

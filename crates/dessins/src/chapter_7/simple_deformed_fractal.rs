@@ -407,10 +407,10 @@ impl SimpleDeformedFractal {
 }
 
 impl ControllableParams for SimpleDeformedFractal {
-    fn control(&mut self, ui: &mut egui::Ui) -> bool {
+    fn control(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
         let mut changed = false;
         changed |= self.deformation.control(ui);
-        changed |= self.k.control(ui, "k");
+        changed |= self.k.control(ui, "k", time);
         changed
     }
 }

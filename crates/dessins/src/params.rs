@@ -33,9 +33,9 @@ macro_rules! design_variants {
                 }
             }
 
-            pub fn control(&mut self, ctx: &mut egui::Context) -> (bool, Option<Color>) {
+            pub fn control(&mut self, ctx: &mut egui::Context, time: Time<Virtual>) -> (bool, Option<Color>) {
                 match self {
-                    $(DesignParams::$variant(params) => params.control_params(ctx),)*
+                    $(DesignParams::$variant(params) => params.control_params(ctx, time),)*
                 }
             }
         }

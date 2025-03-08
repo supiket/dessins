@@ -43,12 +43,16 @@ impl Model {
         self.dessin.params = variant.get_params();
     }
 
-    pub fn control_params(&mut self, mut egui_ctx: EguiContexts) -> (bool, Option<Color>) {
+    pub fn control_params(
+        &mut self,
+        mut egui_ctx: EguiContexts,
+        time: Time<Virtual>,
+    ) -> (bool, Option<Color>) {
         let ctx = egui_ctx.ctx_mut();
 
         let mut changed = false;
         changed |= self.dessin.control(ctx);
-        let control_res = self.dessin.params.control(ctx);
+        let control_res = self.dessin.params.control(ctx, time);
         changed |= control_res.0;
 
         (changed, control_res.1)

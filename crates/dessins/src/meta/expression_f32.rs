@@ -75,11 +75,11 @@ impl ExpressionF32 {
 }
 
 impl ControllableParam for ExpressionF32 {
-    fn control(&mut self, _ui: &mut egui::Ui, _name: &str) -> bool {
+    fn control(&mut self, _ui: &mut egui::Ui, _name: &str, _time: Time<Virtual>) -> bool {
         todo!();
     }
 
-    fn toggle_animation_state(&mut self) {
+    fn toggle_animation_state(&mut self, _time: Time<Virtual>) {
         todo!();
     }
 }
