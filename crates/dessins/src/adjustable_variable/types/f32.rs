@@ -58,13 +58,13 @@ impl F32 {
 }
 
 impl AdjustableVariable for F32 {
-    fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
+    fn update(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
         let AdjustVariable {
             mut recalculate_points,
             toggle_animate,
         } = self
             .variant
-            .control_ui(&mut self.value, self.animation.clone(), ui, name);
+            .update_ui(&mut self.value, self.animation.clone(), ui, name);
 
         if toggle_animate {
             self.toggle_animation(time);
@@ -72,7 +72,7 @@ impl AdjustableVariable for F32 {
 
         recalculate_points |=
             self.variant
-                .control_animate(&mut self.value, self.animation.clone(), time);
+                .update_animate(&mut self.value, self.animation.clone(), time);
         recalculate_points
     }
 
@@ -113,7 +113,7 @@ impl F32Variant {
 }
 
 impl F32Variant {
-    fn control_ui(
+    fn update_ui(
         &self,
         v: &mut f32,
         animation: Option<Animation>,
@@ -135,7 +135,7 @@ impl F32Variant {
         }
     }
 
-    fn control_animate(
+    fn update_animate(
         &self,
         v: &mut f32,
         animation: Option<Animation>,

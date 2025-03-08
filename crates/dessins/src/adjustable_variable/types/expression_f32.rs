@@ -75,7 +75,7 @@ impl ExpressionF32 {
 }
 
 impl AdjustableVariable for ExpressionF32 {
-    fn control(&mut self, _ui: &mut egui::Ui, _name: &str, _time: Time<Virtual>) -> bool {
+    fn update(&mut self, _ui: &mut egui::Ui, _name: &str, _time: Time<Virtual>) -> bool {
         todo!();
     }
 

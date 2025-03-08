@@ -21,7 +21,7 @@ fn main() {
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))
         .insert_resource(model)
         .add_systems(Startup, setup)
-        .add_systems(Update, (control_variables, draw_dessin))
+        .add_systems(Update, (update_active_dessin, draw_dessin))
         .run();
 }
 
@@ -29,8 +29,12 @@ fn setup(mut commands: Commands) {
     commands.spawn(render::NannouCamera);
 }
 
-fn control_variables(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: EguiContexts) {
-    let (changed, color) = model.control_variables(egui_ctx, *time);
+fn update_active_dessin(
+    mut model: ResMut<Model>,
+    time: Res<Time<Virtual>>,
+    egui_ctx: EguiContexts,
+) {
+    let (changed, color) = model.update_active_dessin(egui_ctx, *time);
 
     if let Some(new_color) = color {
         model.color = new_color;

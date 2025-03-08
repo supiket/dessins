@@ -38,7 +38,7 @@ impl RawShapeProgram {
         }
     }
 
-    pub fn control(&mut self, ui: &mut egui::Ui) -> bool {
+    pub fn update(&mut self, ui: &mut egui::Ui) -> bool {
         let mut changed = false;
 
         ui.label("program");

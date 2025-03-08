@@ -7,7 +7,7 @@ use bevy_reflect::{Reflect, TypeInfo};
 use nannou::prelude::*;
 
 pub trait AdjustableDessin: Reflect + GetField {
-    fn control_variables(
+    fn update_dessin(
         &mut self,
         ctx: &mut egui::Context,
         time: Time<Virtual>,
@@ -23,17 +23,17 @@ pub trait AdjustableDessin: Reflect + GetField {
                 color = Some(new_color);
             }
 
-            changed |= self.control(ui, time)
+            changed |= self.update_variables(ui, time)
         });
 
         (changed, color)
     }
 
-    fn control(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool
+    fn update_variables(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool
     where
         Self: Sized,
     {
-        control_reflect(self, ui, time)
+        update_from_reflect(self, ui, time)
     }
 }
 
@@ -47,7 +47,7 @@ fn get_field_names<T: AdjustableDessin>(data: &T) -> Vec<&'static str> {
     }
 }
 
-pub fn control_reflect<T: AdjustableDessin>(
+pub fn update_from_reflect<T: AdjustableDessin>(
     data: &mut T,
     ui: &mut egui::Ui,
     time: Time<Virtual>,
@@ -56,9 +56,9 @@ pub fn control_reflect<T: AdjustableDessin>(
 
     for field_name in get_field_names(data) {
         if let Some(inner) = data.get_field_mut::<F32>(field_name) {
-            changed |= inner.control(ui, field_name, time);
+            changed |= inner.update(ui, field_name, time);
         } else if let Some(inner) = data.get_field_mut::<ExpressionF32>(field_name) {
-            changed |= inner.control(ui, field_name, time);
+            changed |= inner.update(ui, field_name, time);
         } else {
             let type_name = std::any::type_name::<T>();
             todo!("unsupported field type: {field_name} in {type_name}");
