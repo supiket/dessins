@@ -1,0 +1,21 @@
+name: Build for WASM
+
+on:
+  pull-request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: cachix/install-nix-action@v25
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Build and optimize WASM with Nix
+        run: nix build .#wasm
