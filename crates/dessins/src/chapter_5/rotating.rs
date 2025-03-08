@@ -1,9 +1,9 @@
 use crate::{
-    meta::{
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::{
         expression_f32::ExpressionF32,
         f32::{F32Variant, F32},
     },
-    reflect::ControllableParams,
     shapes::{Segment, Shape, Shapes},
 };
 use nannou::prelude::*;
@@ -82,7 +82,7 @@ impl Rotating {
     }
 }
 
-impl ControllableParams for Rotating {}
+impl AdjustableDessin for Rotating {}
 
 impl Default for Rotating {
     fn default() -> Self {

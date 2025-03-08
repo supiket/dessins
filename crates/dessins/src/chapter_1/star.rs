@@ -1,6 +1,6 @@
 use crate::{
-    meta::f32::{F32Variant, F32},
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::f32::{F32Variant, F32},
     shapes::{Segment, Shape, Shapes},
 };
 use nannou::prelude::*;
@@ -40,7 +40,7 @@ impl Star {
     }
 }
 
-impl ControllableParams for Star {}
+impl AdjustableDessin for Star {}
 
 impl Default for Star {
     fn default() -> Self {

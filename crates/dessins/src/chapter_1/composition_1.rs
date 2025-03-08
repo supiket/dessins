@@ -1,7 +1,7 @@
 use super::{Polygon, Star};
 use crate::{
-    meta::f32::{F32Variant, F32},
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::f32::{F32Variant, F32},
     shapes::{Segment, Shape, Shapes},
 };
 use nannou::prelude::*;
@@ -57,7 +57,7 @@ impl Composition1 {
     }
 }
 
-impl ControllableParams for Composition1 {}
+impl AdjustableDessin for Composition1 {}
 
 impl Default for Composition1 {
     fn default() -> Self {

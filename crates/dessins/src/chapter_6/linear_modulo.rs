@@ -1,6 +1,6 @@
 use crate::{
-    meta::{expression_f32::ExpressionF32, f32::F32},
-    reflect::ControllableParams,
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -76,7 +76,7 @@ impl LinearModulo {
     }
 }
 
-impl ControllableParams for LinearModulo {}
+impl AdjustableDessin for LinearModulo {}
 
 impl Default for LinearModulo {
     fn default() -> Self {

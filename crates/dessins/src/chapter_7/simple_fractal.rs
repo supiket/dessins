@@ -1,7 +1,7 @@
 use crate::{
+    adjustable_dessin::AdjustableDessin,
+    adjustable_variable::types::f32::F32,
     chapter_1::Polygon,
-    meta::f32::F32,
-    reflect::ControllableParams,
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -121,7 +121,7 @@ impl SimpleFractal {
     }
 }
 
-impl ControllableParams for SimpleFractal {}
+impl AdjustableDessin for SimpleFractal {}
 
 impl Default for SimpleFractal {
     fn default() -> Self {
