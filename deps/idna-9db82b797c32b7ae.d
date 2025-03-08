@@ -1,0 +1,10 @@
+/private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/knyn6fqivkskfdsqp60vpmsnr6yn0fwb-source/target/wasm32-unknown-unknown/wasm-release/deps/libidna-9db82b797c32b7ae.rmeta: /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/lib.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/deprecated.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/punycode.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/uts46.rs
+
+/private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/knyn6fqivkskfdsqp60vpmsnr6yn0fwb-source/target/wasm32-unknown-unknown/wasm-release/deps/libidna-9db82b797c32b7ae.rlib: /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/lib.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/deprecated.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/punycode.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/uts46.rs
+
+/private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/knyn6fqivkskfdsqp60vpmsnr6yn0fwb-source/target/wasm32-unknown-unknown/wasm-release/deps/idna-9db82b797c32b7ae.d: /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/lib.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/deprecated.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/punycode.rs /private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/uts46.rs
+
+/private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/lib.rs:
+/private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/deprecated.rs:
+/private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/punycode.rs:
+/private/tmp/nix-build-dessins-wasm-opt-0.1.0.drv-0/cargo-vendor-dir/idna-1.0.3/src/uts46.rs:
