@@ -1,41 +1,42 @@
 use crate::{reflect::ControllableParams, shapes::Shapes};
 use nannou::prelude::*;
-use raw_shape::*;
-use shape_program::*;
+use raw_shape_program::*;
+use raw_shape_variant::*;
 
-mod raw_shape;
-mod shape_program;
+mod raw_shape_program;
+mod raw_shape_variant;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
-pub struct Params {
+pub struct RawShape {
     #[reflect(ignore)]
-    pub raw_shape: RawShape,
+    pub shape_variant: RawShapeVariant,
     #[reflect(ignore)]
-    pub shape_program: ShapeProgram,
+    pub program_variant: RawShapeProgram,
 }
 
-impl Params {
+impl RawShape {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut design_shape = DesignShape::new(&self.raw_shape);
-        self.shape_program.calculate_shapes(&mut design_shape)
+        let mut raw_shape_decoder = RawShapeDecoder::new(&self.shape_variant);
+        self.program_variant
+            .calculate_shapes(&mut raw_shape_decoder)
     }
 }
 
-impl ControllableParams for Params {
+impl ControllableParams for RawShape {
     fn control(&mut self, ui: &mut egui::Ui, _time: Time<Virtual>) -> bool {
         let mut changed = false;
-        changed |= self.raw_shape.control(ui);
-        changed |= self.shape_program.control(ui);
+        changed |= self.shape_variant.control(ui);
+        changed |= self.program_variant.control(ui);
         changed
     }
 }
 
-impl Default for Params {
+impl Default for RawShape {
     fn default() -> Self {
         Self {
-            raw_shape: RawShape::Horse,
-            shape_program: ShapeProgram::Program1,
+            shape_variant: RawShapeVariant::Horse,
+            program_variant: RawShapeProgram::Program1,
         }
     }
 }
