@@ -1,4 +1,4 @@
-use crate::params::{DesignController, DesignVariant};
+use crate::params::{DesignController, DessinVariant};
 use crate::shapes::{draw_segment, Shapes};
 use bevy_egui::EguiContexts;
 use nannou::prelude::*;
@@ -12,11 +12,11 @@ pub struct Model {
 }
 
 impl Model {
-    pub fn new(dessin: DesignVariant) -> Self {
+    pub fn new(variant: DessinVariant) -> Self {
         Self {
             dessin: DesignController {
-                selected: dessin,
-                params: dessin.get_params(),
+                variant,
+                params: variant.get_params(),
             },
             points: Shapes::new_non_empty(),
             color: Color::srgb(random(), random(), random()),
@@ -39,7 +39,7 @@ impl Model {
         });
     }
 
-    pub fn change_design(&mut self, variant: DesignVariant) {
+    pub fn change_design(&mut self, variant: DessinVariant) {
         self.dessin.params = variant.get_params();
     }
 

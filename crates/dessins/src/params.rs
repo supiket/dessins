@@ -2,7 +2,7 @@ use crate::{reflect::ControllableParams, shapes::Shapes};
 use nannou::prelude::*;
 
 pub struct DesignController {
-    pub selected: DesignVariant,
+    pub variant: DessinVariant,
     pub params: DesignParams,
 }
 
@@ -14,11 +14,11 @@ macro_rules! design_variants {
         }
 
         #[derive(PartialEq, Eq, Clone, Copy)]
-        pub enum DesignVariant {
+        pub enum DessinVariant {
             $($variant,)*
         }
 
-        impl DesignVariant {
+        impl DessinVariant {
             pub fn get_params(&self) -> DesignParams {
                 match self {
                     $(Self::$variant => DesignParams::$variant(<$params>::default()),)*
@@ -62,7 +62,7 @@ design_variants! {
     SimpleDeformedFractal => crate::chapter_7::SimpleDeformedFractal,
 }
 
-impl DesignVariant {
+impl DessinVariant {
     pub const ALL: &'static [(Self, &'static str)] = &[
         (Self::Polygon, "polygon"),
         (Self::Star, "star"),
@@ -90,16 +90,16 @@ impl DesignController {
 
         egui::TopBottomPanel::top("dessins").show(ctx, |ui| {
             ui.horizontal(|ui| {
-                for (variant, name) in DesignVariant::ALL {
+                for (variant, name) in DessinVariant::ALL {
                     changed |= ui
-                        .selectable_value(&mut self.selected, *variant, *name)
+                        .selectable_value(&mut self.variant, *variant, *name)
                         .changed();
                 }
             });
         });
 
         if changed {
-            self.params = self.selected.get_params();
+            self.params = self.variant.get_params();
         }
 
         changed
