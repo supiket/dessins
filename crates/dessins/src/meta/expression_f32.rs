@@ -79,7 +79,7 @@ impl ControllableParam for ExpressionF32 {
         todo!();
     }
 
-    fn toggle_animation_state(&mut self, _time: Time<Virtual>) {
+    fn toggle_animation(&mut self, _time: Time<Virtual>) {
         todo!();
     }
 }
