@@ -3,14 +3,14 @@ use nannou::prelude::*;
 
 pub struct DesignController {
     pub variant: DessinVariant,
-    pub params: DesignParams,
+    pub variables: DessinVariables,
 }
 
 macro_rules! design_variants {
-    ($($variant:ident => $params:path),* $(,)?) => {
+    ($($variant:ident => $variables:path),* $(,)?) => {
         #[derive(Reflect)]
-        pub enum DesignParams {
-            $($variant($params),)*
+        pub enum DessinVariables {
+            $($variant($variables),)*
         }
 
         #[derive(PartialEq, Eq, Clone, Copy)]
@@ -19,23 +19,23 @@ macro_rules! design_variants {
         }
 
         impl DessinVariant {
-            pub fn get_params(&self) -> DesignParams {
+            pub fn get_variables(&self) -> DessinVariables {
                 match self {
-                    $(Self::$variant => DesignParams::$variant(<$params>::default()),)*
+                    $(Self::$variant => DessinVariables::$variant(<$variables>::default()),)*
                 }
             }
         }
 
-        impl DesignParams {
+        impl DessinVariables {
             pub fn calculate_shapes(&mut self) -> Shapes {
                 match self {
-                    $(DesignParams::$variant(params) => params.calculate_shapes(),)*
+                    $(DessinVariables::$variant(variables) => variables.calculate_shapes(),)*
                 }
             }
 
             pub fn control(&mut self, ctx: &mut egui::Context, time: Time<Virtual>) -> (bool, Option<Color>) {
                 match self {
-                    $(DesignParams::$variant(params) => params.control_params(ctx, time),)*
+                    $(DessinVariables::$variant(variables) => variables.control_variables(ctx, time),)*
                 }
             }
         }
@@ -99,7 +99,7 @@ impl DesignController {
         });
 
         if changed {
-            self.params = self.variant.get_params();
+            self.variables = self.variant.get_variables();
         }
 
         changed

@@ -11,7 +11,7 @@ pub struct ControlAction {
 }
 
 pub trait ControllableParams: Reflect + GetField {
-    fn control_params(
+    fn control_variables(
         &mut self,
         ctx: &mut egui::Context,
         time: Time<Virtual>,

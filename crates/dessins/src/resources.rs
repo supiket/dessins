@@ -16,7 +16,7 @@ impl Model {
         Self {
             dessin: DesignController {
                 variant,
-                params: variant.get_params(),
+                variables: variant.get_variables(),
             },
             points: Shapes::new_non_empty(),
             color: Color::srgb(random(), random(), random()),
@@ -28,7 +28,7 @@ impl Model {
     }
 
     pub fn calculate_shapes(&mut self) {
-        self.points = self.dessin.params.calculate_shapes();
+        self.points = self.dessin.variables.calculate_shapes();
     }
 
     pub fn draw_points(&self, draw: Single<&Draw>) {
@@ -40,10 +40,10 @@ impl Model {
     }
 
     pub fn change_design(&mut self, variant: DessinVariant) {
-        self.dessin.params = variant.get_params();
+        self.dessin.variables = variant.get_variables();
     }
 
-    pub fn control_params(
+    pub fn control_variables(
         &mut self,
         mut egui_ctx: EguiContexts,
         time: Time<Virtual>,
@@ -52,7 +52,7 @@ impl Model {
 
         let mut changed = false;
         changed |= self.dessin.control(ctx);
-        let control_res = self.dessin.params.control(ctx, time);
+        let control_res = self.dessin.variables.control(ctx, time);
         changed |= control_res.0;
 
         (changed, control_res.1)
