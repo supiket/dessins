@@ -7,7 +7,7 @@ use nannou::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
-pub struct Fractal {
+pub struct FractalStar {
     pub n: F32,
     pub k: F32,
     pub ra: F32,
@@ -19,7 +19,7 @@ pub struct Fractal {
     pub a0: F32,
 }
 
-impl Fractal {
+impl FractalStar {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
@@ -55,9 +55,9 @@ impl Fractal {
     }
 }
 
-impl AdjustableDessin for Fractal {}
+impl AdjustableDessin for FractalStar {}
 
-impl Default for Fractal {
+impl Default for FractalStar {
     fn default() -> Self {
         let aa = F32::new(4.0 / 5.0, F32Variant::Angle);
         let ll = F32::new(1.0, F32Variant::Length);

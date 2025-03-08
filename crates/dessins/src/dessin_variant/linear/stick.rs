@@ -8,7 +8,7 @@ use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
-pub struct LinearSticks {
+pub struct Stick {
     pub n: F32,
     pub m: F32,
     pub k: F32,
@@ -18,7 +18,7 @@ pub struct LinearSticks {
     pub r2: ExpressionF32,
 }
 
-impl LinearSticks {
+impl Stick {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
@@ -91,9 +91,9 @@ impl LinearSticks {
     }
 }
 
-impl AdjustableDessin for LinearSticks {}
+impl AdjustableDessin for Stick {}
 
-impl Default for LinearSticks {
+impl Default for Stick {
     fn default() -> Self {
         let n = 100.0;
         let k = 5.0;
@@ -105,13 +105,13 @@ impl Default for LinearSticks {
         ]);
 
         let r1 = ExpressionF32 {
-            expr: LinearSticks::default_r1_expr(),
+            expr: Stick::default_r1_expr(),
             ctx: ctx.clone(),
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 120.0,
         };
         let r2 = ExpressionF32 {
-            expr: LinearSticks::default_r2_expr(),
+            expr: Stick::default_r2_expr(),
             ctx,
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 100.0,

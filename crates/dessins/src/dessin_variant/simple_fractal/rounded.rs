@@ -1,7 +1,7 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
     adjustable_variable::types::f32::F32,
-    chapter_1::Polygon,
+    dessin_variant::Polygon,
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -11,7 +11,7 @@ pub type InnerSegment = Segment;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
-pub struct SimpleRoundedFractal {
+pub struct Rounded {
     pub m: F32, // # of segments in starting curve
     pub n: F32, // # of sub-segments per segment
     pub k: F32, // depth
@@ -24,7 +24,7 @@ pub struct SimpleRoundedFractal {
     pub angles: Vec<f32>,
 }
 
-impl SimpleRoundedFractal {
+impl Rounded {
     pub fn calculate_shapes(&mut self) -> Shapes {
         if self.positions.len() != self.m.value as usize + 1 {
             self.positions
@@ -152,9 +152,9 @@ impl SimpleRoundedFractal {
     }
 }
 
-impl AdjustableDessin for SimpleRoundedFractal {}
+impl AdjustableDessin for Rounded {}
 
-impl Default for SimpleRoundedFractal {
+impl Default for Rounded {
     fn default() -> Self {
         let np = NP as f32;
         Self {

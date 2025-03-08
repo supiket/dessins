@@ -8,7 +8,7 @@ use std::collections::HashMap;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
-pub struct LinearModulo {
+pub struct Modulo {
     pub n: F32,
     pub m: F32,
     pub k1: F32,
@@ -19,7 +19,7 @@ pub struct LinearModulo {
     pub y: ExpressionF32,
 }
 
-impl LinearModulo {
+impl Modulo {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
@@ -76,9 +76,9 @@ impl LinearModulo {
     }
 }
 
-impl AdjustableDessin for LinearModulo {}
+impl AdjustableDessin for Modulo {}
 
-impl Default for LinearModulo {
+impl Default for Modulo {
     fn default() -> Self {
         let n = 400.0;
         let k2 = 5.0;
@@ -90,7 +90,7 @@ impl Default for LinearModulo {
         ]);
 
         let y = ExpressionF32 {
-            expr: LinearModulo::default_y_expr(),
+            expr: Modulo::default_y_expr(),
             ctx,
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 360.0,

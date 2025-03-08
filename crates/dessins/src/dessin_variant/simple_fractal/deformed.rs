@@ -11,7 +11,7 @@ pub type InnerSegment = Segment;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 #[reflect(Default)]
-pub struct SimpleDeformedFractal {
+pub struct Deformed {
     #[reflect(ignore)]
     pub deformation: Deformation,
     #[reflect(ignore)]
@@ -83,7 +83,7 @@ impl Deformation {
     }
 }
 
-impl SimpleDeformedFractal {
+impl Deformed {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let deforme_point = match self.deformation {
             Deformation::Program1 => Self::deforme_point_1,
@@ -407,7 +407,7 @@ impl SimpleDeformedFractal {
     }
 }
 
-impl AdjustableDessin for SimpleDeformedFractal {
+impl AdjustableDessin for Deformed {
     fn control(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
         let mut changed = false;
         changed |= self.deformation.control(ui);
@@ -416,7 +416,7 @@ impl AdjustableDessin for SimpleDeformedFractal {
     }
 }
 
-impl Default for SimpleDeformedFractal {
+impl Default for Deformed {
     fn default() -> Self {
         Self {
             deformation: Deformation::Program1,

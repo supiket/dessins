@@ -1,11 +1,20 @@
 pub use composition_1::Composition1;
 pub use composition_2::Composition2;
+pub use dragon::Dragon;
+pub use fractal_star::FractalStar;
 pub use jolygon::Jolygon;
 pub use polygon::Polygon;
+pub use raw_shape::RawShape;
 pub use star::Star;
 
 pub mod composition_1;
 pub mod composition_2;
+pub mod curve;
+pub mod dragon;
+pub mod fractal_star;
 pub mod jolygon;
+pub mod linear;
 pub mod polygon;
+pub mod raw_shape;
+pub mod simple_fractal;
 pub mod star;
