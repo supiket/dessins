@@ -3,9 +3,10 @@ use crate::{
     adjustable_variable::types::f32::{F32Variant, F32},
     shapes::{Segment, Shape, Shapes, NP},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct FractalStar {
     pub n: F32,
@@ -54,8 +55,6 @@ impl FractalStar {
         shapes
     }
 }
-
-impl AdjustableDessin for FractalStar {}
 
 impl Default for FractalStar {
     fn default() -> Self {

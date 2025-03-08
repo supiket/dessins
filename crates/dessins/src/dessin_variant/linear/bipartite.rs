@@ -7,8 +7,9 @@ use nannou::prelude::*;
 
 pub type OuterSegment = Segment;
 pub type InnerSegment = Segment;
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Bipartite {
     pub n: F32,
@@ -71,8 +72,6 @@ impl Bipartite {
         (outer_segment, inner_segment)
     }
 }
-
-impl AdjustableDessin for Bipartite {}
 
 impl Default for Bipartite {
     fn default() -> Self {

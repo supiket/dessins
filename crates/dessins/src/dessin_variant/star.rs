@@ -3,9 +3,10 @@ use crate::{
     adjustable_variable::types::f32::{F32Variant, F32},
     shapes::{Segment, Shape, Shapes},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Star {
     pub k: F32,  // # vertices
@@ -39,8 +40,6 @@ impl Star {
         pt2(x, y)
     }
 }
-
-impl AdjustableDessin for Star {}
 
 impl Default for Star {
     fn default() -> Self {

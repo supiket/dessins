@@ -3,10 +3,11 @@ use crate::{
     adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
     shapes::{Segment, Shape, Shapes, NP},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, Reflect)]
+#[derive(Clone, Debug, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Dragon {
     pub n: F32, // depth of recursion
@@ -124,8 +125,6 @@ impl Dragon {
         "-pi / 4 * (n - 2)".to_string()
     }
 }
-
-impl AdjustableDessin for Dragon {}
 
 impl Default for Dragon {
     fn default() -> Self {

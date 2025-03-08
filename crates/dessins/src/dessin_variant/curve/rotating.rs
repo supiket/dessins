@@ -6,10 +6,11 @@ use crate::{
     },
     shapes::{Segment, Shape, Shapes},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Rotating {
     pub n: F32,  // # segments
@@ -81,8 +82,6 @@ impl Rotating {
         "math::cos(4.0 * pi * i / n) * 0.4 + 0.6".to_string()
     }
 }
-
-impl AdjustableDessin for Rotating {}
 
 impl Default for Rotating {
     fn default() -> Self {

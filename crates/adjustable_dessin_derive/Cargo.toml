@@ -1,0 +1,12 @@
+[package]
+name = "adjustable_dessin_derive"
+authors.workspace = true
+edition.workspace = true
+version.workspace = true
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = { version = "2", features = ["derive"] }
+quote = "1"

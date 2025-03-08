@@ -6,10 +6,11 @@ use crate::{
     },
     shapes::{Segment, Shape, Shapes},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Orbital {
     pub n: F32,  // # segments
@@ -78,8 +79,6 @@ impl Orbital {
         "96.0 * (1 - i / n)".to_string()
     }
 }
-
-impl AdjustableDessin for Orbital {}
 
 impl Default for Orbital {
     fn default() -> Self {

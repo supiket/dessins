@@ -3,10 +3,11 @@ use crate::{
     adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
     shapes::{Segment, Shape, Shapes, NP},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Modulo {
     pub n: F32,
@@ -75,8 +76,6 @@ impl Modulo {
         "360 * math::cos(k2 * i * pi / n)".to_string()
     }
 }
-
-impl AdjustableDessin for Modulo {}
 
 impl Default for Modulo {
     fn default() -> Self {

@@ -8,8 +8,9 @@ use nannou::prelude::*;
 
 pub type OuterSegment = Segment;
 pub type InnerSegment = Segment;
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Rounded {
     pub m: F32, // # of segments in starting curve
@@ -151,8 +152,6 @@ impl Rounded {
         angles
     }
 }
-
-impl AdjustableDessin for Rounded {}
 
 impl Default for Rounded {
     fn default() -> Self {

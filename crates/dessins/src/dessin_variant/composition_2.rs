@@ -4,9 +4,10 @@ use crate::{
     adjustable_variable::types::f32::{F32Variant, F32},
     shapes::{Segment, Shape, Shapes},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Composition2 {
     pub polygon_k: F32,
@@ -63,8 +64,6 @@ impl Composition2 {
         shapes
     }
 }
-
-impl AdjustableDessin for Composition2 {}
 
 impl Default for Composition2 {
     fn default() -> Self {

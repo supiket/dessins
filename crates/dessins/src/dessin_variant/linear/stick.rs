@@ -3,10 +3,11 @@ use crate::{
     adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
     shapes::{Shape, Shapes},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Stick {
     pub n: F32,
@@ -90,8 +91,6 @@ impl Stick {
         "100.0".to_string()
     }
 }
-
-impl AdjustableDessin for Stick {}
 
 impl Default for Stick {
     fn default() -> Self {

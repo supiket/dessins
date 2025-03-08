@@ -4,9 +4,10 @@ use crate::{
     dessin_variant::Polygon,
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Regular {
     pub m: F32, // # of segments in starting curve
@@ -120,8 +121,6 @@ impl Regular {
         angles
     }
 }
-
-impl AdjustableDessin for Regular {}
 
 impl Default for Regular {
     fn default() -> Self {

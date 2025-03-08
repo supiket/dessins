@@ -3,9 +3,10 @@ use crate::{
     adjustable_variable::types::f32::F32,
     shapes::{Segment, Shape, Shapes, NP},
 };
+use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
 
-#[derive(Clone, Debug, PartialEq, Reflect)]
+#[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Spiral {
     pub n: F32, // # segments
@@ -55,8 +56,6 @@ impl Spiral {
         shapes
     }
 }
-
-impl AdjustableDessin for Spiral {}
 
 impl Default for Spiral {
     fn default() -> Self {
