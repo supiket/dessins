@@ -1,5 +1,5 @@
 use crate::{
-    meta::{expression_f32::ExpressionF32, f32::F32, ParamsMeta},
+    meta::{expression_f32::ExpressionF32, f32::F32},
     ui::ui_color,
 };
 use bevy_reflect::{Reflect, TypeInfo};
@@ -65,12 +65,7 @@ pub fn control_reflect<T: ControllableParams>(
     let mut changed = false;
 
     for field_name in get_field_names(data) {
-        if data
-            .get_field_mut::<Option<ParamsMeta>>(field_name)
-            .is_some()
-        {
-            continue;
-        } else if let Some(param) = data.get_field_mut::<F32>(field_name) {
+        if let Some(param) = data.get_field_mut::<F32>(field_name) {
             changed |= param.control(ui, field_name, time);
         } else if let Some(param) = data.get_field_mut::<ExpressionF32>(field_name) {
             changed |= param.control(ui, field_name, time);
