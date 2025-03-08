@@ -73,71 +73,77 @@ const SMURF: &[f32] = &[
     44.0, 36.0, 44.0, 32.0, 2000.0,
 ];
 
-pub struct DesignShape {
+pub struct RawShapeDecoder {
     pub data: Vec<f32>,
-    pub data_index: usize,
+    pub index: usize,
+}
+
+pub enum DecodeAction {
+    Continue(Point2, bool),
+    Break,
 }
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
-pub enum RawShape {
+pub enum RawShapeVariant {
     Horse,
     Lion,
     BirdFish,
     Smurf,
 }
 
-pub enum Action {
-    Continue(Point2, bool),
-    Break,
-}
-
-impl DesignShape {
-    pub fn new(raw_shape: &RawShape) -> Self {
-        let data = match raw_shape {
-            RawShape::Horse => HORSE,
-            RawShape::Lion => LION,
-            RawShape::BirdFish => BIRD_FISH,
-            RawShape::Smurf => SMURF,
+impl RawShapeDecoder {
+    pub fn new(variant: &RawShapeVariant) -> Self {
+        let data = match variant {
+            RawShapeVariant::Horse => HORSE,
+            RawShapeVariant::Lion => LION,
+            RawShapeVariant::BirdFish => BIRD_FISH,
+            RawShapeVariant::Smurf => SMURF,
         };
 
         Self {
             data: data.to_vec(),
-            data_index: 0,
+            index: 0,
         }
     }
 
-    pub fn calculate_point(&mut self) -> Action {
+    pub fn decode_next(&mut self) -> DecodeAction {
         let mut new_segment = false;
 
-        let mut a = self.data[self.data_index];
-        self.data_index += 1;
+        let mut a = self.data[self.index];
+        self.index += 1;
         if a == 2000.0 {
-            return Action::Break;
+            return DecodeAction::Break;
         }
         if a == 1000.0 {
-            a = self.data[self.data_index];
-            self.data_index += 1;
+            a = self.data[self.index];
+            self.index += 1;
             new_segment = true;
         }
-        let b = self.data[self.data_index];
+        let b = self.data[self.index];
         let point = pt2(a, b);
-        self.data_index += 1;
+        self.index += 1;
 
-        Action::Continue(point, new_segment)
+        DecodeAction::Continue(point, new_segment)
     }
 }
 
-impl RawShape {
+impl RawShapeVariant {
     pub fn control(&mut self, ui: &mut egui::Ui) -> bool {
         let mut changed = false;
 
         ui.label("shape");
-        changed |= ui.radio_value(self, RawShape::Horse, "horse").changed();
-        changed |= ui.radio_value(self, RawShape::Lion, "lion").changed();
         changed |= ui
-            .radio_value(self, RawShape::BirdFish, "bird-fish")
+            .radio_value(self, RawShapeVariant::Horse, "horse")
             .changed();
-        changed |= ui.radio_value(self, RawShape::Smurf, "smurf").changed();
+        changed |= ui
+            .radio_value(self, RawShapeVariant::Lion, "lion")
+            .changed();
+        changed |= ui
+            .radio_value(self, RawShapeVariant::BirdFish, "bird-fish")
+            .changed();
+        changed |= ui
+            .radio_value(self, RawShapeVariant::Smurf, "smurf")
+            .changed();
 
         changed
     }

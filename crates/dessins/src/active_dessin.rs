@@ -6,7 +6,7 @@ pub struct ActiveDessin {
     pub variables: DessinVariables,
 }
 
-macro_rules! design_variants {
+macro_rules! dessin_with_variables {
     ($($variant:ident => $variables:path),* $(,)?) => {
         #[derive(Reflect)]
         pub enum DessinVariables {
@@ -42,13 +42,13 @@ macro_rules! design_variants {
     };
 }
 
-design_variants! {
+dessin_with_variables! {
     Polygon => crate::chapter_1::Polygon,
     Star => crate::chapter_1::Star,
     Composition1 => crate::chapter_1::Composition1,
     Composition2 => crate::chapter_1::Composition2,
     Jolygon => crate::chapter_1::Jolygon,
-    Shape => crate::chapter_2::Params,
+    Shape => crate::chapter_2::RawShape,
     Dragon => crate::chapter_3::Dragon,
     Fractal => crate::chapter_4::Fractal,
     Orbital => crate::chapter_5::Orbital,
@@ -88,7 +88,7 @@ impl ActiveDessin {
     pub fn control(&mut self, ctx: &mut egui::Context) -> bool {
         let mut changed = false;
 
-        egui::TopBottomPanel::top("dessin variants").show(ctx, |ui| {
+        egui::TopBottomPanel::top("active dessin").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 for (variant, name) in DessinVariant::ALL {
                     changed |= ui

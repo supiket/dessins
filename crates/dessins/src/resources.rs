@@ -39,10 +39,6 @@ impl Model {
         });
     }
 
-    pub fn change_design(&mut self, variant: DessinVariant) {
-        self.active_dessin.variables = variant.get_variables();
-    }
-
     pub fn control_variables(
         &mut self,
         mut egui_ctx: EguiContexts,

@@ -30,18 +30,13 @@ fn setup(mut commands: Commands) {
 }
 
 fn control_variables(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: EguiContexts) {
-    let new_design = None;
-
     let (changed, color) = model.control_variables(egui_ctx, *time);
 
     if let Some(new_color) = color {
         model.color = new_color;
     }
 
-    if let Some(new_design) = new_design {
-        model.change_design(new_design);
-        model.calculate_shapes();
-    } else if changed || !model.initialized() {
+    if changed || !model.initialized() {
         model.calculate_shapes();
     }
 }
