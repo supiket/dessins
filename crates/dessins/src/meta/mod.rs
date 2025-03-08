@@ -8,12 +8,12 @@ pub mod expression_f32;
 pub mod f32;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
-pub enum ParamType {
+pub enum VariableType {
     F32(F32),
     ExpressionF32(ExpressionF32),
 }
 
-impl ControllableParam for ParamType {
+impl ControllableParam for VariableType {
     fn control(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
         match self {
             Self::F32(param) => param.control(ui, name, time),
