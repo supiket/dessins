@@ -1,46 +1,46 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{
+    meta::f32::{F32Variant, F32},
+    reflect::ControllableParams,
+    shapes::{Segment, Shape, Shapes, NP},
+};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
-#[derive(UiControlledParams)]
-#[params(Fractal)]
-pub struct ParamsInner {
-    #[param(label="fractal n", range(3..=20))]
-    pub n: u32,
-    #[param(label="fractal k", range(2..=12))]
-    pub k: u32,
-    #[param(label = "fractal ra", range(0.2..=1.8))]
-    pub ra: f32,
-    #[param(label = "fractal ll", length)]
-    pub ll: f32,
-    #[param(label = "fractal aa", pi)]
-    pub aa: f32,
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct Fractal {
+    pub n: F32,
+    pub k: F32,
+    pub ra: F32,
+    pub ll: F32,
+    pub aa: F32,
+    #[reflect(ignore)]
     pub p0: Point2,
-    pub a0: f32,
+    #[reflect(ignore)]
+    pub a0: F32,
 }
 
-impl ParamsInner {
+impl Fractal {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
         let mut p0 = self.p0;
-        let mut a0 = self.a0;
+        let mut a0 = self.a0.value;
 
-        let nn = self.n * (self.n - 1).pow(self.k - 1) - 1;
+        let nn = self.n.value as u32 * (self.n.value as u32 - 1).pow(self.k.value as u32 - 1) - 1;
 
         for i in 0..=nn {
             let mut i1 = i;
             let mut h = 0;
 
-            while i1 % (self.n - 1) == 0 && h < (self.k - 1) {
-                i1 /= self.n - 1;
+            while i1 % (self.n.value as u32 - 1) == 0 && h < (self.k.value as u32 - 1) {
+                i1 /= self.n.value as u32 - 1;
                 h += 1;
             }
 
-            let l0 = self.ll * self.ra.powf((self.k - 1 - h) as f32);
-            a0 += self.aa;
+            let l0 = self.ll.value * self.ra.value.powf((self.k.value as u32 - 1 - h) as f32);
+            a0 += self.aa.value;
 
             let point = p0 + pt2(l0 * a0.cos(), l0 * a0.sin());
 
@@ -55,26 +55,25 @@ impl ParamsInner {
     }
 }
 
-impl Default for Params {
-    fn default() -> Self {
-        let aa = 4.0 * PI / 5.0;
-        let ll = NP as f32;
+impl ControllableParams for Fractal {}
 
-        let a0 = -aa;
-        let p0 = pt2((-ll) / 2.0, 0.0);
+impl Default for Fractal {
+    fn default() -> Self {
+        let aa = F32::new(4.0 / 5.0, F32Variant::Angle);
+        let ll = F32::new(1.0, F32Variant::Length);
+
+        let mut a0 = aa.clone();
+        a0.value = -a0.value;
+        let p0 = pt2((-ll.value) / 2.0, (NP as f32) * (0.5));
 
         Self {
-            inner: ParamsInner {
-                n: 5,
-                k: 5,
-                ra: 0.35,
-                ll,
-                aa,
-                a0,
-                p0,
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            n: F32::new_from_range(5.0, 3.0..=20.0),
+            k: F32::new_from_range(5.0, 2.0..=12.0),
+            ra: F32::new_from_range(0.35, 0.2..=1.8),
+            ll,
+            aa,
+            a0,
+            p0,
         }
     }
 }

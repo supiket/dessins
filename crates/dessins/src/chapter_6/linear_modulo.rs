@@ -1,38 +1,34 @@
-use crate::{ui::ExpressionF32, Segment, Shape, Shapes, NP};
-use evalexpr::{ContextWithMutableVariables, HashMapContext};
+use crate::{
+    meta::{expression_f32::ExpressionF32, f32::F32},
+    reflect::ControllableParams,
+    shapes::{Segment, Shape, Shapes, NP},
+};
 use nannou::prelude::*;
-use std::{collections::HashMap, f32::consts::PI};
-use ui_controlled_params::UiControlledParams;
+use std::collections::HashMap;
 
-#[derive(UiControlledParams)]
-#[params(LinearModulo)]
-pub struct ParamsInner {
-    #[param(range(10..=400))]
-    pub n: u32,
-    #[param(range(10..=400))]
-    pub m: u32,
-    #[param(range(1.0..=5.0))]
-    pub k1: f32,
-    #[param(range(1.0..=5.0))]
-    pub k2: f32,
-    #[param(range(1..=10))]
-    pub h: u32,
-    #[param(range(1..=8))]
-    pub i1_factor: u32,
-    #[param(range(-360.0..=360.0), expression(default="360 * math::cos(k2 * i * pi / n)", context(n, k2, ext(i, pi))))]
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct LinearModulo {
+    pub n: F32,
+    pub m: F32,
+    pub k1: F32,
+    pub k2: F32,
+    pub h: F32,
+    pub i1_factor: F32,
+    #[reflect(ignore)]
     pub y: ExpressionF32,
 }
 
-impl ParamsInner {
+impl LinearModulo {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
         let points = self.calculate_points();
 
-        for i in 0..=self.m {
-            let start_index = ((self.i1_factor * i) % self.n) as usize;
-            let end_index = ((self.h * i) % self.n) as usize;
+        for i in 0..=self.m.value as usize {
+            let start_index = (self.i1_factor.value as usize * i) % self.n.value as usize;
+            let end_index = (self.h.value as usize * i) % self.n.value as usize;
 
             let segment = vec![points[start_index], points[end_index]];
             shape.push(segment);
@@ -46,24 +42,27 @@ impl ParamsInner {
     fn calculate_points(&mut self) -> Segment {
         let mut points = vec![];
 
-        let n = self.n as f32;
-        let k1 = self.k1;
+        let n = self.n.value;
+        let k1 = self.k1.value;
 
-        for i in 0..=self.n {
+        for i in 0..=self.n.value as usize {
             let i = i as f32;
 
             let x = NP as f32 * 0.5 * (k1 * i * PI / n).sin();
-            self.y
-                .ctx
-                .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
-                .expect("setting to value of same type each time");
+            self.y.ctx.insert("i".to_string(), i);
             self.y.ctx_ext.remove("i");
-            self.y.val = evalexpr::eval_number_with_context(&self.y.expr, &self.y.ctx)
-                .unwrap_or_else(|_| {
-                    self.y.expr = Self::default_y_expr();
-                    evalexpr::eval_number_with_context(&self.y.expr, &self.y.ctx)
-                        .expect("default expression has to evaluate")
-                }) as f32;
+            self.y.val = evalexpr::eval_number_with_context(
+                &self.y.expr,
+                &ExpressionF32::evaluatable_ctx(&self.y.ctx),
+            )
+            .unwrap_or_else(|_| {
+                self.y.expr = Self::default_y_expr();
+                evalexpr::eval_number_with_context(
+                    &self.y.expr,
+                    &ExpressionF32::evaluatable_ctx(&self.y.ctx),
+                )
+                .expect("default expression has to evaluate")
+            }) as f32;
             let y = self.y.val;
 
             points.push(pt2(x, y));
@@ -77,38 +76,34 @@ impl ParamsInner {
     }
 }
 
-impl Default for Params {
+impl ControllableParams for LinearModulo {}
+
+impl Default for LinearModulo {
     fn default() -> Self {
-        let n = 400;
+        let n = 400.0;
         let k2 = 5.0;
 
-        let mut ctx = HashMapContext::new();
-        ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
-            .expect("setting to value of same type each time");
-        ctx.set_value("k2".to_string(), evalexpr::Value::Float(k2 as f64))
-            .expect("setting to value of same type each time");
-        ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
-            .expect("setting to value of same type each time");
+        let ctx = HashMap::from([
+            ("n".to_string(), n),
+            ("k2".to_string(), k2),
+            ("pi".to_string(), PI),
+        ]);
 
         let y = ExpressionF32 {
-            expr: ParamsInner::default_y_expr(),
+            expr: LinearModulo::default_y_expr(),
             ctx,
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 360.0,
         };
 
         Self {
-            inner: ParamsInner {
-                n,
-                m: 400,
-                k1: 4.0,
-                k2,
-                h: 2,
-                i1_factor: 1,
-                y,
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            n: F32::new_from_range(n, 10.0..=400.0),
+            m: F32::new_from_range(400.0, 10.0..=400.0),
+            k1: F32::new_from_range(4.0, 1.0..=5.0),
+            k2: F32::new_from_range(5.0, 1.0..=5.0),
+            h: F32::new_from_range(2.0, 1.0..=10.0),
+            i1_factor: F32::new_from_range(1.0, 1.0..=8.0),
+            y,
         }
     }
 }

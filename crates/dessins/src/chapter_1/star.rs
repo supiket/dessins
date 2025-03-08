@@ -1,27 +1,26 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{
+    meta::f32::{F32Variant, F32},
+    reflect::ControllableParams,
+    shapes::{Segment, Shape, Shapes},
+};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
-#[derive(UiControlledParams)]
-#[params(Star)]
-pub struct ParamsInner {
-    #[param(label = "star k", range(5..=100))]
-    pub k: u32, // # vertices
-    #[param(label = "star h", range(3..=50))]
-    pub h: u32, // # vertices to skip (clockwise) before connecting two dots
-    #[param(label = "star r", length)]
-    pub r: f32, // radius of the circle C on which the vertices are
-    #[param(label = "star ad", pi)]
-    pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct Star {
+    pub k: F32,  // # vertices
+    pub h: F32,  // # vertices to skip (clockwise) before connecting two dots
+    pub r: F32,  // radius of the circle C on which the vertices are
+    pub ad: F32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
 }
 
-impl ParamsInner {
+impl Star {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        for i in 0..self.k {
+        for i in 0..self.k.value as u32 {
             let point = self.calculate_point(i);
             segment.push(point);
         }
@@ -34,24 +33,22 @@ impl ParamsInner {
     }
 
     pub fn calculate_point(&self, i: u32) -> Point2 {
-        let angle = (2.0 * i as f32 * self.h as f32 * PI) / self.k as f32 + self.ad;
-        let x = self.r * angle.cos();
-        let y = self.r * angle.sin();
+        let angle = (2.0 * i as f32 * self.h.value * PI) / self.k.value + self.ad.value;
+        let x = self.r.value * angle.cos();
+        let y = self.r.value * angle.sin();
         pt2(x, y)
     }
 }
 
-impl Default for Params {
+impl ControllableParams for Star {}
+
+impl Default for Star {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                k: 5,
-                h: 3,
-                r: NP as f32 * 0.45,
-                ad: PI / 2.0,
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            k: F32::new_from_range(5.0, 5.0..=100.0),
+            h: F32::new_from_range(3.0, 3.0..=5.0),
+            r: F32::new(0.45, F32Variant::Length),
+            ad: F32::new(0.5, F32Variant::Angle),
         }
     }
 }

@@ -1,21 +1,20 @@
-use crate::{ui::ExpressionF32, Shape, Shapes};
-use evalexpr::{ContextWithMutableVariables, HashMapContext};
+use crate::{
+    meta::{expression_f32::ExpressionF32, f32::F32},
+    reflect::ControllableParams,
+    shapes::{Shape, Shapes},
+};
 use nannou::prelude::*;
-use std::{collections::HashMap, f32::consts::PI};
-use ui_controlled_params::UiControlledParams;
+use std::collections::HashMap;
 
-#[derive(UiControlledParams)]
-#[params(LinearSticks)]
-pub struct ParamsInner {
-    #[param(range(10..=600))]
-    pub n: u32,
-    #[param(range(1..=6))]
-    pub m: u32,
-    #[param(range(1..=7))]
-    pub k: u32,
-    #[param(range(-1000.0..=1000.0), expression(default="120", context(n, k, ext(i, pi))))]
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct LinearSticks {
+    pub n: F32,
+    pub m: F32,
+    pub k: F32,
+    #[reflect(ignore)]
     pub r1: ExpressionF32,
-    #[param(range(-1000.0..=1000.0), expression(default="100", context(n, k, ext(i, pi))))]
+    #[reflect(ignore)]
     pub r2: ExpressionF32,
 }
 
@@ -23,42 +22,48 @@ pub struct RParams {
     pub i: f32,
 }
 
-impl ParamsInner {
+impl LinearSticks {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        let n = self.n as f32;
-        let k = self.k as f32;
+        let n = self.n.value;
+        let k = self.k.value;
 
-        for i in 0..=self.m {
-            self.r1
-                .ctx
-                .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
-                .expect("setting to value of same type each time");
+        for i in 0..=self.m.value as usize {
+            self.r1.ctx.insert("i".to_string(), i as f32);
             self.r1.ctx_ext.remove("i");
-            self.r1.val = evalexpr::eval_number_with_context(&self.r1.expr, &self.r1.ctx)
-                .unwrap_or_else(|_| {
-                    self.r1.expr = Self::default_r1_expr();
-                    evalexpr::eval_number_with_context(&self.r1.expr, &self.r1.ctx)
-                        .expect("default expression has to evaluate")
-                }) as f32;
+            self.r1.val = evalexpr::eval_number_with_context(
+                &self.r1.expr,
+                &ExpressionF32::evaluatable_ctx(&self.r1.ctx),
+            )
+            .unwrap_or_else(|_| {
+                self.r1.expr = Self::default_r1_expr();
+                evalexpr::eval_number_with_context(
+                    &self.r1.expr,
+                    &ExpressionF32::evaluatable_ctx(&self.r1.ctx),
+                )
+                .expect("default expression has to evaluate")
+            }) as f32;
             let r1 = self.r1.val;
 
-            self.r2
-                .ctx
-                .set_value("i".to_string(), evalexpr::Value::Float(i as f64))
-                .expect("setting to value of same type each time");
+            self.r2.ctx.insert("i".to_string(), i as f32);
             self.r2.ctx_ext.remove("i");
-            self.r2.val = evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx)
-                .unwrap_or_else(|_| {
-                    self.r2.expr = Self::default_r2_expr();
-                    evalexpr::eval_number_with_context(&self.r2.expr, &self.r2.ctx)
-                        .expect("default expression has to evaluate")
-                }) as f32;
+            self.r2.val = evalexpr::eval_number_with_context(
+                &self.r2.expr,
+                &ExpressionF32::evaluatable_ctx(&self.r2.ctx),
+            )
+            .unwrap_or_else(|_| {
+                self.r2.expr = Self::default_r2_expr();
+                evalexpr::eval_number_with_context(
+                    &self.r2.expr,
+                    &ExpressionF32::evaluatable_ctx(&self.r2.ctx),
+                )
+                .expect("default expression has to evaluate")
+            }) as f32;
             let r2 = self.r2.val;
 
-            for j in 0..self.n {
+            for j in 0..self.n.value as usize {
                 let j = j as f32;
 
                 let an = 2.0 * j * PI / n;
@@ -90,36 +95,38 @@ impl ParamsInner {
     }
 }
 
-impl Default for Params {
-    fn default() -> Self {
-        let n = 100;
-        let k = 5;
+impl ControllableParams for LinearSticks {}
 
-        let mut ctx = HashMapContext::new();
-        ctx.set_value("n".to_string(), evalexpr::Value::Float(n as f64))
-            .expect("setting to value of same type each time");
-        ctx.set_value("k".to_string(), evalexpr::Value::Float(k as f64))
-            .expect("setting to value of same type each time");
-        ctx.set_value("pi".to_string(), evalexpr::Value::Float(f64::PI()))
-            .expect("setting to value of same type each time");
+impl Default for LinearSticks {
+    fn default() -> Self {
+        let n = 100.0;
+        let k = 5.0;
+
+        let ctx = HashMap::from([
+            ("n".to_string(), n),
+            ("k".to_string(), k),
+            ("pi".to_string(), PI),
+        ]);
 
         let r1 = ExpressionF32 {
-            expr: ParamsInner::default_r1_expr(),
+            expr: LinearSticks::default_r1_expr(),
             ctx: ctx.clone(),
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 120.0,
         };
         let r2 = ExpressionF32 {
-            expr: ParamsInner::default_r2_expr(),
+            expr: LinearSticks::default_r2_expr(),
             ctx,
             ctx_ext: HashMap::from([("i".to_string(), ())]),
             val: 100.0,
         };
 
         Self {
-            inner: ParamsInner { n, m: 1, k, r1, r2 },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            n: F32::new_from_range(n, 10.0..=600.0),
+            m: F32::new_from_range(1.0, 1.0..=6.0),
+            k: F32::new_from_range(k, 1.0..=7.0),
+            r1,
+            r2,
         }
     }
 }

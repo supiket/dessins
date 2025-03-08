@@ -1,58 +1,60 @@
-use super::{
-    polygon::{self},
-    star::{self},
+use super::{Polygon, Star};
+use crate::{
+    meta::f32::{F32Variant, F32},
+    reflect::ControllableParams,
+    shapes::{Segment, Shape, Shapes},
 };
-use crate::{Segment, Shape, Shapes, NP};
-use ui_controlled_params::UiControlledParams;
+use nannou::prelude::*;
 
-#[derive(UiControlledParams)]
-#[params(Composition2)]
-pub struct ParamsInner {
-    #[param]
-    pub polygon: polygon::ParamsInner,
-    #[param]
-    pub star: star::ParamsInner,
-    #[param(range(1..=100))]
-    pub n: u32, // # stars
-    #[param(range(0.7..=1.3))]
-    pub rr: f32, // reduction coefficient from one star to the next & the distance between the center of the spiral and the center of successive stars
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct Composition2 {
+    pub polygon_k: F32,
+    pub polygon_r: F32,
+    pub polygon_ad: F32,
+    pub star_k: F32,
+    pub star_h: F32,
+    pub star_r: F32,
+    pub star_ad: F32,
+    pub n: F32,  // # stars
+    pub rr: F32, // reduction coefficient from one star to the next & the distance between the center of the spiral and the center of successive stars
 }
 
-impl ParamsInner {
+impl Composition2 {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        let mut polygon = polygon::ParamsInner {
-            k: self.polygon.k,
-            r: self.polygon.r,
-            ad: self.polygon.ad,
-        };
-        let mut star = star::ParamsInner {
-            k: self.star.k,
-            h: self.star.h,
-            r: self.star.r,
-            ad: self.star.ad,
+        let mut polygon = Polygon {
+            k: self.polygon_k.clone(),
+            r: self.polygon_r.clone(),
+            ad: self.polygon_ad.clone(),
         };
 
-        for i in 0..self.n {
-            let r2 = self.polygon.r * self.rr.powi(i as i32);
-            let r3 = self.star.r * self.rr.powi(i as i32);
+        let mut star = Star {
+            k: self.star_k.clone(),
+            h: self.star_h.clone(),
+            r: self.star_r.clone(),
+            ad: self.star_ad.clone(),
+        };
 
-            polygon.r = r2;
+        for i in 0..self.n.value as u32 {
+            let r2 = polygon.r.value * self.rr.value.powi(i as i32);
+            let r3 = star.r.value * self.rr.value.powi(i as i32);
+
+            polygon.r.value = r2;
             let polygon_point = polygon.calculate_point(i);
 
             let mut segment = Segment::new();
 
-            for j in 0..self.star.k {
-                star.r = r3;
+            for j in 0..star.k.value as u32 {
+                star.r.value = r3;
                 let star_point = star.calculate_point(j);
                 let point = star_point + polygon_point;
                 segment.push(point);
             }
 
             segment.push(segment[0]);
-
             shape.push(segment);
         }
 
@@ -62,26 +64,20 @@ impl ParamsInner {
     }
 }
 
-impl Default for Params {
+impl ControllableParams for Composition2 {}
+
+impl Default for Composition2 {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                n: 32,
-                rr: 0.9,
-                polygon: polygon::ParamsInner {
-                    k: 8,
-                    r: NP as f32 * 0.36,
-                    ad: 0_f32,
-                },
-                star: star::ParamsInner {
-                    k: 16,
-                    h: 5,
-                    r: NP as f32 * 0.14,
-                    ad: 0_f32,
-                },
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            polygon_k: F32::new_from_range(5.0, 3.0..=20.0),
+            polygon_r: F32::new(0.27, F32Variant::Length),
+            polygon_ad: F32::new(0.5, F32Variant::Angle),
+            star_k: F32::new_from_range(25.0, 5.0..=100.0),
+            star_h: F32::new_from_range(12.0, 3.0..=5.0),
+            star_r: F32::new(0.22, F32Variant::Length),
+            star_ad: F32::new(0.5, F32Variant::Angle),
+            n: F32::new_from_range(32.0, 1.0..=100.0),
+            rr: F32::new_from_range(0.9, 0.7..=1.3),
         }
     }
 }

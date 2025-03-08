@@ -1,25 +1,25 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{
+    meta::f32::{F32Variant, F32},
+    reflect::ControllableParams,
+    shapes::{Segment, Shape, Shapes},
+};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
-#[derive(UiControlledParams)]
-#[params(Polygon)]
-pub struct ParamsInner {
-    #[param(label = "polygon k", range(3..=20))]
-    pub k: u32, // # vertices
-    #[param(label = "polygon r", length)]
-    pub r: f32, // radius of the circle on which the vertices are
-    #[param(label = "polygon ad", pi)]
-    pub ad: f32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct Polygon {
+    pub k: F32,  // # vertices TODO: reconsider f32, at least discretize behaviour
+    pub r: F32,  // radius of the circle on which the vertices are
+    pub ad: F32, // angle (in radians) of the vector CS with horizontal, where S is the first vertex,
 }
 
-impl ParamsInner {
+impl Polygon {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        for i in 0..self.k {
+        for i in 0..self.k.value as u32 {
             let point = self.calculate_point(i);
             segment.push(point);
         }
@@ -32,23 +32,21 @@ impl ParamsInner {
     }
 
     pub fn calculate_point(&self, i: u32) -> Point2 {
-        let angle = (2.0 * i as f32 * PI) / self.k as f32 + self.ad;
-        let x = self.r * angle.cos();
-        let y = self.r * angle.sin();
+        let angle = (2.0 * i as f32 * PI) / self.k.value + self.ad.value;
+        let x = self.r.value * angle.cos();
+        let y = self.r.value * angle.sin();
         pt2(x, y)
     }
 }
 
-impl Default for Params {
+impl ControllableParams for Polygon {}
+
+impl Default for Polygon {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                k: 3,
-                r: NP as f32 * 0.45,
-                ad: 0_f32,
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            k: F32::new_from_range(3.0, 3.0..=20.0),
+            r: F32::new(0.45, F32Variant::Length),
+            ad: F32::new(0.0, F32Variant::Angle),
         }
     }
 }

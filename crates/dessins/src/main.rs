@@ -1,12 +1,8 @@
 use bevy::prelude::*;
-use bevy_egui::{egui, EguiContexts, EguiPlugin};
+use bevy_egui::{EguiContexts, EguiPlugin};
 use bevy_nannou::prelude::*;
 use bevy_nannou::NannouPlugin;
-use dessins::{
-    draw_segment, match_calculate_shapes, match_ui_elements, ui::ui_color, DesignParams, Model,
-    Shapes,
-};
-use nannou::prelude::random;
+use dessins::{model::Model, params::DesignVariant};
 
 fn main() {
     let window_plugin = WindowPlugin {
@@ -17,33 +13,15 @@ fn main() {
         ..default()
     };
 
-    #[allow(unused_mut)]
-    let mut default_plugins = DefaultPlugins.set(window_plugin);
+    let default_plugins = DefaultPlugins.set(window_plugin);
 
-    // #[cfg(target_arch = "wasm32")]
-    // {
-    //     let render_plugin = bevy::render::RenderPlugin {
-    //         render_creation: bevy::render::settings::WgpuSettings {
-    //             backends: Some(nannou::wgpu::Backends::GL),
-    //             ..default()
-    //         }
-    //         .into(),
-    //         ..default()
-    //     };
-    //     default_plugins = default_plugins.set(render_plugin);
-    // }
+    let model = Model::new(DesignVariant::Dragon);
 
     App::new()
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))
-        .insert_resource(Model {
-            params: DesignParams::SimpleDeformedFractal(
-                dessins::chapter_7::simple_deformed_fractal::Params::default(),
-            ),
-            points: Shapes::default(),
-            color: Color::srgb(random(), random(), random()),
-        })
+        .insert_resource(model)
         .add_systems(Startup, setup)
-        .add_systems(Update, (update_egui, update_dessins))
+        .add_systems(Update, (control_params, draw_dessin))
         .run();
 }
 
@@ -51,89 +29,29 @@ fn setup(mut commands: Commands) {
     commands.spawn(render::NannouCamera);
 }
 
-fn update_egui(mut model: ResMut<Model>, mut egui_ctx: EguiContexts) {
-    let ctx = egui_ctx.ctx_mut();
-    let mut recalculate = false;
-    let mut new_design = None;
+fn control_params(mut model: ResMut<Model>, egui_ctx: EguiContexts) {
+    let new_design = None;
 
-    egui::TopBottomPanel::top("designs").show(ctx, |ui| {
-        ui.horizontal(|ui| {
-            new_design = design_buttons(&model.params, ui);
-        });
-    });
+    let (changed, color) = model.control_params(egui_ctx);
 
-    egui::SidePanel::left("params").show(ctx, |ui| {
-        recalculate = match_ui_elements(&mut model.params, ui);
-        if let Some(color) = ui_color(ui) {
-            model.color = color;
-        }
-    });
+    if let Some(new_color) = color {
+        model.color = new_color;
+    }
 
     if let Some(new_design) = new_design {
-        model.params = new_design;
-        model.points = match_calculate_shapes(&mut model.params);
-    } else if recalculate || model.points == Shapes::default() {
-        model.points = match_calculate_shapes(&mut model.params);
+        model.change_design(new_design);
+        model.calculate_shapes();
+    } else if changed || !model.initialized() {
+        model.calculate_shapes();
     }
 }
 
-fn update_dessins(draw: Single<&Draw>, model: Res<Model>) {
-    draw.background().color(BLACK);
+fn draw_dessin(draw: Single<&Draw>, model: Res<Model>) {
+    draw.background().srgba(0.1, 0.1, 0.1, 0.1); // TODO: alpha does not work as I expect
 
-    model.points.iter().for_each(|shape| {
-        shape
-            .iter()
-            .for_each(|segment| draw_segment(&draw, model.color, segment))
-    });
-}
+    // draw.rect()
+    //     .w_h(200.0, 200.0)
+    //     .color(Color::linear_rgba(0.1, 0.1, 0.1, 0.001));
 
-fn design_buttons(params: &DesignParams, ui: &mut egui::Ui) -> Option<DesignParams> {
-    let mut new_design = None;
-    let mut try_design = |design: Option<DesignParams>| {
-        if let Some(new) = design {
-            new_design = Some(new);
-        }
-    };
-
-    try_design(dessins::chapter_1::polygon::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_1::star::Params::ui_design_type(params, ui));
-    try_design(dessins::chapter_1::composition_1::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_1::composition_2::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_1::jolygon::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_2::Params::ui_design_type(params, ui));
-    try_design(dessins::chapter_3::Params::ui_design_type(params, ui));
-    try_design(dessins::chapter_4::Params::ui_design_type(params, ui));
-    try_design(dessins::chapter_5::orbital::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_5::rotating::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_5::spiral::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_6::bipartite::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_6::linear_modulo::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_6::linear_sticks::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_7::simple_fractal::Params::ui_design_type(
-        params, ui,
-    ));
-    try_design(dessins::chapter_7::simple_rounded_fractal::Params::ui_design_type(params, ui));
-    try_design(dessins::chapter_7::simple_deformed_fractal::Params::ui_design_type(params, ui));
-
-    new_design
+    model.draw_points(draw);
 }

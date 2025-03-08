@@ -1,25 +1,32 @@
-use crate::{Segment, Shape, Shapes, NP};
+use crate::{
+    meta::f32::F32,
+    reflect::{ControllableParam, ControllableParams},
+    shapes::{sign, Segment, Shape, Shapes, NP},
+};
 use nannou::prelude::*;
-use ui_controlled_params::UiControlledParams;
 
 pub type OuterSegment = Segment;
 pub type InnerSegment = Segment;
 
-#[derive(UiControlledParams)]
-#[params(SimpleDeformedFractal)]
-pub struct ParamsInner {
-    #[param]
+#[derive(Clone, Debug, PartialEq, Reflect)]
+#[reflect(Default)]
+pub struct SimpleDeformedFractal {
+    #[reflect(ignore)]
     pub deformation: Deformation,
-    pub m: usize, // # of segments in starting curve
-    pub n: usize, // # of sub-segments per segment
-    #[param(range(1..=8))]
-    pub k: usize, // depth
+    #[reflect(ignore)]
+    pub m: F32, // # of segments in starting curve
+    #[reflect(ignore)]
+    pub n: F32, // # of sub-segments per segment
+    pub k: F32, // depth
+    #[reflect(ignore)]
     pub positions: Vec<Point2>,
+    #[reflect(ignore)]
     pub lengths: Vec<f32>,
+    #[reflect(ignore)]
     pub angles: Vec<f32>,
 }
 
-#[derive(PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Deformation {
     Program1,
     Program2,
@@ -35,18 +42,8 @@ pub enum Deformation {
     Program12,
 }
 
-fn sign(val: f32) -> f32 {
-    if val < 0.0 {
-        -1.0
-    } else if val == 0.0 {
-        val
-    } else {
-        1.0
-    }
-}
-
 impl Deformation {
-    fn ui_elements(&mut self, ui: &mut egui::Ui) -> bool {
+    fn control(&mut self, ui: &mut egui::Ui) -> bool {
         let mut changed = false;
 
         ui.label("deformation");
@@ -85,7 +82,7 @@ impl Deformation {
     }
 }
 
-impl ParamsInner {
+impl SimpleDeformedFractal {
     pub fn calculate_shapes(&mut self) -> Shapes {
         let deforme_point = match self.deformation {
             Deformation::Program1 => Self::deforme_point_1,
@@ -110,10 +107,10 @@ impl ParamsInner {
             _ => self.set_initials(),
         }
 
-        let mut shapes = Shapes::default();
+        let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        for ii in 0..self.m {
+        for ii in 0..self.m.value as usize {
             let mut segment = Segment::new();
 
             let source = self.positions[ii];
@@ -131,13 +128,13 @@ impl ParamsInner {
 
             let length = diff.length();
 
-            for i in 0..(self.n).pow(self.k as u32) {
+            for i in 0..(self.n.value as usize).pow(self.k.value as u32) {
                 let mut current_length = length;
                 let mut current_angle = angle;
                 let mut t1 = i;
-                if self.k != 0 {
-                    for j in (0..self.k).rev() {
-                        let r = (self.n).pow(j as u32);
+                if self.k.value as usize != 0 {
+                    for j in (0..self.k.value as usize).rev() {
+                        let r = (self.n.value as usize).pow(j as u32);
                         let t2 = t1 / r;
                         current_angle += self.angles[t2];
                         current_length *= self.lengths[t2];
@@ -375,10 +372,11 @@ impl ParamsInner {
     }
 
     fn set_initials(&mut self) {
-        self.m = 3;
-        self.n = 4;
+        self.m.value = 3.0;
+        self.n.value = 4.0;
 
-        self.positions.resize(self.m + 1, Default::default());
+        self.positions
+            .resize(self.m.value as usize + 1, Default::default());
         for ij in 0..=3 {
             self.positions[ij] = pt2(
                 NP as f32 / 2.0 * (2.0 * ij as f32 * PI / 3.0).sin(),
@@ -386,15 +384,16 @@ impl ParamsInner {
             );
         }
 
-        self.lengths = vec![1.0 / 3.0; self.n];
+        self.lengths = vec![1.0 / 3.0; self.n.value as usize];
         self.angles = vec![0.0, PI / 3.0, -PI / 3.0, 0.0];
     }
 
     fn set_initials_2(&mut self) {
-        self.m = 4;
-        self.n = 4;
+        self.m.value = 4.0;
+        self.n.value = 4.0;
 
-        self.positions.resize(self.m + 1, Default::default());
+        self.positions
+            .resize(self.m.value as usize + 1, Default::default());
         for ij in 0..=4 {
             self.positions[ij] = pt2(
                 NP as f32 / 2.0 * 5.0 / 6.0 * (2.0 * ij as f32 * PI / 4.0 + PI / 4.0).cos(),
@@ -402,25 +401,30 @@ impl ParamsInner {
             );
         }
 
-        self.lengths = vec![1.0 / (2.0 + 2.0 * (0.48 * PI).cos()); self.n];
+        self.lengths = vec![1.0 / (2.0 + 2.0 * (0.48 * PI).cos()); self.n.value as usize];
         self.angles = vec![0.0, 0.48 * PI, -0.48 * PI, 0.0];
     }
 }
 
-impl Default for Params {
+impl ControllableParams for SimpleDeformedFractal {
+    fn control(&mut self, ui: &mut egui::Ui) -> bool {
+        let mut changed = false;
+        changed |= self.deformation.control(ui);
+        changed |= self.k.control(ui, "k");
+        changed
+    }
+}
+
+impl Default for SimpleDeformedFractal {
     fn default() -> Self {
         Self {
-            inner: ParamsInner {
-                deformation: Deformation::Program1,
-                m: 3,
-                n: 4,
-                k: 4,
-                positions: vec![],
-                lengths: vec![],
-                angles: vec![],
-            },
-            calculate_shapes: Box::new(ParamsInner::calculate_shapes),
-            ui_elements: Box::new(ParamsInner::ui_elements),
+            deformation: Deformation::Program1,
+            m: F32::new_from_range(3.0, 2.0..=4.0),
+            n: F32::new_from_range(4.0, 3.0..=5.0),
+            k: F32::new_from_range(4.0, 1.0..=8.0),
+            positions: vec![],
+            lengths: vec![],
+            angles: vec![],
         }
     }
 }
