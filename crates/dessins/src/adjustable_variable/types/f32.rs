@@ -1,5 +1,5 @@
 use crate::{
-    adjustable_variable::AdjustableVariable,
+    adjustable_variable::{AdjustableVariable, UpdateVariableParams},
     animation::Animation,
     shapes::NP,
     ui::{add_float_length, add_float_pi, add_float_position, float},
@@ -58,13 +58,15 @@ impl F32 {
 }
 
 impl AdjustableVariable for F32 {
-    fn update(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
+    fn update(&mut self, params: UpdateVariableParams) -> bool {
+        let UpdateVariableParams { ui, time, name } = params;
+
         let AdjustVariable {
             mut recalculate_points,
             toggle_animate,
         } = self
             .variant
-            .update_ui(&mut self.value, self.animation.clone(), ui, name);
+            .update_ui(&mut self.value, self.animation.clone(), ui, &name);
 
         if toggle_animate {
             self.toggle_animation(time);
