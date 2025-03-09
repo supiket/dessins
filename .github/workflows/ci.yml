@@ -1,7 +1,7 @@
 name: Build for WASM
 
 on:
-  pull-request:
+  pull_request:
 
 jobs:
   build:
