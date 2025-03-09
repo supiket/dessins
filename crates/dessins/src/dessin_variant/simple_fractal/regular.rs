@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::f32::F32,
+    adjustable_variable::types::u32::U32,
     dessin_variant::Polygon,
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
@@ -10,9 +10,9 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Regular {
-    pub m: F32, // # of segments in starting curve
-    pub n: F32, // # of sub-segments per segment
-    pub k: F32, // depth
+    pub m: U32, // # of segments in starting curve
+    pub n: U32, // # of sub-segments per segment
+    pub k: U32, // depth
     #[reflect(ignore)]
     pub positions: Vec<Point2>,
     #[reflect(ignore)]
@@ -23,19 +23,21 @@ pub struct Regular {
 
 impl Regular {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        if self.positions.len() != self.m.value as usize + 1 {
+        if self.positions.len() != self.m.get_value() as usize + 1 {
             self.positions
                 .resize_with(Self::calculate_positions(&self.m).len(), Default::default);
         }
-        if self.lengths.len() != self.n.value as usize {
+        if self.lengths.len() != self.n.get_value() as usize {
             self.lengths.resize_with(
-                Self::calculate_lengths(self.m.value, self.n.value as usize).len(),
+                Self::calculate_lengths(self.m.get_value() as f32, self.n.get_value() as usize)
+                    .len(),
                 Default::default,
             );
         }
-        if self.angles.len() != self.n.value as usize {
+        if self.angles.len() != self.n.get_value() as usize {
             self.angles.resize_with(
-                Self::calculate_angles(self.m.value, self.n.value as usize).len(),
+                Self::calculate_angles(self.m.get_value() as f32, self.n.get_value() as usize)
+                    .len(),
                 Default::default,
             );
         }
@@ -43,7 +45,7 @@ impl Regular {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        for ii in 0..self.m.value as usize {
+        for ii in 0..self.m.get_value() as usize {
             let mut segment = Segment::new();
 
             let source = self.positions[ii];
@@ -61,13 +63,13 @@ impl Regular {
 
             let length = diff.length();
 
-            for i in 0..(self.n.value as usize).pow(self.k.value as u32) {
+            for i in 0..(self.n.get_value() as usize).pow(self.k.get_value()) {
                 let mut current_length = length;
                 let mut current_angle = angle;
                 let mut t1 = i;
-                if self.k.value as usize != 0 {
-                    for j in (0..self.k.value as usize).rev() {
-                        let r = (self.n.value as usize).pow(j as u32);
+                if self.k.get_value() != 0 {
+                    for j in (0..self.k.get_value()).rev() {
+                        let r = (self.n.get_value() as usize).pow(j);
                         let t2 = t1 / r;
                         current_angle += self.angles[t2];
                         current_length *= self.lengths[t2];
@@ -88,16 +90,16 @@ impl Regular {
         shapes
     }
 
-    fn calculate_positions(m: &F32) -> Vec<Point2> {
+    fn calculate_positions(m: &U32) -> Vec<Point2> {
         let mut polygon = Polygon {
             k: m.clone(),
             ..Default::default()
         };
-        polygon.r.value = NP as f32 * 0.5;
-        polygon.ad.value = 0.0;
+        polygon.r.set_value(NP as f32 * 0.5);
+        polygon.ad.set_value(0.0);
 
         let mut points = vec![];
-        for i in 0..m.value as usize {
+        for i in 0..m.get_value() as usize {
             let point = polygon.calculate_point(i as u32);
             points.push(point);
         }
@@ -127,9 +129,9 @@ impl Default for Regular {
         let np = NP as f32;
         let y0 = (f32::sqrt(3.0) / 2.0 - 0.5) * np;
         Self {
-            m: F32::new_from_range(3.0, 1.0..=10.0),
-            n: F32::new_from_range(4.0, 1.0..=10.0),
-            k: F32::new_from_range(4.0, 1.0..=10.0),
+            m: U32::new(3, 1..=10, 1),
+            n: U32::new(4, 1..=10, 1),
+            k: U32::new(4, 1..=10, 1),
             positions: vec![
                 pt2(-0.5 * np, y0),
                 pt2(0.5 * np, y0),

@@ -1,6 +1,6 @@
 use crate::{
     adjustable_variable::{
-        types::{expression_f32::ExpressionF32, f32::F32},
+        types::{expression_f32::ExpressionF32, f32::F32, pt2::Pt2, u32::U32},
         AdjustableVariable, UpdateVariableParams,
     },
     ui::ui_color,
@@ -62,9 +62,13 @@ pub fn update_from_reflect<T: AdjustableDessin>(
             time,
             name: field_name.to_string(),
         };
-        if let Some(inner) = data.get_field_mut::<F32>(field_name) {
+        if let Some(inner) = data.get_field_mut::<U32>(field_name) {
+            changed |= inner.update(params);
+        } else if let Some(inner) = data.get_field_mut::<F32>(field_name) {
             changed |= inner.update(params);
         } else if let Some(inner) = data.get_field_mut::<ExpressionF32>(field_name) {
+            changed |= inner.update(params);
+        } else if let Some(inner) = data.get_field_mut::<Pt2>(field_name) {
             changed |= inner.update(params);
         } else {
             let type_name = std::any::type_name::<T>();

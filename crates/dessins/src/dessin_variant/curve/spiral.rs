@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::f32::F32,
+    adjustable_variable::types::{f32::F32, u32::U32},
     shapes::{Segment, Shape, Shapes, NP},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -9,8 +9,8 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Spiral {
-    pub n: F32, // # segments
-    pub t: F32, // # times the planet turns around the sun
+    pub n: U32, // # segments
+    pub t: U32, // # times the planet turns around the sun
     pub r: F32, // flattening parameter of the ellipse
     pub l: F32, // decrease factor beween the first ellipse traveled and the last
     pub an_factor: F32,
@@ -23,13 +23,13 @@ impl Spiral {
         let mut segment = Segment::new();
 
         let np = NP as f32;
-        let n = self.n.value;
-        let t = self.t.value;
-        let r = self.r.value;
-        let l = self.l.value;
-        let an_factor = self.an_factor.value;
+        let n = self.n.get_value() as f32;
+        let t = self.t.get_value() as f32;
+        let r = self.r.get_value();
+        let l = self.l.get_value();
+        let an_factor = self.an_factor.get_value();
 
-        for i in 0..=self.n.value as usize {
+        for i in 0..=n as usize {
             let i = i as f32;
 
             let rr = l.powf(i / n);
@@ -60,8 +60,8 @@ impl Spiral {
 impl Default for Spiral {
     fn default() -> Self {
         Self {
-            n: F32::new_from_range(2000.0, 1000.0..=9000.0),
-            t: F32::new_from_range(40.0, 40.0..=60.0),
+            n: U32::new(2000, 1000..=9000, 1),
+            t: U32::new(40, 40..=60, 1),
             r: F32::new_from_range(0.8, 0.1..=2.0),
             l: F32::new_from_range(0.1, 0.1..=2.0),
             an_factor: F32::new_from_range(1.0, 1.0..=4.0),

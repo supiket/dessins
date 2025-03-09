@@ -1,8 +1,9 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
     adjustable_variable::types::{
-        expression_f32::ExpressionF32,
+        expression_f32::{Context, ExpressionF32},
         f32::{F32Variant, F32},
+        u32::U32,
     },
     shapes::{Segment, Shape, Shapes},
 };
@@ -13,13 +14,12 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Orbital {
-    pub n: F32,  // # segments
-    pub t1: F32, // # times the planet turns around the sun
-    pub t2: F32, // # times the satellite turns around the planet
+    pub n: U32,  // # segments
+    pub t1: U32, // # times the planet turns around the sun
+    pub t2: U32, // # times the satellite turns around the planet
     pub r1: F32, // radius of the planet's curve
-    pub k1: F32, // elliptic parameter of the planet's curve
-    pub k2: F32, // elliptic parameter of the planet's curve
-    #[reflect(ignore)]
+    pub k1: U32, // elliptic parameter of the planet's curve
+    pub k2: U32, // elliptic parameter of the planet's curve
     pub r2: ExpressionF32,
 }
 
@@ -34,32 +34,20 @@ impl Orbital {
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        let n = self.n.value;
-        let t1 = self.t1.value;
-        let t2 = self.t2.value;
-        let r1 = self.r1.value;
-        let k1 = self.k1.value;
-        let k2 = self.k2.value;
+        let n = self.n.get_value() as f32;
+        let t1 = self.t1.get_value() as f32;
+        let t2 = self.t2.get_value() as f32;
+        let r1 = self.r1.get_value();
+        let k1 = self.k1.get_value() as f32;
+        let k2 = self.k2.get_value() as f32;
 
-        for i in 0..=self.n.value as usize {
+        for i in 0..=n as usize {
             let i = i as f32;
 
-            self.r2.ctx.insert("i".to_string(), i);
-            self.r2.ctx_ext.remove("i");
-            self.r2.val = evalexpr::eval_number_with_context(
-                &self.r2.expr,
-                &ExpressionF32::evaluatable_ctx(&self.r2.ctx),
-            )
-            .unwrap_or_else(|_| {
-                self.r2.expr = Self::default_r2_expr();
-                evalexpr::eval_number_with_context(
-                    &self.r2.expr,
-                    &ExpressionF32::evaluatable_ctx(&self.r2.ctx),
-                )
-                .expect("default expression has to evaluate")
-            }) as f32;
+            self.r2.insert_ctx_entry("n", self.n.get_value() as f32);
+            self.r2.set_ext_ctx("i", i);
+            let r2 = self.r2.eval_expr();
 
-            let r2 = self.r2.val;
             let a1 = 2.0 * PI * i / n * t1;
             let a2 = 2.0 * PI * i / n * t2;
 
@@ -83,20 +71,23 @@ impl Orbital {
 impl Default for Orbital {
     fn default() -> Self {
         let n = 2000;
-        let ctx = HashMap::from([("n".to_string(), n as f32)]);
-        let r2 = ExpressionF32 {
-            expr: Orbital::default_r2_expr(),
+        let ctx = Context::new(&[("n".to_string(), n as f32)]);
+        let r2 = ExpressionF32::new(
+            Orbital::default_r2_expr(),
+            Orbital::default_r2_expr(),
             ctx,
-            ctx_ext: HashMap::from([("i".to_string(), ())]),
-            val: 0.0,
-        };
+            HashMap::from([("i".to_string(), ())]),
+            0.0,
+            0.0..=480.0,
+            0.1,
+        );
         Self {
-            n: F32::new_from_range(n as f32, 1000.0..=6000.0),
-            t1: F32::new_from_range(2.0, 1.0..=600.0),
-            t2: F32::new_from_range(100.0, 1.0..=600.0),
+            n: U32::new(n, 1000..=6000, 1),
+            t1: U32::new(2, 1..=600, 1),
+            t2: U32::new(100, 1..=600, 1),
             r1: F32::new(0.25, F32Variant::Length),
-            k1: F32::new_from_range(1.0, 1.0..=4.0),
-            k2: F32::new_from_range(1.0, 1.0..=4.0),
+            k1: U32::new(1, 1..=4, 1),
+            k2: U32::new(1, 1..=4, 1),
             r2,
         }
     }
