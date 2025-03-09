@@ -92,8 +92,6 @@ impl ExpressionF32 {
         ui.label(label);
 
         let response = egui::TextEdit::singleline(&mut self.expr)
-            // TODO: display on hover text and value maybe
-            // .on_hover_text(format!("default: {}", self.default_expr))
             .desired_width(120.0)
             .show(ui);
 
