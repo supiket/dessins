@@ -1,3 +1,4 @@
+use super::AdjustVariable;
 use crate::{
     adjustable_variable::{AdjustableVariable, UpdateVariableParams},
     animation::Animation,
@@ -9,15 +10,10 @@ use std::ops::RangeInclusive;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct U32 {
-    pub value: u32,
-    pub range: RangeInclusive<u32>,
-    pub step: u32,
-    pub animation: Option<Animation>,
-}
-
-struct AdjustVariable {
-    pub recalculate_points: bool,
-    pub toggle_animate: bool,
+    value: u32,
+    range: RangeInclusive<u32>,
+    step: u32,
+    animation: Option<Animation>,
 }
 
 impl U32 {
@@ -29,9 +25,15 @@ impl U32 {
             animation: None,
         }
     }
-}
 
-impl U32 {
+    pub fn get_value(&self) -> u32 {
+        self.value
+    }
+
+    pub fn set_value(&mut self, value: u32) {
+        self.value = value;
+    }
+
     fn update_ui(&mut self, ui: &mut egui::Ui, name: &str) -> AdjustVariable {
         let recalculate_points = add_numeric(ui, name, &mut self.value, self.range.clone());
 
@@ -63,6 +65,25 @@ impl U32 {
             false
         }
     }
+
+    fn toggle_animation(&mut self, time: Time<Virtual>) {
+        self.animation = match self.animation {
+            Some(_) => None,
+            None => {
+                let freq = self.step as f32;
+                Some(Animation::new(
+                    time,
+                    freq,
+                    *self.range.start() as f32,
+                    *self.range.end() as f32,
+                ))
+            }
+        }
+    }
+
+    pub fn animated(&self) -> bool {
+        self.animation.is_some()
+    }
 }
 
 impl AdjustableVariable for U32 {
@@ -80,20 +101,5 @@ impl AdjustableVariable for U32 {
 
         recalculate_points |= self.update_animate(time);
         recalculate_points
-    }
-
-    fn toggle_animation(&mut self, time: Time<Virtual>) {
-        self.animation = match self.animation {
-            Some(_) => None,
-            None => {
-                let freq = self.step as f32;
-                Some(Animation::new(
-                    time,
-                    freq,
-                    *self.range.start() as f32,
-                    *self.range.end() as f32,
-                ))
-            }
-        }
     }
 }

@@ -24,7 +24,7 @@ impl Star {
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        for i in 0..self.k.value {
+        for i in 0..self.k.get_value() {
             let point = self.calculate_point(i);
             segment.push(point);
         }
@@ -38,13 +38,13 @@ impl Star {
 
     pub fn calculate_point(&self, i: u32) -> Point2 {
         let i = i as f32;
-        let h = self.h.value as f32;
-        let k = self.k.value as f32;
-        let ad = self.ad.value;
+        let h = self.h.get_value() as f32;
+        let k = self.k.get_value() as f32;
+        let ad = self.ad.get_value();
 
         let angle = (2.0 * i * h * PI) / k + ad;
-        let x = self.r.value * angle.cos();
-        let y = self.r.value * angle.sin();
+        let x = self.r.get_value() * angle.cos();
+        let y = self.r.get_value() * angle.sin();
         pt2(x, y)
     }
 }

@@ -1,6 +1,10 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32, u32::U32},
+    adjustable_variable::types::{
+        expression_f32::{Context, ExpressionF32},
+        f32::F32,
+        u32::U32,
+    },
     shapes::{Segment, Shape, Shapes, NP},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -16,7 +20,6 @@ pub struct Modulo {
     pub k2: F32,
     pub h: U32,
     pub i1_factor: U32,
-    #[reflect(ignore)]
     pub y: ExpressionF32,
 }
 
@@ -27,9 +30,9 @@ impl Modulo {
 
         let points = self.calculate_points();
 
-        for i in 0..=self.m.value {
-            let start_index = ((self.i1_factor.value * i) % self.n.value) as usize;
-            let end_index = ((self.h.value * i) % self.n.value) as usize;
+        for i in 0..=self.m.get_value() {
+            let start_index = ((self.i1_factor.get_value() * i) % self.n.get_value()) as usize;
+            let end_index = ((self.h.get_value() * i) % self.n.get_value()) as usize;
 
             let segment = vec![points[start_index], points[end_index]];
             shape.push(segment);
@@ -43,28 +46,18 @@ impl Modulo {
     fn calculate_points(&mut self) -> Segment {
         let mut points = vec![];
 
-        let n = self.n.value as f32;
-        let k1 = self.k1.value;
+        let n = self.n.get_value() as f32;
+        let k1 = self.k1.get_value();
 
-        for i in 0..=self.n.value {
+        for i in 0..=n as usize {
             let i = i as f32;
 
             let x = NP as f32 * 0.5 * (k1 * i * PI / n).sin();
-            self.y.ctx.insert("i".to_string(), i);
-            self.y.ctx_ext.remove("i");
-            self.y.val = evalexpr::eval_number_with_context(
-                &self.y.expr,
-                &ExpressionF32::evaluatable_ctx(&self.y.ctx),
-            )
-            .unwrap_or_else(|_| {
-                self.y.expr = Self::default_y_expr();
-                evalexpr::eval_number_with_context(
-                    &self.y.expr,
-                    &ExpressionF32::evaluatable_ctx(&self.y.ctx),
-                )
-                .expect("default expression has to evaluate")
-            }) as f32;
-            let y = self.y.val;
+
+            self.y.insert_ctx_entry("n", self.n.get_value() as f32);
+            self.y.insert_ctx_entry("k2", self.k2.get_value());
+            self.y.set_ext_ctx("i", i);
+            let y = self.y.eval_expr();
 
             points.push(pt2(x, y));
         }
@@ -82,18 +75,21 @@ impl Default for Modulo {
         let n = 400;
         let k2 = 5.0;
 
-        let ctx = HashMap::from([
+        let ctx = Context::new(&[
             ("n".to_string(), n as f32),
             ("k2".to_string(), k2),
             ("pi".to_string(), PI),
         ]);
 
-        let y = ExpressionF32 {
-            expr: Modulo::default_y_expr(),
+        let y = ExpressionF32::new(
+            Modulo::default_y_expr(),
+            Modulo::default_y_expr(),
             ctx,
-            ctx_ext: HashMap::from([("i".to_string(), ())]),
-            val: 360.0,
-        };
+            HashMap::from([("i".to_string(), ())]),
+            360.0,
+            -360.0..=360.0,
+            1.0,
+        );
 
         Self {
             n: U32::new(n, 10..=400, 1),

@@ -1,6 +1,9 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{expression_f32::ExpressionF32, u32::U32},
+    adjustable_variable::types::{
+        expression_f32::{Context, ExpressionF32},
+        u32::U32,
+    },
     shapes::{Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -13,9 +16,7 @@ pub struct Stick {
     pub n: U32,
     pub m: U32,
     pub k: U32,
-    #[reflect(ignore)]
     pub r1: ExpressionF32,
-    #[reflect(ignore)]
     pub r2: ExpressionF32,
 }
 
@@ -24,41 +25,20 @@ impl Stick {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        let n = self.n.value;
-        let k = self.k.value;
+        let n = self.n.get_value();
+        let k = self.k.get_value();
 
-        for i in 0..=self.m.value {
-            self.r1.ctx.insert("i".to_string(), i as f32);
-            self.r1.ctx_ext.remove("i");
-            self.r1.val = evalexpr::eval_number_with_context(
-                &self.r1.expr,
-                &ExpressionF32::evaluatable_ctx(&self.r1.ctx),
-            )
-            .unwrap_or_else(|_| {
-                self.r1.expr = Self::default_r1_expr();
-                evalexpr::eval_number_with_context(
-                    &self.r1.expr,
-                    &ExpressionF32::evaluatable_ctx(&self.r1.ctx),
-                )
-                .expect("default expression has to evaluate")
-            }) as f32;
-            let r1 = self.r1.val;
+        for i in 0..=self.m.get_value() {
+            self.r1.insert_ctx_entry("n", self.n.get_value() as f32);
+            self.r1.insert_ctx_entry("k", self.k.get_value() as f32);
+            self.r2.insert_ctx_entry("n", self.n.get_value() as f32);
+            self.r2.insert_ctx_entry("k", self.k.get_value() as f32);
 
-            self.r2.ctx.insert("i".to_string(), i as f32);
-            self.r2.ctx_ext.remove("i");
-            self.r2.val = evalexpr::eval_number_with_context(
-                &self.r2.expr,
-                &ExpressionF32::evaluatable_ctx(&self.r2.ctx),
-            )
-            .unwrap_or_else(|_| {
-                self.r2.expr = Self::default_r2_expr();
-                evalexpr::eval_number_with_context(
-                    &self.r2.expr,
-                    &ExpressionF32::evaluatable_ctx(&self.r2.ctx),
-                )
-                .expect("default expression has to evaluate")
-            }) as f32;
-            let r2 = self.r2.val;
+            self.r1.set_ext_ctx("i", i as f32);
+            let r1 = self.r1.eval_expr();
+
+            self.r2.set_ext_ctx("i", i as f32);
+            let r2 = self.r2.eval_expr();
 
             for j in 0..n {
                 let j = j as f32;
@@ -99,24 +79,30 @@ impl Default for Stick {
         let n = 100;
         let k = 5;
 
-        let ctx = HashMap::from([
+        let ctx = Context::new(&[
             ("n".to_string(), n as f32),
             ("k".to_string(), k as f32),
             ("pi".to_string(), PI),
         ]);
 
-        let r1 = ExpressionF32 {
-            expr: Stick::default_r1_expr(),
-            ctx: ctx.clone(),
-            ctx_ext: HashMap::from([("i".to_string(), ())]),
-            val: 120.0,
-        };
-        let r2 = ExpressionF32 {
-            expr: Stick::default_r2_expr(),
-            ctx,
-            ctx_ext: HashMap::from([("i".to_string(), ())]),
-            val: 100.0,
-        };
+        let r1 = ExpressionF32::new(
+            Stick::default_r1_expr(),
+            Stick::default_r1_expr(),
+            ctx.clone(),
+            HashMap::from([("i".to_string(), ())]),
+            120.0,
+            -1000.0..=1000.0,
+            10.0,
+        );
+        let r2 = ExpressionF32::new(
+            Stick::default_r2_expr(),
+            Stick::default_r2_expr(),
+            ctx.clone(),
+            HashMap::from([("i".to_string(), ())]),
+            100.0,
+            -1000.0..=1000.0,
+            10.0,
+        );
 
         Self {
             n: U32::new(n, 10..=600, 1),

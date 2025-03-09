@@ -27,19 +27,21 @@ pub struct Rounded {
 
 impl Rounded {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        if self.positions.len() != self.m.value as usize + 1 {
+        if self.positions.len() != self.m.get_value() as usize + 1 {
             self.positions
                 .resize_with(Self::calculate_positions(&self.m).len(), Default::default);
         }
-        if self.lengths.len() != self.n.value as usize {
+        if self.lengths.len() != self.n.get_value() as usize {
             self.lengths.resize_with(
-                Self::calculate_lengths(self.m.value as f32, self.n.value as usize).len(),
+                Self::calculate_lengths(self.m.get_value() as f32, self.n.get_value() as usize)
+                    .len(),
                 Default::default,
             );
         }
-        if self.angles.len() != self.n.value as usize {
+        if self.angles.len() != self.n.get_value() as usize {
             self.angles.resize_with(
-                Self::calculate_angles(self.m.value as f32, self.n.value as usize).len(),
+                Self::calculate_angles(self.m.get_value() as f32, self.n.get_value() as usize)
+                    .len(),
                 Default::default,
             );
         }
@@ -47,7 +49,7 @@ impl Rounded {
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
-        for ii in 0..self.m.value as usize {
+        for ii in 0..self.m.get_value() as usize {
             let mut segment = Segment::new();
 
             let source = self.positions[ii];
@@ -67,13 +69,13 @@ impl Rounded {
 
             let length = diff.length();
 
-            for i in 0..(self.n.value).pow(self.k.value) {
+            for i in 0..(self.n.get_value()).pow(self.k.get_value()) {
                 let mut current_length = length;
                 let mut current_angle = angle;
                 let mut t1 = i;
-                if self.k.value != 0 {
-                    for j in (0..self.k.value).rev() {
-                        let r = (self.n.value).pow(j);
+                if self.k.get_value() != 0 {
+                    for j in (0..self.k.get_value()).rev() {
+                        let r = (self.n.get_value()).pow(j);
                         let t2 = t1 / r;
                         current_angle += self.angles[t2 as usize];
                         current_length *= self.lengths[t2 as usize];
@@ -87,7 +89,7 @@ impl Rounded {
                     current_length * current_angle.sin(),
                 );
                 segment.extend(Self::curve_points(
-                    self.s.value as usize,
+                    self.s.get_value() as usize,
                     point0,
                     point1,
                     point2,
@@ -124,11 +126,11 @@ impl Rounded {
             k: m.clone(),
             ..Default::default()
         };
-        polygon.r.value = NP as f32 * 0.5;
-        polygon.ad.value = 0.0;
+        polygon.r.set_value(NP as f32 * 0.5);
+        polygon.ad.set_value(0.0);
 
         let mut points = vec![];
-        for i in 0..m.value {
+        for i in 0..m.get_value() {
             let point = polygon.calculate_point(i);
             points.push(point);
         }

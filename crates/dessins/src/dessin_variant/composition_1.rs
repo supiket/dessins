@@ -40,12 +40,12 @@ impl Composition1 {
             ad: self.star_ad.clone(),
         };
 
-        for i in 0..polygon.k.value {
+        for i in 0..polygon.k.get_value() {
             let polygon_point = polygon.calculate_point(i);
 
             let mut segment = Segment::new();
 
-            for j in 0..star.k.value {
+            for j in 0..star.k.get_value() {
                 let star_point = star.calculate_point(j);
                 let point = star_point + polygon_point;
                 segment.push(point);
