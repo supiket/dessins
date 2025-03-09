@@ -1,4 +1,4 @@
-use crate::adjustable_variable::AdjustableVariable;
+use crate::adjustable_variable::{AdjustableVariable, UpdateVariableParams};
 use bevy::reflect::Reflect;
 use evalexpr::{ContextWithMutableVariables, HashMapContext};
 use nannou::prelude::*;
@@ -75,7 +75,7 @@ impl ExpressionF32 {
 }
 
 impl AdjustableVariable for ExpressionF32 {
-    fn update(&mut self, _ui: &mut egui::Ui, _name: &str, _time: Time<Virtual>) -> bool {
+    fn update(&mut self, _params: UpdateVariableParams) -> bool {
         todo!();
     }
 

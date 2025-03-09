@@ -1,3 +1,4 @@
+use super::UpdateVariableParams;
 use crate::adjustable_variable::AdjustableVariable;
 use bevy::reflect::Reflect;
 use expression_f32::ExpressionF32;
@@ -14,10 +15,10 @@ pub enum VariableType {
 }
 
 impl AdjustableVariable for VariableType {
-    fn update(&mut self, ui: &mut egui::Ui, name: &str, time: Time<Virtual>) -> bool {
+    fn update(&mut self, params: UpdateVariableParams) -> bool {
         match self {
-            Self::F32(inner) => inner.update(ui, name, time),
-            Self::ExpressionF32(inner) => inner.update(ui, name, time),
+            Self::F32(inner) => inner.update(params),
+            Self::ExpressionF32(inner) => inner.update(params),
         }
     }
 

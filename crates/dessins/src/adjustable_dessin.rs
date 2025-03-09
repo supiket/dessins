@@ -1,6 +1,8 @@
 use crate::{
-    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
-    adjustable_variable::AdjustableVariable,
+    adjustable_variable::{
+        types::{expression_f32::ExpressionF32, f32::F32},
+        AdjustableVariable, UpdateVariableParams,
+    },
     ui::ui_color,
 };
 use bevy_reflect::{Reflect, TypeInfo};
@@ -55,10 +57,15 @@ pub fn update_from_reflect<T: AdjustableDessin>(
     let mut changed = false;
 
     for field_name in get_field_names(data) {
+        let params = UpdateVariableParams {
+            ui,
+            time,
+            name: field_name.to_string(),
+        };
         if let Some(inner) = data.get_field_mut::<F32>(field_name) {
-            changed |= inner.update(ui, field_name, time);
+            changed |= inner.update(params);
         } else if let Some(inner) = data.get_field_mut::<ExpressionF32>(field_name) {
-            changed |= inner.update(ui, field_name, time);
+            changed |= inner.update(params);
         } else {
             let type_name = std::any::type_name::<T>();
             todo!("unsupported field type: {field_name} in {type_name}");
