@@ -23,13 +23,13 @@ impl Spiral {
         let mut segment = Segment::new();
 
         let np = NP as f32;
-        let n = self.n.value as f32;
-        let t = self.t.value as f32;
-        let r = self.r.value;
-        let l = self.l.value;
-        let an_factor = self.an_factor.value;
+        let n = self.n.get_value() as f32;
+        let t = self.t.get_value() as f32;
+        let r = self.r.get_value();
+        let l = self.l.get_value();
+        let an_factor = self.an_factor.get_value();
 
-        for i in 0..=self.n.value as usize {
+        for i in 0..=n as usize {
             let i = i as f32;
 
             let rr = l.powf(i / n);

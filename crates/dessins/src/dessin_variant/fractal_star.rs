@@ -19,7 +19,6 @@ pub struct FractalStar {
     pub aa: F32,
     #[reflect(ignore)]
     pub p0: Point2,
-    #[reflect(ignore)]
     pub a0: F32,
 }
 
@@ -30,10 +29,10 @@ impl FractalStar {
         let mut segment = Segment::new();
 
         let mut p0 = self.p0;
-        let mut a0 = self.a0.value;
+        let mut a0 = self.a0.get_value();
 
-        let n = self.n.value;
-        let k = self.k.value;
+        let n = self.n.get_value();
+        let k = self.k.get_value();
 
         let nn = n * (n - 1).pow(k - 1) - 1;
 
@@ -46,8 +45,8 @@ impl FractalStar {
                 h += 1;
             }
 
-            let l0 = self.ll.value * self.ra.value.powf((k - 1 - h) as f32);
-            a0 += self.aa.value;
+            let l0 = self.ll.get_value() * self.ra.get_value().powf((k - 1 - h) as f32);
+            a0 += self.aa.get_value();
 
             let point = p0 + pt2(l0 * a0.cos(), l0 * a0.sin());
 
@@ -68,8 +67,8 @@ impl Default for FractalStar {
         let ll = F32::new(1.0, F32Variant::Length);
 
         let mut a0 = aa.clone();
-        a0.value = -a0.value;
-        let p0 = pt2((-ll.value) / 2.0, (NP as f32) * (0.5));
+        a0.set_value(-a0.get_value());
+        let p0 = pt2((-ll.get_value()) / 2.0, (NP as f32) * (0.5));
 
         Self {
             n: U32::new(5, 3..=20, 1),

@@ -1,19 +1,19 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
+    adjustable_variable::types::{
+        expression_f32::{Context, ExpressionF32},
+        u32::U32,
+    },
     shapes::{Segment, Shape, Shapes, NP},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
-use std::collections::HashMap;
 
 #[derive(Clone, Debug, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Dragon {
-    pub n: F32, // depth of recursion
-    #[reflect(ignore)]
+    pub n: U32,            // depth of recursion
     pub l0: ExpressionF32, // initial length
-    #[reflect(ignore)]
     pub a0: ExpressionF32, // initial length
     #[reflect(ignore)]
     pub p0: Point2, // initial position
@@ -27,37 +27,20 @@ impl Dragon {
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        if self.n.value as usize != self.rules.len() + 1 {
-            self.rules = vec![0; self.n.value as usize + 1];
-            self.l0.val = evalexpr::eval_number_with_context(
-                &self.l0.expr,
-                &ExpressionF32::evaluatable_ctx(&self.l0.ctx),
-            )
-            .unwrap_or_else(|_| {
-                self.l0.expr = Self::default_l0_expr();
-                evalexpr::eval_number_with_context(
-                    &self.l0.expr,
-                    &ExpressionF32::evaluatable_ctx(&self.l0.ctx),
-                )
-                .expect("default expression has to evaluate")
-            }) as f32;
-            self.a0.val = evalexpr::eval_number_with_context(
-                &self.a0.expr,
-                &ExpressionF32::evaluatable_ctx(&self.a0.ctx),
-            )
-            .unwrap_or_else(|_| {
-                self.a0.expr = Self::default_a0_expr();
-                evalexpr::eval_number_with_context(
-                    &self.a0.expr,
-                    &ExpressionF32::evaluatable_ctx(&self.a0.ctx),
-                )
-                .expect("default expression has to evaluate")
-            }) as f32;
+        let n = self.n.get_value() as usize;
+
+        if n != self.rules.len() + 1 {
+            self.rules = vec![0; n + 1];
+
+            self.l0.insert_ctx_entry("n", self.n.get_value() as f32);
+            self.a0.insert_ctx_entry("n", self.n.get_value() as f32);
+            self.l0.eval_expr();
+            self.a0.eval_expr();
         }
 
         let p0 = self.p0;
-        let l0 = self.l0.val;
-        let a0 = self.a0.val;
+        let l0 = self.l0.get_value();
+        let a0 = self.a0.get_value();
 
         segment.push(p0);
 
@@ -67,8 +50,8 @@ impl Dragon {
 
         let mut current_angle = a0;
 
-        let nn = 2_i32.pow(self.n.value as u32) - 1;
-        self.rules.resize(self.n.value as usize + 1, 0);
+        let nn = 2_i32.pow(n as u32) - 1;
+        self.rules.resize(n + 1, 0);
 
         fn step_segment(p0: &mut Point2, p1: &mut Point2, p2: &mut Point2, step: Point2) {
             *p0 = *p1;
@@ -93,10 +76,9 @@ impl Dragon {
                     j += 1;
                 }
 
-                let aa = (self.rules[self.n.value as usize - j] * 2 - 1) as f32
-                    * ((((ii - 1) / 2) % 2) * 2 - 1) as f32
-                    * PI
-                    / 2.0;
+                let aa =
+                    (self.rules[n - j] * 2 - 1) as f32 * ((((ii - 1) / 2) % 2) * 2 - 1) as f32 * PI
+                        / 2.0;
                 current_angle += aa;
 
                 step_segment(
@@ -134,14 +116,30 @@ impl Default for Dragon {
         let a0_fn = |n: u32| (n - 2) as f32 * -PI / 4.0;
         let p0_fn = || pt2(-(NP as f32) / 6.0, -(NP as f32) / 2.5);
 
-        let ctx = HashMap::from([("n".to_string(), n as f32)]);
-        let l0 = ExpressionF32::new(Self::default_l0_expr(), ctx, Default::default(), l0_fn(n));
+        let ctx = Context::new(&[("n".to_string(), n as f32)]);
+        let l0 = ExpressionF32::new(
+            Self::default_l0_expr(),
+            Self::default_l0_expr(),
+            ctx,
+            Default::default(),
+            l0_fn(n),
+            0.0..=300.0,
+            1.0,
+        );
 
-        let ctx = HashMap::from([("n".to_string(), n as f32), ("pi".to_string(), PI)]);
-        let a0 = ExpressionF32::new(Self::default_a0_expr(), ctx, Default::default(), a0_fn(n));
+        let ctx = Context::new(&[("n".to_string(), n as f32), ("pi".to_string(), PI)]);
+        let a0 = ExpressionF32::new(
+            Self::default_a0_expr(),
+            Self::default_l0_expr(),
+            ctx,
+            Default::default(),
+            a0_fn(n),
+            -180.0..=180.0,
+            1.0,
+        );
 
         Self {
-            n: F32::new_from_range(n as f32, 2.0..=14.0),
+            n: U32::new(n, 2..=14, 1),
             l0,
             a0,
             p0: p0_fn(),

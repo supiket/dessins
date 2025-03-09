@@ -25,7 +25,7 @@ impl Jolygon {
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        let mut current_length = self.rr.value;
+        let mut current_length = self.rr.get_value();
         let mut current_pos = pt2(0.0, 0.0);
         segment.push(current_pos);
 
@@ -34,8 +34,8 @@ impl Jolygon {
         let mut min_y: f32 = 0.0;
         let mut max_y: f32 = 0.0;
 
-        for i in 0..self.k.value {
-            let angle = self.aa.value + i as f32 * self.an.value;
+        for i in 0..self.k.get_value() {
+            let angle = self.aa.get_value() + i as f32 * self.an.get_value();
 
             let dx = current_length * angle.cos();
             let dy = current_length * angle.sin();
@@ -50,7 +50,7 @@ impl Jolygon {
 
             segment.push(point);
             current_pos = point;
-            current_length *= self.ra.value;
+            current_length *= self.ra.get_value();
         }
 
         // calculate center offset

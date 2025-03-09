@@ -11,6 +11,4 @@ pub struct UpdateVariableParams<'a> {
 
 pub trait AdjustableVariable: Reflect {
     fn update(&mut self, params: UpdateVariableParams) -> bool;
-
-    fn toggle_animation(&mut self, time: Time<Virtual>);
 }

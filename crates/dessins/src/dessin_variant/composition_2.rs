@@ -42,17 +42,18 @@ impl Composition2 {
             ad: self.star_ad.clone(),
         };
 
-        for i in 0..self.n.value {
-            let r2 = polygon.r.value * self.rr.value.powi(i as i32);
-            let r3 = star.r.value * self.rr.value.powi(i as i32);
+        for i in 0..self.n.get_value() {
+            let rr = self.rr.get_value();
+            let r2 = polygon.r.get_value() * rr.powi(i as i32);
+            let r3 = star.r.get_value() * rr.powi(i as i32);
 
-            polygon.r.value = r2;
+            polygon.r.set_value(r2);
             let polygon_point = polygon.calculate_point(i);
 
             let mut segment = Segment::new();
 
-            for j in 0..star.k.value {
-                star.r.value = r3;
+            for j in 0..star.k.get_value() {
+                star.r.set_value(r3);
                 let star_point = star.calculate_point(j);
                 let point = star_point + polygon_point;
                 segment.push(point);

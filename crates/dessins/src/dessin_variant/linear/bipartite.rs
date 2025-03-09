@@ -52,15 +52,15 @@ impl Bipartite {
         let mut outer_segment = vec![];
         let mut inner_segment = vec![];
 
-        let n = self.n.value as f32;
+        let n = self.n.get_value() as f32;
 
-        for i in 0..=self.n.value {
+        for i in 0..=self.n.get_value() {
             let i = i as f32;
             let x1 = (i * self.a.x + (n - i) * self.b.x) / n;
             let y1 = (i * self.a.y + (n - i) * self.b.y) / n;
             outer_segment.push(pt2(x1, y1));
 
-            for j in 0..=self.n.value {
+            for j in 0..=self.n.get_value() {
                 let j = j as f32;
 
                 let x2 = (j * self.c.x + (n - j) * self.d.x) / n;

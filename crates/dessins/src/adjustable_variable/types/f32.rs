@@ -1,3 +1,4 @@
+use super::AdjustVariable;
 use crate::{
     adjustable_variable::{AdjustableVariable, UpdateVariableParams},
     animation::Animation,
@@ -10,9 +11,9 @@ use std::ops::RangeInclusive;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct F32 {
-    pub value: f32,
-    pub variant: F32Variant,
-    pub animation: Option<Animation>,
+    value: f32,
+    variant: F32Variant,
+    animation: Option<Animation>,
 }
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
@@ -29,11 +30,6 @@ pub struct RangeStep {
     pub step: f32,
 }
 
-struct AdjustVariable {
-    pub recalculate_points: bool,
-    pub toggle_animate: bool,
-}
-
 impl F32 {
     pub fn new(value: f32, variant: F32Variant) -> Self {
         let value = match variant {
@@ -48,11 +44,30 @@ impl F32 {
         }
     }
 
+    pub fn get_value(&self) -> f32 {
+        self.value
+    }
+
+    pub fn set_value(&mut self, value: f32) {
+        self.value = value;
+    }
+
     pub fn new_from_range(value: f32, range: RangeInclusive<f32>) -> Self {
         Self {
             value,
             variant: F32Variant::new_from_range(range),
             animation: None,
+        }
+    }
+
+    fn toggle_animation(&mut self, time: Time<Virtual>) {
+        self.animation = match self.animation {
+            Some(_) => None,
+            None => {
+                let RangeStep { range, step } = self.variant.get_range_step();
+                let freq = step;
+                Some(Animation::new(time, freq, *range.start(), *range.end()))
+            }
         }
     }
 }
@@ -76,17 +91,6 @@ impl AdjustableVariable for F32 {
             self.variant
                 .update_animate(&mut self.value, self.animation.clone(), time);
         recalculate_points
-    }
-
-    fn toggle_animation(&mut self, time: Time<Virtual>) {
-        self.animation = match self.animation {
-            Some(_) => None,
-            None => {
-                let RangeStep { range, step } = self.variant.get_range_step();
-                let freq = step;
-                Some(Animation::new(time, freq, *range.start(), *range.end()))
-            }
-        }
     }
 }
 
