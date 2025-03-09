@@ -1,6 +1,9 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::f32::{F32Variant, F32},
+    adjustable_variable::types::{
+        f32::{F32Variant, F32},
+        u32::U32,
+    },
     shapes::{Segment, Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -9,7 +12,7 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Jolygon {
-    pub k: F32,  // # segments
+    pub k: U32,  // # segments
     pub an: F32, // angle of two consecutive segments
     pub ra: F32, // ratio of the lengths of two consecutive segments
     pub aa: F32, // angle of the first segment with horizontal
@@ -31,7 +34,7 @@ impl Jolygon {
         let mut min_y: f32 = 0.0;
         let mut max_y: f32 = 0.0;
 
-        for i in 0..self.k.value as u32 {
+        for i in 0..self.k.value {
             let angle = self.aa.value + i as f32 * self.an.value;
 
             let dx = current_length * angle.cos();
@@ -69,7 +72,7 @@ impl Jolygon {
 impl Default for Jolygon {
     fn default() -> Self {
         Self {
-            k: F32::new_from_range(200.0, 1.0..=2500.0),
+            k: U32::new(200, 1..=2500, 1),
             an: F32::new(15.0 / 31.0, F32Variant::Angle),
             ra: F32::new_from_range(0.98, 0.9..=1.0),
             aa: F32::new(0.0, F32Variant::Angle),

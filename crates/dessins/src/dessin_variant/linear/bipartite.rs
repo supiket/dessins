@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::f32::F32,
+    adjustable_variable::types::u32::U32,
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -12,7 +12,7 @@ use adjustable_dessin_derive::DefaultAdjustableDessin;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Bipartite {
-    pub n: F32,
+    pub n: U32,
     #[reflect(ignore)]
     pub a: Point2,
     #[reflect(ignore)]
@@ -52,15 +52,15 @@ impl Bipartite {
         let mut outer_segment = vec![];
         let mut inner_segment = vec![];
 
-        let n = self.n.value;
+        let n = self.n.value as f32;
 
-        for i in 0..=self.n.value as usize {
+        for i in 0..=self.n.value {
             let i = i as f32;
             let x1 = (i * self.a.x + (n - i) * self.b.x) / n;
             let y1 = (i * self.a.y + (n - i) * self.b.y) / n;
             outer_segment.push(pt2(x1, y1));
 
-            for j in 0..=self.n.value as usize {
+            for j in 0..=self.n.value {
                 let j = j as f32;
 
                 let x2 = (j * self.c.x + (n - j) * self.d.x) / n;
@@ -76,7 +76,7 @@ impl Bipartite {
 impl Default for Bipartite {
     fn default() -> Self {
         Self {
-            n: F32::new_from_range(10.0, 10.0..=20.0),
+            n: U32::new(10, 10..=20, 1),
             a: pt2((NP as f32) / -2.0, (NP as f32) / -2.0),
             b: pt2((NP as f32) / -2.0, (NP as f32) / 2.0),
             c: pt2((NP as f32) / 2.0, (NP as f32) / -2.0),

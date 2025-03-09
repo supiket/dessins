@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::{update_from_reflect, AdjustableDessin},
-    adjustable_variable::types::f32::F32,
+    adjustable_variable::types::u32::U32,
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -14,10 +14,10 @@ pub struct Deformed {
     #[reflect(ignore)]
     pub deformation: Deformation,
     #[reflect(ignore)]
-    pub m: F32, // # of segments in starting curve
+    pub m: U32, // # of segments in starting curve
     #[reflect(ignore)]
-    pub n: F32, // # of sub-segments per segment
-    pub k: F32, // depth
+    pub n: U32, // # of sub-segments per segment
+    pub k: U32, // depth
     #[reflect(ignore)]
     pub positions: Vec<Point2>,
     #[reflect(ignore)]
@@ -128,13 +128,13 @@ impl Deformed {
 
             let length = diff.length();
 
-            for i in 0..(self.n.value as usize).pow(self.k.value as u32) {
+            for i in 0..(self.n.value as usize).pow(self.k.value) {
                 let mut current_length = length;
                 let mut current_angle = angle;
                 let mut t1 = i;
                 if self.k.value as usize != 0 {
-                    for j in (0..self.k.value as usize).rev() {
-                        let r = (self.n.value as usize).pow(j as u32);
+                    for j in (0..self.k.value).rev() {
+                        let r = (self.n.value as usize).pow(j);
                         let t2 = t1 / r;
                         current_angle += self.angles[t2];
                         current_length *= self.lengths[t2];
@@ -372,8 +372,8 @@ impl Deformed {
     }
 
     fn set_initials(&mut self) {
-        self.m.value = 3.0;
-        self.n.value = 4.0;
+        self.m.value = 3;
+        self.n.value = 4;
 
         self.positions
             .resize(self.m.value as usize + 1, Default::default());
@@ -389,8 +389,8 @@ impl Deformed {
     }
 
     fn set_initials_2(&mut self) {
-        self.m.value = 4.0;
-        self.n.value = 4.0;
+        self.m.value = 4;
+        self.n.value = 4;
 
         self.positions
             .resize(self.m.value as usize + 1, Default::default());
@@ -419,9 +419,9 @@ impl Default for Deformed {
     fn default() -> Self {
         Self {
             deformation: Deformation::Program1,
-            m: F32::new_from_range(3.0, 2.0..=4.0),
-            n: F32::new_from_range(4.0, 3.0..=5.0),
-            k: F32::new_from_range(4.0, 1.0..=8.0),
+            m: U32::new(3, 2..=4, 1),
+            n: U32::new(4, 3..=5, 1),
+            k: U32::new(4, 1..=8, 1),
             positions: vec![],
             lengths: vec![],
             angles: vec![],

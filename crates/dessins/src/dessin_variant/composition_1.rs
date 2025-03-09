@@ -1,7 +1,10 @@
 use super::{Polygon, Star};
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::f32::{F32Variant, F32},
+    adjustable_variable::types::{
+        f32::{F32Variant, F32},
+        u32::U32,
+    },
     shapes::{Segment, Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -10,11 +13,11 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Composition1 {
-    pub polygon_k: F32,
+    pub polygon_k: U32,
     pub polygon_r: F32,
     pub polygon_ad: F32,
-    pub star_k: F32,
-    pub star_h: F32,
+    pub star_k: U32,
+    pub star_h: U32,
     pub star_r: F32,
     pub star_ad: F32,
 }
@@ -37,12 +40,12 @@ impl Composition1 {
             ad: self.star_ad.clone(),
         };
 
-        for i in 0..polygon.k.value as u32 {
+        for i in 0..polygon.k.value {
             let polygon_point = polygon.calculate_point(i);
 
             let mut segment = Segment::new();
 
-            for j in 0..star.k.value as u32 {
+            for j in 0..star.k.value {
                 let star_point = star.calculate_point(j);
                 let point = star_point + polygon_point;
                 segment.push(point);
@@ -61,11 +64,11 @@ impl Composition1 {
 impl Default for Composition1 {
     fn default() -> Self {
         Self {
-            polygon_k: F32::new_from_range(5.0, 3.0..=20.0),
+            polygon_k: U32::new(5, 3..=20, 1),
             polygon_r: F32::new(0.27, F32Variant::Length),
             polygon_ad: F32::new(0.5, F32Variant::Angle),
-            star_k: F32::new_from_range(25.0, 5.0..=100.0),
-            star_h: F32::new_from_range(12.0, 3.0..=5.0),
+            star_k: U32::new(25, 5..=100, 1),
+            star_h: U32::new(12, 3..=5, 1),
             star_r: F32::new(0.22, F32Variant::Length),
             star_ad: F32::new(0.5, F32Variant::Angle),
         }

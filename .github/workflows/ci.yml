@@ -1,7 +1,7 @@
 name: Build for WASM
 
 on:
-  pull-request:
+  pull_request:
 
 jobs:
   build:
@@ -17,5 +17,5 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Build and optimize WASM with Nix
+      - name: Build WASM with Nix
         run: nix build .#wasm
