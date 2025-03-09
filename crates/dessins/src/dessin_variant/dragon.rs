@@ -2,6 +2,7 @@ use crate::{
     adjustable_dessin::AdjustableDessin,
     adjustable_variable::types::{
         expression_f32::{Context, ExpressionF32},
+        pt2::Pt2,
         u32::U32,
     },
     shapes::{Segment, Shape, Shapes, NP},
@@ -16,7 +17,7 @@ pub struct Dragon {
     pub l0: ExpressionF32, // initial length
     pub a0: ExpressionF32, // initial length
     #[reflect(ignore)]
-    pub p0: Point2, // initial position
+    pub p0: Pt2, // initial position
     #[reflect(ignore)]
     pub rules: Vec<i32>, // turning rules
 }
@@ -38,7 +39,7 @@ impl Dragon {
             self.a0.eval_expr();
         }
 
-        let p0 = self.p0;
+        let p0 = self.p0.get_value();
         let l0 = self.l0.get_value();
         let a0 = self.a0.get_value();
 
@@ -142,7 +143,7 @@ impl Default for Dragon {
             n: U32::new(n, 2..=14, 1),
             l0,
             a0,
-            p0: p0_fn(),
+            p0: Pt2::new(p0_fn()),
             rules,
         }
     }

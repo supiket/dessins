@@ -2,6 +2,7 @@ use crate::{
     adjustable_dessin::AdjustableDessin,
     adjustable_variable::types::{
         f32::{F32Variant, F32},
+        pt2::Pt2,
         u32::U32,
     },
     shapes::{Segment, Shape, Shapes, NP},
@@ -17,8 +18,7 @@ pub struct FractalStar {
     pub ra: F32,
     pub ll: F32,
     pub aa: F32,
-    #[reflect(ignore)]
-    pub p0: Point2,
+    pub p0: Pt2,
     pub a0: F32,
 }
 
@@ -28,7 +28,7 @@ impl FractalStar {
         let mut shape = Shape::new();
         let mut segment = Segment::new();
 
-        let mut p0 = self.p0;
+        let mut p0 = self.p0.get_value();
         let mut a0 = self.a0.get_value();
 
         let n = self.n.get_value();
@@ -68,7 +68,7 @@ impl Default for FractalStar {
 
         let mut a0 = aa.clone();
         a0.set_value(-a0.get_value());
-        let p0 = pt2((-ll.get_value()) / 2.0, (NP as f32) * (0.5));
+        let p0 = Pt2::new(pt2((-ll.get_value()) / 2.0, (NP as f32) * (0.5)));
 
         Self {
             n: U32::new(5, 3..=20, 1),

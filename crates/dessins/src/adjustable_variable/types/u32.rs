@@ -1,4 +1,3 @@
-use super::AdjustVariable;
 use crate::{
     adjustable_variable::{AdjustableVariable, UpdateVariableParams},
     animation::Animation,
@@ -34,8 +33,10 @@ impl U32 {
         self.value = value;
     }
 
-    fn update_ui(&mut self, ui: &mut egui::Ui, name: &str) -> AdjustVariable {
-        let recalculate_points = add_numeric(ui, name, &mut self.value, self.range.clone());
+    fn update_ui(&mut self, params: UpdateVariableParams) -> bool {
+        let UpdateVariableParams { ui, name, time } = params;
+
+        let recalculate_points = add_numeric(ui, &name, &mut self.value, self.range.clone());
 
         let mut animate = self.animation.is_some();
         let initial_animate = animate;
@@ -44,10 +45,11 @@ impl U32 {
 
         let toggle_animate = animate != initial_animate;
 
-        AdjustVariable {
-            recalculate_points,
-            toggle_animate,
+        if toggle_animate {
+            self.toggle_animation(time);
         }
+
+        recalculate_points
     }
 
     fn update_animate(&mut self, time: Time<Virtual>) -> bool {
@@ -88,16 +90,9 @@ impl U32 {
 
 impl AdjustableVariable for U32 {
     fn update(&mut self, params: UpdateVariableParams) -> bool {
-        let UpdateVariableParams { ui, time, name } = params;
+        let time = params.time;
 
-        let AdjustVariable {
-            mut recalculate_points,
-            toggle_animate,
-        } = self.update_ui(ui, &name);
-
-        if toggle_animate {
-            self.toggle_animation(time);
-        }
+        let mut recalculate_points = self.update_ui(params);
 
         recalculate_points |= self.update_animate(time);
         recalculate_points
