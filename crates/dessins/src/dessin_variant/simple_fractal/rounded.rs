@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::f32::F32,
+    adjustable_variable::types::u32::U32,
     dessin_variant::Polygon,
     shapes::{Segment, Shape, Shapes, NP},
 };
@@ -13,10 +13,10 @@ use adjustable_dessin_derive::DefaultAdjustableDessin;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Rounded {
-    pub m: F32, // # of segments in starting curve
-    pub n: F32, // # of sub-segments per segment
-    pub k: F32, // depth
-    pub s: F32, // curve fineness
+    pub m: U32, // # of segments in starting curve
+    pub n: U32, // # of sub-segments per segment
+    pub k: U32, // depth
+    pub s: U32, // curve fineness
     #[reflect(ignore)]
     pub positions: Vec<Point2>,
     #[reflect(ignore)]
@@ -33,13 +33,13 @@ impl Rounded {
         }
         if self.lengths.len() != self.n.value as usize {
             self.lengths.resize_with(
-                Self::calculate_lengths(self.m.value, self.n.value as usize).len(),
+                Self::calculate_lengths(self.m.value as f32, self.n.value as usize).len(),
                 Default::default,
             );
         }
         if self.angles.len() != self.n.value as usize {
             self.angles.resize_with(
-                Self::calculate_angles(self.m.value, self.n.value as usize).len(),
+                Self::calculate_angles(self.m.value as f32, self.n.value as usize).len(),
                 Default::default,
             );
         }
@@ -67,16 +67,16 @@ impl Rounded {
 
             let length = diff.length();
 
-            for i in 0..(self.n.value as usize).pow(self.k.value as u32) {
+            for i in 0..(self.n.value).pow(self.k.value) {
                 let mut current_length = length;
                 let mut current_angle = angle;
                 let mut t1 = i;
-                if self.k.value as usize != 0 {
-                    for j in (0..self.k.value as usize).rev() {
-                        let r = (self.n.value as usize).pow(j as u32);
+                if self.k.value != 0 {
+                    for j in (0..self.k.value).rev() {
+                        let r = (self.n.value).pow(j);
                         let t2 = t1 / r;
-                        current_angle += self.angles[t2];
-                        current_length *= self.lengths[t2];
+                        current_angle += self.angles[t2 as usize];
+                        current_length *= self.lengths[t2 as usize];
                         t1 -= t2 * r;
                     }
                 }
@@ -119,7 +119,7 @@ impl Rounded {
         points
     }
 
-    fn calculate_positions(m: &F32) -> Vec<Point2> {
+    fn calculate_positions(m: &U32) -> Vec<Point2> {
         let mut polygon = Polygon {
             k: m.clone(),
             ..Default::default()
@@ -128,8 +128,8 @@ impl Rounded {
         polygon.ad.value = 0.0;
 
         let mut points = vec![];
-        for i in 0..m.value as usize {
-            let point = polygon.calculate_point(i as u32);
+        for i in 0..m.value {
+            let point = polygon.calculate_point(i);
             points.push(point);
         }
         points.push(points[0]);
@@ -157,10 +157,10 @@ impl Default for Rounded {
     fn default() -> Self {
         let np = NP as f32;
         Self {
-            m: F32::new_from_range(1.0, 1.0..=10.0),
-            n: F32::new_from_range(7.0, 1.0..=13.0),
-            k: F32::new_from_range(2.0, 1.0..=10.0),
-            s: F32::new_from_range(5.0, 1.0..=20.0),
+            m: U32::new(1, 1..=10, 1),
+            n: U32::new(7, 1..=13, 1),
+            k: U32::new(2, 1..=10, 1),
+            s: U32::new(5, 1..=20, 1),
             positions: vec![pt2(-0.5 * np, np), pt2(-0.5 * np, -np)],
             lengths: vec![0.5, 0.25, 0.25, 0.25, 0.25, 0.5, 0.5],
             angles: vec![0.0, 0.5 * PI, -PI, 0.0, 0.5 * PI, -0.5 * PI, 0.0],

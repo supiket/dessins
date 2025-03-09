@@ -1,6 +1,9 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::f32::{F32Variant, F32},
+    adjustable_variable::types::{
+        f32::{F32Variant, F32},
+        u32::U32,
+    },
     shapes::{Segment, Shape, Shapes, NP},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -9,8 +12,8 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct FractalStar {
-    pub n: F32,
-    pub k: F32,
+    pub n: U32,
+    pub k: U32,
     pub ra: F32,
     pub ll: F32,
     pub aa: F32,
@@ -29,18 +32,21 @@ impl FractalStar {
         let mut p0 = self.p0;
         let mut a0 = self.a0.value;
 
-        let nn = self.n.value as u32 * (self.n.value as u32 - 1).pow(self.k.value as u32 - 1) - 1;
+        let n = self.n.value;
+        let k = self.k.value;
+
+        let nn = n * (n - 1).pow(k - 1) - 1;
 
         for i in 0..=nn {
             let mut i1 = i;
             let mut h = 0;
 
-            while i1 % (self.n.value as u32 - 1) == 0 && h < (self.k.value as u32 - 1) {
-                i1 /= self.n.value as u32 - 1;
+            while i1 % (n - 1) == 0 && h < (k - 1) {
+                i1 /= n - 1;
                 h += 1;
             }
 
-            let l0 = self.ll.value * self.ra.value.powf((self.k.value as u32 - 1 - h) as f32);
+            let l0 = self.ll.value * self.ra.value.powf((k - 1 - h) as f32);
             a0 += self.aa.value;
 
             let point = p0 + pt2(l0 * a0.cos(), l0 * a0.sin());
@@ -66,8 +72,8 @@ impl Default for FractalStar {
         let p0 = pt2((-ll.value) / 2.0, (NP as f32) * (0.5));
 
         Self {
-            n: F32::new_from_range(5.0, 3.0..=20.0),
-            k: F32::new_from_range(5.0, 2.0..=12.0),
+            n: U32::new(5, 3..=20, 1),
+            k: U32::new(5, 2..=12, 1),
             ra: F32::new_from_range(0.35, 0.2..=1.8),
             ll,
             aa,

@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{expression_f32::ExpressionF32, f32::F32},
+    adjustable_variable::types::{expression_f32::ExpressionF32, u32::U32},
     shapes::{Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -10,9 +10,9 @@ use std::collections::HashMap;
 #[derive(Clone, Debug, PartialEq, Reflect, DefaultAdjustableDessin)]
 #[reflect(Default)]
 pub struct Stick {
-    pub n: F32,
-    pub m: F32,
-    pub k: F32,
+    pub n: U32,
+    pub m: U32,
+    pub k: U32,
     #[reflect(ignore)]
     pub r1: ExpressionF32,
     #[reflect(ignore)]
@@ -27,7 +27,7 @@ impl Stick {
         let n = self.n.value;
         let k = self.k.value;
 
-        for i in 0..=self.m.value as usize {
+        for i in 0..=self.m.value {
             self.r1.ctx.insert("i".to_string(), i as f32);
             self.r1.ctx_ext.remove("i");
             self.r1.val = evalexpr::eval_number_with_context(
@@ -60,8 +60,10 @@ impl Stick {
             }) as f32;
             let r2 = self.r2.val;
 
-            for j in 0..self.n.value as usize {
+            for j in 0..n {
                 let j = j as f32;
+                let n = n as f32;
+                let k = k as f32;
 
                 let an = 2.0 * j * PI / n;
 
@@ -94,12 +96,12 @@ impl Stick {
 
 impl Default for Stick {
     fn default() -> Self {
-        let n = 100.0;
-        let k = 5.0;
+        let n = 100;
+        let k = 5;
 
         let ctx = HashMap::from([
-            ("n".to_string(), n),
-            ("k".to_string(), k),
+            ("n".to_string(), n as f32),
+            ("k".to_string(), k as f32),
             ("pi".to_string(), PI),
         ]);
 
@@ -117,9 +119,9 @@ impl Default for Stick {
         };
 
         Self {
-            n: F32::new_from_range(n, 10.0..=600.0),
-            m: F32::new_from_range(1.0, 1.0..=6.0),
-            k: F32::new_from_range(k, 1.0..=7.0),
+            n: U32::new(n, 10..=600, 1),
+            m: U32::new(1, 1..=6, 1),
+            k: U32::new(k, 1..=7, 1),
             r1,
             r2,
         }

@@ -17,5 +17,5 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Build and optimize WASM with Nix
+      - name: Build WASM with Nix
         run: nix build .#wasm
