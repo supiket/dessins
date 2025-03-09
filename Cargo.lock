@@ -87,6 +87,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "adjustable_dessin_derive"
+version = "0.1.0"
+dependencies = [
+ "quote",
+ "syn 2.0.98",
+]
+
+[[package]]
 name = "adler"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2116,6 +2124,7 @@ dependencies = [
 name = "dessins"
 version = "0.1.0"
 dependencies = [
+ "adjustable_dessin_derive",
  "anyhow",
  "bevy",
  "bevy_egui",

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_egui::{EguiContexts, EguiPlugin};
 use bevy_nannou::prelude::*;
 use bevy_nannou::NannouPlugin;
-use dessins::{params::DesignVariant, resources::Model};
+use dessins::{dessin_with_variables::DessinVariant, model::Model};
 
 fn main() {
     let window_plugin = WindowPlugin {
@@ -15,13 +15,13 @@ fn main() {
 
     let default_plugins = DefaultPlugins.set(window_plugin);
 
-    let model = Model::new(DesignVariant::Dragon);
+    let model = Model::new(DessinVariant::Dragon);
 
     App::new()
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))
         .insert_resource(model)
         .add_systems(Startup, setup)
-        .add_systems(Update, (control_params, draw_dessin))
+        .add_systems(Update, (update_active_dessin, draw_dessin))
         .run();
 }
 
@@ -29,19 +29,18 @@ fn setup(mut commands: Commands) {
     commands.spawn(render::NannouCamera);
 }
 
-fn control_params(mut model: ResMut<Model>, time: Res<Time<Virtual>>, egui_ctx: EguiContexts) {
-    let new_design = None;
-
-    let (changed, color) = model.control_params(egui_ctx, *time);
+fn update_active_dessin(
+    mut model: ResMut<Model>,
+    time: Res<Time<Virtual>>,
+    egui_ctx: EguiContexts,
+) {
+    let (changed, color) = model.update_active_dessin(egui_ctx, *time);
 
     if let Some(new_color) = color {
         model.color = new_color;
     }
 
-    if let Some(new_design) = new_design {
-        model.change_design(new_design);
-        model.calculate_shapes();
-    } else if changed || !model.initialized() {
+    if changed || !model.initialized() {
         model.calculate_shapes();
     }
 }

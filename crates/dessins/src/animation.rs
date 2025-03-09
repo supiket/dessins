@@ -2,12 +2,12 @@ use bevy::reflect::Reflect;
 use nannou::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
-pub struct AnimationState {
+pub struct Animation {
     start_time: f64,
     phase_offset: f32,
 }
 
-impl AnimationState {
+impl Animation {
     pub fn new(time: Time<Virtual>, old_val: f32, min: f32, max: f32) -> Self {
         let t = time.elapsed_secs_f64();
 
@@ -19,7 +19,7 @@ impl AnimationState {
             phase_offset = std::f32::consts::PI - phase_offset;
         }
 
-        AnimationState {
+        Animation {
             start_time: t,
             phase_offset,
         }
