@@ -74,6 +74,8 @@ pub fn update_from_reflect<T: AdjustableDessin>(
             let type_name = std::any::type_name::<T>();
             todo!("unsupported field type: {field_name} in {type_name}");
         }
+
+        ui.separator();
     }
 
     changed

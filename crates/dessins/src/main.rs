@@ -15,7 +15,7 @@ fn main() {
 
     let default_plugins = DefaultPlugins.set(window_plugin);
 
-    let model = Model::new(DessinVariant::Dragon);
+    let model = Model::new(DessinVariant::LinearBipartite);
 
     App::new()
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))

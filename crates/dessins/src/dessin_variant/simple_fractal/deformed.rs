@@ -410,7 +410,9 @@ impl AdjustableDessin for Deformed {
     fn update_variables(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
         let mut changed = false;
         changed |= self.deformation.update(ui);
+        ui.separator();
         changed |= update_from_reflect(self, ui, time);
+        ui.separator();
         changed
     }
 }
@@ -419,9 +421,9 @@ impl Default for Deformed {
     fn default() -> Self {
         Self {
             deformation: Deformation::Program1,
-            m: U32::new(3, 2..=4, 1),
-            n: U32::new(4, 3..=5, 1),
-            k: U32::new(4, 1..=8, 1),
+            m: U32::new(3, 2..=4),
+            n: U32::new(4, 3..=5),
+            k: U32::new(4, 1..=8),
             positions: vec![],
             lengths: vec![],
             angles: vec![],

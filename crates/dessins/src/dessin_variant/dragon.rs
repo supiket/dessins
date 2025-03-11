@@ -140,7 +140,7 @@ impl Default for Dragon {
         );
 
         Self {
-            n: U32::new(n, 2..=14, 1),
+            n: U32::new(n, 2..=14),
             l0,
             a0,
             p0: Pt2::new(p0_fn()),

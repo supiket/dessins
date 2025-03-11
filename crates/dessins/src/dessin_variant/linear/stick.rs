@@ -105,9 +105,9 @@ impl Default for Stick {
         );
 
         Self {
-            n: U32::new(n, 10..=600, 1),
-            m: U32::new(1, 1..=6, 1),
-            k: U32::new(k, 1..=7, 1),
+            n: U32::new(n, 10..=600),
+            m: U32::new(1, 1..=6),
+            k: U32::new(k, 1..=7),
             r1,
             r2,
         }

@@ -1,6 +1,9 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{f32::F32, u32::U32},
+    adjustable_variable::types::{
+        f32::{F32Variant, F32},
+        u32::U32,
+    },
     shapes::{Segment, Shape, Shapes, NP},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
@@ -60,11 +63,11 @@ impl Spiral {
 impl Default for Spiral {
     fn default() -> Self {
         Self {
-            n: U32::new(2000, 1000..=9000, 1),
-            t: U32::new(40, 40..=60, 1),
-            r: F32::new_from_range(0.8, 0.1..=2.0),
-            l: F32::new_from_range(0.1, 0.1..=2.0),
-            an_factor: F32::new_from_range(1.0, 1.0..=4.0),
+            n: U32::new(2000, 1000..=9000),
+            t: U32::new(40, 40..=60),
+            r: F32::new(0.8, F32Variant::None(0.1..=2.0)),
+            l: F32::new(0.1, F32Variant::None(0.1..=2.0)),
+            an_factor: F32::new(1.0, F32Variant::None(1.0..=4.0)),
         }
     }
 }

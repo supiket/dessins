@@ -50,7 +50,7 @@ impl Polygon {
 impl Default for Polygon {
     fn default() -> Self {
         Self {
-            k: U32::new(3, 3..=20, 1),
+            k: U32::new(3, 3..=20),
             r: F32::new(0.45, F32Variant::Length),
             ad: F32::new(0.0, F32Variant::Angle),
         }

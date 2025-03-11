@@ -72,15 +72,15 @@ impl Composition2 {
 impl Default for Composition2 {
     fn default() -> Self {
         Self {
-            polygon_k: U32::new(5, 3..=20, 1),
+            polygon_k: U32::new(5, 3..=20),
             polygon_r: F32::new(0.27, F32Variant::Length),
             polygon_ad: F32::new(0.5, F32Variant::Angle),
-            star_k: U32::new(25, 5..=100, 1),
-            star_h: U32::new(12, 3..=5, 1),
+            star_k: U32::new(25, 5..=100),
+            star_h: U32::new(12, 3..=5),
             star_r: F32::new(0.22, F32Variant::Length),
             star_ad: F32::new(0.5, F32Variant::Angle),
-            n: U32::new(32, 1..=100, 1),
-            rr: F32::new_from_range(0.9, 0.7..=1.3),
+            n: U32::new(32, 1..=100),
+            rr: F32::new(0.9, F32Variant::None(0.7..=1.3)),
         }
     }
 }

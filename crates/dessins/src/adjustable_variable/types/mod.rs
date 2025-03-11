@@ -19,11 +19,6 @@ pub enum VariableType {
     Point2(Pt2),
 }
 
-pub(crate) struct AdjustVariable {
-    pub recalculate_points: bool,
-    pub toggle_animate: bool,
-}
-
 impl AdjustableVariable for VariableType {
     fn update(&mut self, params: UpdateVariableParams) -> bool {
         match self {
