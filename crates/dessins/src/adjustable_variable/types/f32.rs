@@ -1,8 +1,8 @@
 use crate::{
     adjustable_variable::{AdjustableVariable, UpdateVariableParams},
-    animation::Animation,
+    animation::{Animation, AnimationVariant},
     shapes::NP,
-    ui::{add_float_length, add_float_pi, add_float_position, add_numeric, float},
+    ui::{add_float_length, add_float_pi, add_float_position, float},
 };
 use bevy::reflect::Reflect;
 use nannou::prelude::*;
@@ -12,7 +12,7 @@ use std::ops::RangeInclusive;
 pub struct F32 {
     value: f32,
     variant: F32Variant,
-    animation: Option<(Animation, AnimationParams)>,
+    animation: Option<Animation>,
 }
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
@@ -21,11 +21,6 @@ pub enum F32Variant {
     Angle,
     Length,
     Position,
-}
-
-#[derive(Clone, Debug, PartialEq, Reflect)]
-pub struct AnimationParams {
-    freq: f32,
 }
 
 impl F32 {
@@ -59,12 +54,13 @@ impl AdjustableVariable for F32 {
 }
 
 impl F32Variant {
-    pub fn get_range(&self) -> RangeInclusive<f32> {
+    pub fn get_value_range(&self) -> RangeInclusive<f32> {
+        let np = NP as f32;
         match self {
             Self::None(range) => range.clone(),
-            Self::Angle => -2.0..=2.0,
-            Self::Length => 0.0..=1.0,
-            Self::Position => -1.0..=1.0,
+            Self::Angle => -TAU..=TAU,
+            Self::Length => 0.0 * np..=1.0 * np,
+            Self::Position => -1.0 * np..=1.0 * np,
         }
     }
 }
@@ -73,25 +69,25 @@ impl F32Variant {
     fn update(
         &self,
         value: &mut f32,
-        animation: &mut Option<(Animation, AnimationParams)>,
+        animation: &mut Option<Animation>,
         params: UpdateVariableParams,
     ) -> bool {
         let UpdateVariableParams { ui, name, time } = params;
         let mut animate = animation.is_some();
         let initial_animate = animate;
 
-        // add animate checkbox
-        ui.checkbox(&mut animate, "animate");
-
         // add slider
         let mut changed = self.add_with_label(ui, &name, value);
 
-        if let Some((animation, ref mut params)) = animation {
+        // add animate checkbox
+        ui.checkbox(&mut animate, "animate");
+
+        if let Some(ref mut animation) = animation {
             // animate and...
-            *value = self.animate(time, animation, params);
+            *value = animation.calculate(time);
 
             // ... add animation params UI elements
-            add_numeric(ui, "animation frequency", &mut params.freq, 0.0..=1.0);
+            animation.update_ui(ui, *value, &name);
             changed |= true
         }
 
@@ -114,39 +110,16 @@ impl F32Variant {
         }
     }
 
-    fn animate(
-        &self,
-        time: Time<Virtual>,
-        animation: &Animation,
-        animation_params: &AnimationParams,
-    ) -> f32 {
-        let mut range = self.get_range();
-        match self {
-            F32Variant::None(_) => {}
-            F32Variant::Position | F32Variant::Length => {
-                let np = NP as f32;
-                range = (*range.start() * np)..=(*range.end() * np);
-            }
-            F32Variant::Angle => {
-                range = (*range.start() * TAU)..=(*range.end() * TAU);
-            }
-        };
-        animation.update_value_sine(time, animation_params.freq, *range.start(), *range.end())
-    }
-
-    fn toggle_animation(
-        &self,
-        value: f32,
-        animation: &mut Option<(Animation, AnimationParams)>,
-        time: Time<Virtual>,
-    ) {
+    fn toggle_animation(&self, value: f32, animation: &mut Option<Animation>, time: Time<Virtual>) {
         *animation = match animation {
             Some(_) => None,
             None => {
-                let range = self.get_range();
-                let animation = Animation::new(time, value, *range.start(), *range.end());
-                let animation_params = AnimationParams { freq: 0.1 };
-                Some((animation, animation_params))
+                let range = self.get_value_range();
+                let animation = Animation::new(
+                    time,
+                    AnimationVariant::new_sin(value, 0.1, *range.start(), *range.end()),
+                );
+                Some(animation)
             }
         }
     }

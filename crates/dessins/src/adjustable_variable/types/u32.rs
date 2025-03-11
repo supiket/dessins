@@ -1,6 +1,6 @@
 use crate::{
     adjustable_variable::{AdjustableVariable, UpdateVariableParams},
-    animation::Animation,
+    animation::{Animation, AnimationVariant},
     ui::add_numeric,
 };
 use bevy::reflect::Reflect;
@@ -11,12 +11,7 @@ use std::ops::RangeInclusive;
 pub struct U32 {
     value: u32,
     range: RangeInclusive<u32>,
-    animation: Option<(Animation, AnimationParams)>,
-}
-
-#[derive(Clone, Debug, PartialEq, Reflect)]
-pub struct AnimationParams {
-    freq: f32,
+    animation: Option<Animation>,
 }
 
 impl U32 {
@@ -42,12 +37,14 @@ impl U32 {
             None => {
                 let animation = Animation::new(
                     time,
-                    self.value as f32,
-                    *self.range.start() as f32,
-                    *self.range.end() as f32,
+                    AnimationVariant::new_sin(
+                        self.value as f32,
+                        0.1,
+                        *self.range.start() as f32,
+                        *self.range.end() as f32,
+                    ),
                 );
-                let animation_params = AnimationParams { freq: 0.1 };
-                Some((animation, animation_params))
+                Some(animation)
             }
         }
     }
@@ -63,25 +60,18 @@ impl AdjustableVariable for U32 {
         let mut animate = self.animation.is_some();
         let initial_animate = animate;
 
-        // add animate checkbox
-        ui.checkbox(&mut animate, "animate");
-
         // add slider
         let mut changed = add_numeric(ui, &name, &mut self.value, self.range.clone());
 
-        if let Some((animation, ref mut params)) = &mut self.animation {
+        // add animate checkbox
+        ui.checkbox(&mut animate, "animate");
+
+        if let Some(ref mut animation) = self.animation {
             // animate and...
-            self.value = animation
-                .update_value_sine(
-                    time,
-                    params.freq,
-                    *self.range.start() as f32,
-                    *self.range.end() as f32,
-                )
-                .round() as u32;
+            self.value = animation.calculate(time).round() as u32;
 
             // ... add animation params UI elements
-            add_numeric(ui, "animation frequency", &mut params.freq, 0.0..=1.0);
+            animation.update_ui(ui, self.value as f32, &name);
             changed |= true
         }
 

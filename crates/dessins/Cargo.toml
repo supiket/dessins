@@ -19,3 +19,4 @@ bevy_egui.workspace = true
 bevy_nannou.workspace = true
 evalexpr.workspace = true
 nannou.workspace = true
+wavegen.workspace = true
