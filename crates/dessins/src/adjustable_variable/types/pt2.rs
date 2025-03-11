@@ -10,10 +10,13 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct Pt2 {
     value: Point2,
-    animation: (
-        Option<(Animation, AnimationParams)>,
-        Option<(Animation, AnimationParams)>,
-    ),
+    animation: Pt2Animation,
+}
+
+#[derive(Clone, Debug, PartialEq, Reflect)]
+pub struct Pt2Animation {
+    x: Option<(Animation, AnimationParams)>,
+    y: Option<(Animation, AnimationParams)>,
 }
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
@@ -25,7 +28,7 @@ impl Pt2 {
     pub fn new(value: Point) -> Self {
         Self {
             value,
-            animation: (None, None),
+            animation: Pt2Animation { x: None, y: None },
         }
     }
 
@@ -44,8 +47,8 @@ impl AdjustableVariable for Pt2 {
         let name_x = format!("{}.x", name);
         let name_y = format!("{}.y", name);
 
-        let x_changed = update(&mut self.value.x, ui, &name_x, time, &mut self.animation.0);
-        let y_changed = update(&mut self.value.y, ui, &name_y, time, &mut self.animation.1);
+        let x_changed = update(&mut self.value.x, ui, &name_x, time, &mut self.animation.x);
+        let y_changed = update(&mut self.value.y, ui, &name_y, time, &mut self.animation.y);
 
         x_changed | y_changed
     }

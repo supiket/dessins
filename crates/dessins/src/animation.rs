@@ -45,7 +45,7 @@ impl Animation {
     pub fn update_value_sine(&self, time: Time<Virtual>, freq: f32, min: f32, max: f32) -> f32 {
         let dt = (time.elapsed_secs_f64() - self.start_time) as f32;
         let sine_val = (dt * freq * std::f32::consts::TAU + self.phase_offset).sin();
-        let new_val = min + (max - min) * (0.5 + 0.5 * sine_val);
-        new_val
+
+        min + (max - min) * (0.5 + 0.5 * sine_val)
     }
 }

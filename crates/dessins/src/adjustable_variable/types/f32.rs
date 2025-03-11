@@ -88,7 +88,7 @@ impl F32Variant {
 
         if let Some((animation, ref mut params)) = animation {
             // animate and...
-            *value = self.animate(time, &animation, &params);
+            *value = self.animate(time, animation, params);
 
             // ... add animation params UI elements
             add_numeric(ui, "animation frequency", &mut params.freq, 0.0..=1.0);
