@@ -1,8 +1,8 @@
 use crate::{
     adjustable_variable::{AdjustableVariable, UpdateVariableParams},
-    animation::Animation,
+    animation::{Animation, AnimationVariant},
     shapes::NP,
-    ui::{add_float_position, add_numeric},
+    ui::add_float_position,
 };
 use bevy::reflect::Reflect;
 use nannou::prelude::*;
@@ -15,13 +15,8 @@ pub struct Pt2 {
 
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct Pt2Animation {
-    x: Option<(Animation, AnimationParams)>,
-    y: Option<(Animation, AnimationParams)>,
-}
-
-#[derive(Clone, Debug, PartialEq, Reflect)]
-pub struct AnimationParams {
-    freq: f32,
+    x: Option<Animation>,
+    y: Option<Animation>,
 }
 
 impl Pt2 {
@@ -54,17 +49,15 @@ impl AdjustableVariable for Pt2 {
     }
 }
 
-fn toggle_animation(
-    value: f32,
-    animation: &mut Option<(Animation, AnimationParams)>,
-    time: Time<Virtual>,
-) {
+fn toggle_animation(value: f32, animation: &mut Option<Animation>, time: Time<Virtual>) {
     *animation = match animation {
         Some(_) => None,
         None => {
-            let animation = Animation::new(time, value, -1.0, 1.0);
-            let animation_params = AnimationParams { freq: 0.1 };
-            Some((animation, animation_params))
+            let animation = Animation::new(
+                time,
+                AnimationVariant::new_sin(value, 0.1, -1.0 * NP as f32, 1.0 * NP as f32),
+            );
+            Some(animation)
         }
     }
 }
@@ -74,24 +67,24 @@ fn update(
     ui: &mut egui::Ui,
     name: &str,
     time: Time<Virtual>,
-    animation: &mut Option<(Animation, AnimationParams)>,
+    animation: &mut Option<Animation>,
 ) -> bool {
     let mut animate_ = animation.is_some();
     let initial_animate = animate_;
-
-    // add animate checkbox
-    ui.checkbox(&mut animate_, "animate");
 
     // add slider
     ui.label(name);
     let mut changed = add_float_position(ui, value);
 
-    if let Some((animation, ref mut params)) = animation {
+    // add animate checkbox
+    ui.checkbox(&mut animate_, "animate");
+
+    if let Some(ref mut animation) = animation {
         // animate and...
-        *value = animate(time, animation, params);
+        *value = animation.calculate(time);
 
         // ... add animation params UI elements
-        add_numeric(ui, "animation frequency", &mut params.freq, 0.0..=1.0);
+        animation.update_ui(ui, *value, name);
         changed |= true
     }
 
@@ -101,11 +94,4 @@ fn update(
     }
 
     changed
-}
-
-fn animate(time: Time<Virtual>, animation: &Animation, params: &AnimationParams) -> f32 {
-    let range = -1.0..=1.0;
-    let np = NP as f32;
-    let range = (*range.start() * np)..=(*range.end() * np);
-    animation.update_value_sine(time, params.freq, *range.start(), *range.end())
 }
