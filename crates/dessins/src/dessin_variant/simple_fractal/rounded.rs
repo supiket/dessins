@@ -159,10 +159,10 @@ impl Default for Rounded {
     fn default() -> Self {
         let np = NP as f32;
         Self {
-            m: U32::new(1, 1..=10, 1),
-            n: U32::new(7, 1..=13, 1),
-            k: U32::new(2, 1..=10, 1),
-            s: U32::new(5, 1..=20, 1),
+            m: U32::new(1, 1..=10),
+            n: U32::new(7, 1..=13),
+            k: U32::new(2, 1..=10),
+            s: U32::new(5, 1..=20),
             positions: vec![pt2(-0.5 * np, np), pt2(-0.5 * np, -np)],
             lengths: vec![0.5, 0.25, 0.25, 0.25, 0.25, 0.5, 0.5],
             angles: vec![0.0, 0.5 * PI, -PI, 0.0, 0.5 * PI, -0.5 * PI, 0.0],

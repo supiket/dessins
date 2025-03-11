@@ -72,9 +72,9 @@ impl Jolygon {
 impl Default for Jolygon {
     fn default() -> Self {
         Self {
-            k: U32::new(200, 1..=2500, 1),
+            k: U32::new(200, 1..=2500),
             an: F32::new(15.0 / 31.0, F32Variant::Angle),
-            ra: F32::new_from_range(0.98, 0.9..=1.0),
+            ra: F32::new(0.98, F32Variant::None(0.9..=1.0)),
             aa: F32::new(0.0, F32Variant::Angle),
             rr: F32::new(0.8, F32Variant::Length),
         }

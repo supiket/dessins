@@ -27,7 +27,9 @@ impl AdjustableDessin for RawShape {
     fn update_variables(&mut self, ui: &mut egui::Ui, _time: Time<Virtual>) -> bool {
         let mut changed = false;
         changed |= self.shape_variant.update(ui);
+        ui.separator();
         changed |= self.program_variant.update(ui);
+        ui.separator();
         changed
     }
 }

@@ -76,7 +76,7 @@ impl Bipartite {
 impl Default for Bipartite {
     fn default() -> Self {
         Self {
-            n: U32::new(10, 10..=20, 1),
+            n: U32::new(10, 10..=20),
             a: Pt2::new(pt2((NP as f32) / -2.0, (NP as f32) / -2.0)),
             b: Pt2::new(pt2((NP as f32) / -2.0, (NP as f32) / 2.0)),
             c: Pt2::new(pt2((NP as f32) / 2.0, (NP as f32) / -2.0)),

@@ -2,7 +2,7 @@ use crate::{
     adjustable_dessin::AdjustableDessin,
     adjustable_variable::types::{
         expression_f32::{Context, ExpressionF32},
-        f32::F32,
+        f32::{F32Variant, F32},
         u32::U32,
     },
     shapes::{Segment, Shape, Shapes, NP},
@@ -92,12 +92,12 @@ impl Default for Modulo {
         );
 
         Self {
-            n: U32::new(n, 10..=400, 1),
-            m: U32::new(400, 10..=400, 1),
-            k1: F32::new_from_range(4.0, 1.0..=5.0),
-            k2: F32::new_from_range(5.0, 1.0..=5.0),
-            h: U32::new(2, 1..=10, 1),
-            i1_factor: U32::new(1, 1..=8, 1),
+            n: U32::new(n, 10..=400),
+            m: U32::new(400, 10..=400),
+            k1: F32::new(4.0, F32Variant::None(1.0..=5.0)),
+            k2: F32::new(5.0, F32Variant::None(1.0..=5.0)),
+            h: U32::new(2, 1..=10),
+            i1_factor: U32::new(1, 1..=8),
             y,
         }
     }

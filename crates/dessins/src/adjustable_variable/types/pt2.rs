@@ -2,7 +2,7 @@ use crate::{
     adjustable_variable::{AdjustableVariable, UpdateVariableParams},
     animation::Animation,
     shapes::NP,
-    ui::add_float_position,
+    ui::{add_float_position, add_numeric},
 };
 use bevy::reflect::Reflect;
 use nannou::prelude::*;
@@ -10,14 +10,25 @@ use nannou::prelude::*;
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct Pt2 {
     value: Point2,
-    animation: (Option<Animation>, Option<Animation>),
+    animation: Pt2Animation,
+}
+
+#[derive(Clone, Debug, PartialEq, Reflect)]
+pub struct Pt2Animation {
+    x: Option<(Animation, AnimationParams)>,
+    y: Option<(Animation, AnimationParams)>,
+}
+
+#[derive(Clone, Debug, PartialEq, Reflect)]
+pub struct AnimationParams {
+    freq: f32,
 }
 
 impl Pt2 {
     pub fn new(value: Point) -> Self {
         Self {
             value,
-            animation: (None, None),
+            animation: Pt2Animation { x: None, y: None },
         }
     }
 
@@ -28,84 +39,73 @@ impl Pt2 {
     pub fn set_value(&mut self, value: Point2) {
         self.value = value;
     }
-
-    fn update_ui(&mut self, params: UpdateVariableParams) -> bool {
-        let UpdateVariableParams { ui, name, time } = params;
-        let name_x = format!("{}.x", name);
-        let name_y = format!("{}.y", name);
-        let recalculate_x = update_ui(&mut self.value.x, &mut self.animation.0, time, ui, &name_x);
-        let recalculate_y = update_ui(&mut self.value.y, &mut self.animation.1, time, ui, &name_y);
-        recalculate_x | recalculate_y
-    }
-
-    fn update_animate(&mut self, time: Time<Virtual>) -> bool {
-        let recalculate_x = update_animate(&mut self.value.x, &self.animation.0, time);
-        let recalculate_y = update_animate(&mut self.value.y, &self.animation.1, time);
-        recalculate_x | recalculate_y
-    }
 }
 
 impl AdjustableVariable for Pt2 {
     fn update(&mut self, params: UpdateVariableParams) -> bool {
-        let UpdateVariableParams { time, .. } = params;
+        let UpdateVariableParams { ui, name, time } = params;
+        let name_x = format!("{}.x", name);
+        let name_y = format!("{}.y", name);
 
-        let mut recalculate_points = self.update_ui(params);
+        let x_changed = update(&mut self.value.x, ui, &name_x, time, &mut self.animation.x);
+        let y_changed = update(&mut self.value.y, ui, &name_y, time, &mut self.animation.y);
 
-        recalculate_points |= self.update_animate(time);
-        recalculate_points
+        x_changed | y_changed
     }
 }
 
-fn toggle_animation(animation: &mut Option<Animation>, time: Time<Virtual>) {
+fn toggle_animation(
+    value: f32,
+    animation: &mut Option<(Animation, AnimationParams)>,
+    time: Time<Virtual>,
+) {
     *animation = match animation {
         Some(_) => None,
         None => {
-            let range = -1.0..=1.0;
-            let step = 0.1;
-            let freq = step;
-            Some(Animation::new(time, freq, *range.start(), *range.end()))
+            let animation = Animation::new(time, value, -1.0, 1.0);
+            let animation_params = AnimationParams { freq: 0.1 };
+            Some((animation, animation_params))
         }
     }
 }
 
-fn update_ui(
+fn update(
     value: &mut f32,
-    animation: &mut Option<Animation>,
-    time: Time<Virtual>,
     ui: &mut egui::Ui,
     name: &str,
+    time: Time<Virtual>,
+    animation: &mut Option<(Animation, AnimationParams)>,
 ) -> bool {
+    let mut animate_ = animation.is_some();
+    let initial_animate = animate_;
+
+    // add animate checkbox
+    ui.checkbox(&mut animate_, "animate");
+
+    // add slider
     ui.label(name);
-    let recalculate_points = add_float_position(ui, value);
+    let mut changed = add_float_position(ui, value);
 
-    let mut animate = animation.is_some();
+    if let Some((animation, ref mut params)) = animation {
+        // animate and...
+        *value = animate(time, animation, params);
 
-    let initial_animate = animate;
-
-    ui.checkbox(&mut animate, "animate");
-
-    let toggle_animate = animate != initial_animate;
-
-    if toggle_animate {
-        toggle_animation(animation, time);
+        // ... add animation params UI elements
+        add_numeric(ui, "animation frequency", &mut params.freq, 0.0..=1.0);
+        changed |= true
     }
 
-    recalculate_points
-}
-
-fn update_animate(v: &mut f32, animation: &Option<Animation>, time: Time<Virtual>) -> bool {
-    if let Some(animation) = animation {
-        *v = animate(time, animation);
-        true
-    } else {
-        false
+    // maybe toggle animate
+    if animate_ != initial_animate {
+        toggle_animation(*value, animation, time);
     }
+
+    changed
 }
 
-fn animate(time: Time<Virtual>, animation: &Animation) -> f32 {
+fn animate(time: Time<Virtual>, animation: &Animation, params: &AnimationParams) -> f32 {
     let range = -1.0..=1.0;
     let np = NP as f32;
     let range = (*range.start() * np)..=(*range.end() * np);
-    let step = 0.1 * np;
-    animation.update_value(time, step, *range.start(), *range.end())
+    animation.update_value_sine(time, params.freq, *range.start(), *range.end())
 }

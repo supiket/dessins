@@ -52,8 +52,8 @@ impl Star {
 impl Default for Star {
     fn default() -> Self {
         Self {
-            k: U32::new(5, 5..=100, 1),
-            h: U32::new(3, 3..=5, 1),
+            k: U32::new(5, 5..=100),
+            h: U32::new(3, 3..=5),
             r: F32::new(0.45, F32Variant::Length),
             ad: F32::new(0.5, F32Variant::Angle),
         }

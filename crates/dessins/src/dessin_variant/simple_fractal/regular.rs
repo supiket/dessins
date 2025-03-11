@@ -129,9 +129,9 @@ impl Default for Regular {
         let np = NP as f32;
         let y0 = (f32::sqrt(3.0) / 2.0 - 0.5) * np;
         Self {
-            m: U32::new(3, 1..=10, 1),
-            n: U32::new(4, 1..=10, 1),
-            k: U32::new(4, 1..=10, 1),
+            m: U32::new(3, 1..=10),
+            n: U32::new(4, 1..=10),
+            k: U32::new(4, 1..=10),
             positions: vec![
                 pt2(-0.5 * np, y0),
                 pt2(0.5 * np, y0),

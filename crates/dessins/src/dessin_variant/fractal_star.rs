@@ -71,9 +71,9 @@ impl Default for FractalStar {
         let p0 = Pt2::new(pt2((-ll.get_value()) / 2.0, (NP as f32) * (0.5)));
 
         Self {
-            n: U32::new(5, 3..=20, 1),
-            k: U32::new(5, 2..=12, 1),
-            ra: F32::new_from_range(0.35, 0.2..=1.8),
+            n: U32::new(5, 3..=20),
+            k: U32::new(5, 2..=12),
+            ra: F32::new(0.35, F32Variant::None(0.2..=1.8)),
             ll,
             aa,
             a0,

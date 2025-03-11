@@ -1,6 +1,6 @@
 use crate::{
     dessin_with_variables::{DessinVariant, DessinWithVariables},
-    shapes::{draw_segment, Shapes},
+    shapes::{Shapes, WEIGHT},
 };
 use bevy_egui::EguiContexts;
 use nannou::prelude::*;
@@ -35,9 +35,12 @@ impl Model {
 
     pub fn draw_points(&self, draw: Single<&Draw>) {
         self.points.iter().for_each(|shape| {
-            shape
-                .iter()
-                .for_each(|segment| draw_segment(&draw, self.color, segment))
+            shape.iter().for_each(|segment| {
+                let points_colored = segment.iter().copied().map(|point| (point, self.color));
+                draw.polyline()
+                    .weight(WEIGHT)
+                    .points_colored(points_colored);
+            })
         });
     }
 

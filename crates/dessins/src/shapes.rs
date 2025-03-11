@@ -8,23 +8,6 @@ pub struct Shapes(Vec<Shape>);
 pub type Shape = Vec<Segment>;
 pub type Segment = Vec<Point2>;
 
-pub fn draw_segment(draw: &Draw, color: Color, points: &[Point2]) {
-    if points.len() < 2 {
-        return;
-    }
-
-    for i in 0..points.len() - 1 {
-        let start = points[i];
-        let end = points[i + 1];
-
-        draw.line()
-            .start(start)
-            .end(end)
-            .color(color)
-            .weight(WEIGHT);
-    }
-}
-
 pub fn sign(val: f32) -> f32 {
     if val < 0.0 {
         -1.0

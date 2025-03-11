@@ -86,15 +86,15 @@ impl Default for Rotating {
             0.1,
         );
         Self {
-            n: U32::new(n, 1000..=6000, 1),
-            t1: F32::new_from_range(1.0, 0.5..=600.0),
-            t2: F32::new_from_range(100.0, 0.5..=600.0),
+            n: U32::new(n, 1000..=6000),
+            t1: F32::new(1.0, F32Variant::None(0.5..=600.0)),
+            t2: F32::new(100.0, F32Variant::None(0.5..=600.0)),
             r1: F32::new(1.0 / 6.0, F32Variant::Length),
-            k1: U32::new(1, 1..=4, 1),
-            k2: U32::new(1, 1..=4, 1),
+            k1: U32::new(1, 1..=4),
+            k2: U32::new(1, 1..=4),
             r2: F32::new(1.0 / 4.0, F32Variant::Length),
-            h1: U32::new(1, 1..=4, 1),
-            h2: U32::new(1, 1..=4, 1),
+            h1: U32::new(1, 1..=4),
+            h2: U32::new(1, 1..=4),
             s,
         }
     }
