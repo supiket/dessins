@@ -27,7 +27,7 @@ impl F32 {
     pub fn new(value: f32, variant: F32Variant) -> Self {
         let value = match variant {
             F32Variant::Length | F32Variant::Position => value * NP as f32,
-            F32Variant::Angle => value * TAU,
+            F32Variant::Angle => value * PI,
             _ => value,
         };
         Self {
@@ -66,7 +66,7 @@ impl F32Variant {
 }
 
 impl F32Variant {
-    fn update(
+    pub(crate) fn update(
         &self,
         value: &mut f32,
         animation: &mut Option<Animation>,

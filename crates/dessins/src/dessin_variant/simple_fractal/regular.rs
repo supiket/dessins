@@ -1,8 +1,8 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::u32::U32,
+    adjustable_variable::types::{F32Variant, Pt2, VecF32, VecPt2, F32, U32},
     dessin_variant::Polygon,
-    shapes::{sign, Segment, Shape, Shapes, NP},
+    shapes::{sign, Segment, Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
@@ -13,33 +13,35 @@ pub struct Regular {
     pub m: U32, // # of segments in starting curve
     pub n: U32, // # of sub-segments per segment
     pub k: U32, // depth
-    #[reflect(ignore)]
-    pub positions: Vec<Point2>,
-    #[reflect(ignore)]
-    pub lengths: Vec<f32>,
-    #[reflect(ignore)]
-    pub angles: Vec<f32>,
+    pub positions: VecPt2,
+    pub lengths: VecF32,
+    pub angles: VecF32,
 }
 
 impl Regular {
     pub fn calculate_shapes(&mut self) -> Shapes {
-        if self.positions.len() != self.m.get_value() as usize + 1 {
-            self.positions
-                .resize_with(Self::calculate_positions(&self.m).len(), Default::default);
+        if self.positions.get_value().len() != self.m.get_value() as usize + 1 {
+            let positions = Self::calculate_positions(&self.m)
+                .into_iter()
+                .map(Pt2::new)
+                .collect();
+            self.positions.set_value(positions);
         }
-        if self.lengths.len() != self.n.get_value() as usize {
-            self.lengths.resize_with(
+        if self.lengths.get_value().len() != self.n.get_value() as usize {
+            let lengths =
                 Self::calculate_lengths(self.m.get_value() as f32, self.n.get_value() as usize)
-                    .len(),
-                Default::default,
-            );
+                    .into_iter()
+                    .map(|l| F32::new(l, F32Variant::None(0.0..=1.0)))
+                    .collect();
+            self.lengths.set_value(lengths);
         }
-        if self.angles.len() != self.n.get_value() as usize {
-            self.angles.resize_with(
+        if self.angles.get_value().len() != self.n.get_value() as usize {
+            let angles =
                 Self::calculate_angles(self.m.get_value() as f32, self.n.get_value() as usize)
-                    .len(),
-                Default::default,
-            );
+                    .into_iter()
+                    .map(|a| F32::new(a, F32Variant::Angle))
+                    .collect();
+            self.angles.set_value(angles);
         }
 
         let mut shapes = Shapes::new();
@@ -48,8 +50,10 @@ impl Regular {
         for ii in 0..self.m.get_value() as usize {
             let mut segment = Segment::new();
 
-            let source = self.positions[ii];
-            let destination = self.positions[ii + 1];
+            let positions = self.positions.get_value();
+
+            let source = positions[ii].get_value();
+            let destination = positions[ii + 1].get_value();
             let diff = destination - source;
 
             let mut point = source;
@@ -71,8 +75,8 @@ impl Regular {
                     for j in (0..self.k.get_value()).rev() {
                         let r = (self.n.get_value() as usize).pow(j);
                         let t2 = t1 / r;
-                        current_angle += self.angles[t2];
-                        current_length *= self.lengths[t2];
+                        current_angle += self.angles.get_value()[t2].get_value();
+                        current_length *= self.lengths.get_value()[t2].get_value();
                         t1 -= t2 * r;
                     }
                 }
@@ -90,13 +94,12 @@ impl Regular {
         shapes
     }
 
-    fn calculate_positions(m: &U32) -> Vec<Point2> {
-        let mut polygon = Polygon {
+    pub fn calculate_positions(m: &U32) -> Vec<Point2> {
+        let polygon = Polygon {
             k: m.clone(),
-            ..Default::default()
+            r: F32::new(0.58, F32Variant::Length),
+            ad: F32::new(-7.0 / 6.0, F32Variant::Angle),
         };
-        polygon.r.set_value(NP as f32 * 0.5);
-        polygon.ad.set_value(0.0);
 
         let mut points = vec![];
         for i in 0..m.get_value() as usize {
@@ -104,18 +107,19 @@ impl Regular {
             points.push(point);
         }
         points.push(points[0]);
-        points
+        
+        points.into_iter().rev().collect()
     }
 
-    fn calculate_lengths(m: f32, n: usize) -> Vec<f32> {
+    pub fn calculate_lengths(m: f32, n: usize) -> Vec<f32> {
         vec![1.0 / m; n]
     }
 
-    fn calculate_angles(m: f32, n: usize) -> Vec<f32> {
+    pub fn calculate_angles(m: f32, n: usize) -> Vec<f32> {
         let mut angles = vec![0.0];
 
         for i in 1..(n - 1) {
-            angles.push((PI / m) * if i % 2 == 1 { 1.0 } else { -1.0 });
+            angles.push((1.0 / m) * if i % 2 == 1 { 1.0 } else { -1.0 });
         }
 
         angles.push(0.0);
@@ -126,20 +130,18 @@ impl Regular {
 
 impl Default for Regular {
     fn default() -> Self {
-        let np = NP as f32;
-        let y0 = (f32::sqrt(3.0) / 2.0 - 0.5) * np;
+        let m = U32::new(3, 1..=4);
+        let n = 4;
+        let positions = Self::calculate_positions(&m);
+        let angles = Self::calculate_angles(m.get_value() as f32, n);
+        let lengths = Self::calculate_lengths(m.get_value() as f32, n);
         Self {
-            m: U32::new(3, 1..=10),
-            n: U32::new(4, 1..=10),
-            k: U32::new(4, 1..=10),
-            positions: vec![
-                pt2(-0.5 * np, y0),
-                pt2(0.5 * np, y0),
-                pt2(0.0 * np, -0.5 * np),
-                pt2(-0.5 * np, y0),
-            ],
-            lengths: vec![1.0 / 3.0; 4],
-            angles: vec![0.0, PI / 3.0, -PI / 3.0, 0.0],
+            m,
+            n: U32::new(n as u32, 2..=5),
+            k: U32::new(4, 1..=6),
+            positions: VecPt2::new(positions),
+            lengths: VecF32::new(lengths, F32Variant::None(0.0..=1.0)),
+            angles: VecF32::new(angles, F32Variant::Angle),
         }
     }
 }

@@ -1,9 +1,6 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{
-        expression_f32::{Context, ExpressionF32},
-        u32::U32,
-    },
+    adjustable_variable::types::{Context, ExpressionF32, U32},
     shapes::{Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;

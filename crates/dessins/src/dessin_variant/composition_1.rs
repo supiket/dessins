@@ -1,10 +1,7 @@
 use super::{Polygon, Star};
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{
-        f32::{F32Variant, F32},
-        u32::U32,
-    },
+    adjustable_variable::types::{F32Variant, F32, U32},
     shapes::{Segment, Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;

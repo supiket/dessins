@@ -1,6 +1,6 @@
 use crate::{
     adjustable_variable::{
-        types::{expression_f32::ExpressionF32, f32::F32, pt2::Pt2, u32::U32},
+        types::{ExpressionF32, Pt2, VecF32, VecPt2, VecU32, F32, U32},
         AdjustableVariable, UpdateVariableParams,
     },
     ui::ui_color,
@@ -21,11 +21,13 @@ pub trait AdjustableDessin: Reflect + GetField {
         let mut color = None;
 
         egui::SidePanel::left("variables").show(ctx, |ui| {
-            if let Some(new_color) = ui_color(ui) {
-                color = Some(new_color);
-            }
+            egui::ScrollArea::vertical().show(ui, |ui| {
+                if let Some(new_color) = ui_color(ui) {
+                    color = Some(new_color);
+                }
 
-            changed |= self.update_variables(ui, time)
+                changed |= self.update_variables(ui, time)
+            })
         });
 
         (changed, color)
@@ -69,6 +71,12 @@ pub fn update_from_reflect<T: AdjustableDessin>(
         } else if let Some(inner) = data.get_field_mut::<ExpressionF32>(field_name) {
             changed |= inner.update(params);
         } else if let Some(inner) = data.get_field_mut::<Pt2>(field_name) {
+            changed |= inner.update(params);
+        } else if let Some(inner) = data.get_field_mut::<VecF32>(field_name) {
+            changed |= inner.update(params);
+        } else if let Some(inner) = data.get_field_mut::<VecU32>(field_name) {
+            changed |= inner.update(params);
+        } else if let Some(inner) = data.get_field_mut::<VecPt2>(field_name) {
             changed |= inner.update(params);
         } else {
             let type_name = std::any::type_name::<T>();

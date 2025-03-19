@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
-    adjustable_variable::types::{pt2::Pt2, u32::U32},
+    adjustable_variable::types::{Pt2, U32},
     shapes::{Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;

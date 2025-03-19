@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::{update_from_reflect, AdjustableDessin},
-    adjustable_variable::types::u32::U32,
+    adjustable_variable::types::{F32Variant, VecF32, VecPt2, U32},
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -18,12 +18,9 @@ pub struct Deformed {
     #[reflect(ignore)]
     pub n: U32, // # of sub-segments per segment
     pub k: U32, // depth
-    #[reflect(ignore)]
-    pub positions: Vec<Point2>,
-    #[reflect(ignore)]
-    pub lengths: Vec<f32>,
-    #[reflect(ignore)]
-    pub angles: Vec<f32>,
+    pub positions: VecPt2,
+    pub lengths: VecF32,
+    pub angles: VecF32,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -84,6 +81,39 @@ impl Deformation {
 
 impl Deformed {
     pub fn calculate_shapes(&mut self) -> Shapes {
+        if self.positions.get_value().len() != self.m.get_value() as usize + 1
+            || self.lengths.get_value().len() != self.n.get_value() as usize
+            || self.angles.get_value().len() != self.n.get_value() as usize
+        {
+            match self.deformation {
+                Deformation::Program9
+                | Deformation::Program10
+                | Deformation::Program11
+                | Deformation::Program12 => {
+                    if self.deformation != Deformation::Program9
+                        && self.deformation != Deformation::Program10
+                        && self.deformation != Deformation::Program11
+                        && self.deformation != Deformation::Program12
+                    {
+                        self.set_initials_2();
+                    }
+                }
+                _ => {
+                    if self.deformation != Deformation::Program1
+                        && self.deformation != Deformation::Program2
+                        && self.deformation != Deformation::Program3
+                        && self.deformation != Deformation::Program4
+                        && self.deformation != Deformation::Program5
+                        && self.deformation != Deformation::Program6
+                        && self.deformation != Deformation::Program7
+                        && self.deformation != Deformation::Program8
+                    {
+                        self.set_initials();
+                    }
+                }
+            }
+        }
+
         let deforme_point = match self.deformation {
             Deformation::Program1 => Self::deforme_point_1,
             Deformation::Program2 => Self::deforme_point_2,
@@ -99,22 +129,14 @@ impl Deformed {
             Deformation::Program12 => Self::deforme_point_12,
         };
 
-        match self.deformation {
-            Deformation::Program9 => self.set_initials_2(),
-            Deformation::Program10 => self.set_initials_2(),
-            Deformation::Program11 => self.set_initials_2(),
-            Deformation::Program12 => self.set_initials_2(),
-            _ => self.set_initials(),
-        }
-
         let mut shapes = Shapes::new();
         let mut shape = Shape::new();
 
         for ii in 0..self.m.get_value() as usize {
             let mut segment = Segment::new();
 
-            let source = self.positions[ii];
-            let destination = self.positions[ii + 1];
+            let source = self.positions.get_value()[ii].get_value();
+            let destination = self.positions.get_value()[ii + 1].get_value();
             let diff = destination - source;
 
             let mut point = source;
@@ -136,8 +158,8 @@ impl Deformed {
                     for j in (0..self.k.get_value()).rev() {
                         let r = (self.n.get_value() as usize).pow(j);
                         let t2 = t1 / r;
-                        current_angle += self.angles[t2];
-                        current_length *= self.lengths[t2];
+                        current_angle += self.angles.get_value()[t2].get_value();
+                        current_length *= self.lengths.get_value()[t2].get_value();
                         t1 -= t2 * r;
                     }
                 }
@@ -313,7 +335,7 @@ impl Deformed {
         let x = dh * angle.cos() * NP as f32 / 2.0;
         let y = 2.0 * dh * angle.sin() * NP as f32 / 2.0;
 
-        pt2(x, y)
+        pt2(y, x)
     }
 
     fn deforme_point_10(point: Point2) -> Point2 {
@@ -331,7 +353,7 @@ impl Deformed {
         let x = dh * angle.cos() * NP as f32 / 2.0;
         let y = 2.0 * dh * angle.sin() * NP as f32 / 2.0;
 
-        pt2(x, y)
+        pt2(y, x)
     }
 
     fn deforme_point_11(point: Point2) -> Point2 {
@@ -349,7 +371,7 @@ impl Deformed {
         let x = dh * angle.cos() * NP as f32 / 2.0;
         let y = 2.0 * dh * angle.sin() * NP as f32 / 2.0;
 
-        pt2(x, y)
+        pt2(y, x)
     }
 
     fn deforme_point_12(point: Point2) -> Point2 {
@@ -368,48 +390,91 @@ impl Deformed {
         let x = dh * angle.cos() * NP as f32 / 2.0;
         let y = 2.0 * dh * angle.sin() * NP as f32 / 2.0;
 
-        pt2(x, y)
+        pt2(y, x)
     }
 
     fn set_initials(&mut self) {
         self.m.set_value(3);
         self.n.set_value(4);
 
-        self.positions
-            .resize(self.m.get_value() as usize + 1, Default::default());
-        for ij in 0..=3 {
-            self.positions[ij] = pt2(
-                NP as f32 / 2.0 * (2.0 * ij as f32 * PI / 3.0).sin(),
-                NP as f32 / 2.0 * (2.0 * ij as f32 * PI / 3.0).cos(),
-            );
-        }
+        let multiplier = NP as f32 / 2.0;
 
-        self.lengths = vec![1.0 / 3.0; self.n.get_value() as usize];
-        self.angles = vec![0.0, PI / 3.0, -PI / 3.0, 0.0];
+        self.positions = VecPt2::new(
+            (0..=3)
+                .map(|ij| {
+                    let angle = 2.0 * ij as f32 * PI / 3.0;
+                    pt2(multiplier * angle.sin(), multiplier * angle.cos())
+                })
+                .collect(),
+        );
+
+        self.lengths = VecF32::new(
+            vec![1.0 / 3.0; self.n.get_value() as usize],
+            F32Variant::None(0.0..=1.0),
+        );
+        self.angles = VecF32::new(vec![0.0, 1.0 / 3.0, -1.0 / 3.0, 0.0], F32Variant::Angle);
     }
 
     fn set_initials_2(&mut self) {
         self.m.set_value(4);
         self.n.set_value(4);
 
-        self.positions
-            .resize(self.m.get_value() as usize + 1, Default::default());
-        for ij in 0..=4 {
-            self.positions[ij] = pt2(
-                NP as f32 / 2.0 * 5.0 / 6.0 * (2.0 * ij as f32 * PI / 4.0 + PI / 4.0).cos(),
-                NP as f32 / 2.0 * 5.0 / 6.0 * (2.0 * ij as f32 * PI / 4.0 + PI / 4.0).sin(),
-            );
-        }
+        let multiplier = NP as f32 / 2.0 * 5.0 / 6.0;
 
-        self.lengths = vec![1.0 / (2.0 + 2.0 * (0.48 * PI).cos()); self.n.get_value() as usize];
-        self.angles = vec![0.0, 0.48 * PI, -0.48 * PI, 0.0];
+        self.positions = VecPt2::new(
+            (0..=4)
+                .map(|ij| {
+                    let angle = 2.0 * ij as f32 * PI / 4.0 + PI / 4.0;
+                    pt2(multiplier * angle.cos(), multiplier * angle.sin())
+                })
+                .collect(),
+        );
+        self.lengths = VecF32::new(
+            vec![1.0 / (2.0 + 2.0 * (0.48 * PI).cos()); self.n.get_value() as usize],
+            F32Variant::None(0.0..=1.0),
+        );
+        self.angles = VecF32::new(vec![0.0, 0.48, -0.48, 0.0], F32Variant::Angle);
     }
 }
 
 impl AdjustableDessin for Deformed {
     fn update_variables(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
         let mut changed = false;
-        changed |= self.deformation.update(ui);
+
+        let deformation = self.deformation.clone();
+        let deformation_changed = self.deformation.update(ui);
+
+        if deformation_changed {
+            match self.deformation {
+                Deformation::Program9
+                | Deformation::Program10
+                | Deformation::Program11
+                | Deformation::Program12 => {
+                    if deformation != Deformation::Program9
+                        && deformation != Deformation::Program10
+                        && deformation != Deformation::Program11
+                        && deformation != Deformation::Program12
+                    {
+                        self.set_initials_2();
+                    }
+                }
+                _ => {
+                    if deformation != Deformation::Program1
+                        && deformation != Deformation::Program2
+                        && deformation != Deformation::Program3
+                        && deformation != Deformation::Program4
+                        && deformation != Deformation::Program5
+                        && deformation != Deformation::Program6
+                        && deformation != Deformation::Program7
+                        && deformation != Deformation::Program8
+                    {
+                        self.set_initials();
+                    }
+                }
+            }
+        }
+
+        changed |= deformation_changed;
         ui.separator();
         changed |= update_from_reflect(self, ui, time);
         ui.separator();
@@ -419,14 +484,16 @@ impl AdjustableDessin for Deformed {
 
 impl Default for Deformed {
     fn default() -> Self {
-        Self {
+        let mut self_ = Self {
             deformation: Deformation::Program1,
-            m: U32::new(3, 2..=4),
-            n: U32::new(4, 3..=5),
-            k: U32::new(4, 1..=8),
-            positions: vec![],
-            lengths: vec![],
-            angles: vec![],
-        }
+            m: U32::new(3, 1..=4),
+            n: U32::new(4, 2..=5),
+            k: U32::new(4, 1..=6),
+            positions: VecPt2::new(vec![]),
+            lengths: VecF32::new(vec![], F32Variant::None(0.0..=1.0)),
+            angles: VecF32::new(vec![], F32Variant::Angle),
+        };
+        self_.set_initials();
+        self_
     }
 }
