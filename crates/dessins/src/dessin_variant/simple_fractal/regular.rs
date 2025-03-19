@@ -107,7 +107,7 @@ impl Regular {
             points.push(point);
         }
         points.push(points[0]);
-        
+
         points.into_iter().rev().collect()
     }
 

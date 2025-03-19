@@ -41,7 +41,7 @@ impl Orbital {
             let i = i as f32;
 
             self.r2.insert_ctx_entry("n", self.n.get_value() as f32);
-            self.r2.set_ext_ctx("i", i);
+            self.r2.insert_ctx_entry("i", i);
             let r2 = self.r2.eval_expr();
 
             let a1 = 2.0 * PI * i / n * t1;

@@ -52,7 +52,7 @@ impl Modulo {
 
             self.y.insert_ctx_entry("n", self.n.get_value() as f32);
             self.y.insert_ctx_entry("k2", self.k2.get_value());
-            self.y.set_ext_ctx("i", i);
+            self.y.insert_ctx_entry("i", i);
             let y = self.y.eval_expr();
 
             points.push(pt2(x, y));

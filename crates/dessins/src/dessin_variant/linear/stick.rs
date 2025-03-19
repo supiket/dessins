@@ -31,10 +31,10 @@ impl Stick {
             self.r2.insert_ctx_entry("n", self.n.get_value() as f32);
             self.r2.insert_ctx_entry("k", self.k.get_value() as f32);
 
-            self.r1.set_ext_ctx("i", i as f32);
+            self.r1.insert_ctx_entry("i", i as f32);
             let r1 = self.r1.eval_expr();
 
-            self.r2.set_ext_ctx("i", i as f32);
+            self.r2.insert_ctx_entry("i", i as f32);
             let r2 = self.r2.eval_expr();
 
             for j in 0..n {
