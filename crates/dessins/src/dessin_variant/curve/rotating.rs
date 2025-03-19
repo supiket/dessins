@@ -42,7 +42,7 @@ impl Rotating {
             let i = i as f32;
 
             self.s.insert_ctx_entry("n", self.n.get_value() as f32);
-            self.s.set_ext_ctx("i", i);
+            self.s.insert_ctx_entry("i", i);
             let s = self.s.eval_expr();
 
             let an = 2.0 * PI * i / n;

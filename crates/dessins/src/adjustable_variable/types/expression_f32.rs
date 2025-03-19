@@ -66,11 +66,6 @@ impl ExpressionF32 {
         self.ctx.insert(key, value);
     }
 
-    pub fn set_ext_ctx(&mut self, key: &str, value: f32) {
-        self.ctx.insert(key, value);
-        self.ctx_ext.remove(key);
-    }
-
     pub fn get_value(&self) -> f32 {
         self.value
     }
@@ -95,14 +90,30 @@ impl ExpressionF32 {
             .desired_width(120.0)
             .show(ui);
 
-        if response.response.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-            if self.ctx_ext.is_empty() {
-                let ctx = Self::evaluatable_ctx(&self.ctx);
-                if let Ok(value) = evalexpr::eval_number_with_context(&self.expr, &ctx) {
-                    self.value = value as f32;
-                    changed = true;
-                }
-            } else {
+        let lost_focus = response.response.lost_focus();
+
+        response.response.on_hover_ui(|ui| {
+            ui.label("default");
+            ui.style_mut().interaction.selectable_labels = true;
+            ui.label(&self.default_expr);
+            ui.style_mut().interaction.selectable_labels = false;
+            ui.separator();
+            ui.label("context");
+            egui::Grid::new("context").num_columns(2).show(ui, |ui| {
+                self.ctx.0.iter().for_each(|(k, v)| {
+                    if !self.ctx_ext.contains_key(k) {
+                        ui.label(k);
+                        ui.label(format!("{}", v));
+                        ui.end_row();
+                    }
+                });
+            });
+        });
+
+        if lost_focus && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+            let ctx = Self::evaluatable_ctx(&self.ctx);
+            if let Ok(value) = evalexpr::eval_number_with_context(&self.expr, &ctx) {
+                self.value = value as f32;
                 changed = true;
             }
         }
