@@ -1,6 +1,6 @@
 use crate::{
     adjustable_variable::{
-        types::{ExpressionF32, Pt2, VecF32, VecPt2, VecU32, F32, U32},
+        types::{Context, ExpressionF32, Pt2, VecF32, VecPt2, VecU32, F32, U32},
         AdjustableVariable, UpdateVariableParams,
     },
     ui::ui_color,
@@ -11,33 +11,36 @@ use nannou::prelude::*;
 pub trait AdjustableDessin: Reflect + GetField {
     fn update_dessin(
         &mut self,
-        ctx: &mut egui::Context,
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
         time: Time<Virtual>,
     ) -> (bool, Option<Color>)
     where
         Self: Sized,
     {
-        let mut changed = false;
         let mut color = None;
 
-        egui::SidePanel::left("variables").show(ctx, |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
-                if let Some(new_color) = ui_color(ui) {
-                    color = Some(new_color);
-                }
+        if let Some(new_color) = ui_color(ui) {
+            color = Some(new_color);
+        }
 
-                changed |= self.update_variables(ui, time)
-            })
-        });
+        ui.separator();
+
+        let changed = self.update_variables(ui, osc_ctx, time);
 
         (changed, color)
     }
 
-    fn update_variables(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool
+    fn update_variables(
+        &mut self,
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
+        time: Time<Virtual>,
+    ) -> bool
     where
         Self: Sized,
     {
-        update_from_reflect(self, ui, time)
+        update_from_reflect(self, ui, osc_ctx, time)
     }
 }
 
@@ -54,6 +57,7 @@ fn get_field_names<T: AdjustableDessin>(data: &T) -> Vec<&'static str> {
 pub fn update_from_reflect<T: AdjustableDessin>(
     data: &mut T,
     ui: &mut egui::Ui,
+    osc_ctx: &Context,
     time: Time<Virtual>,
 ) -> bool {
     let mut changed = false;
@@ -61,6 +65,7 @@ pub fn update_from_reflect<T: AdjustableDessin>(
     for field_name in get_field_names(data) {
         let params = UpdateVariableParams {
             ui,
+            osc_ctx,
             time,
             name: field_name.to_string(),
         };

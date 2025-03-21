@@ -1,4 +1,7 @@
-use crate::{adjustable_dessin::AdjustableDessin, shapes::Shapes};
+use crate::{
+    adjustable_dessin::AdjustableDessin, adjustable_variable::types::Context, shapes::Shapes,
+};
+use egui::scroll_area::ScrollBarVisibility;
 use nannou::prelude::*;
 
 pub struct DessinWithVariables {
@@ -33,9 +36,9 @@ macro_rules! dessin_with_variables {
                 }
             }
 
-            pub fn update(&mut self, ctx: &mut egui::Context, time: Time<Virtual>) -> (bool, Option<Color>) {
+            pub fn update(&mut self, ui: &mut egui::Ui, osc_ctx: &Context, time: Time<Virtual>) -> (bool, Option<Color>) {
                 match self {
-                    $(DessinVariables::$variant(variables) => variables.update_dessin(ctx, time),)*
+                    $(DessinVariables::$variant(variables) => variables.update_dessin(ui, osc_ctx, time),)*
                 }
             }
         }
@@ -60,6 +63,7 @@ dessin_with_variables! {
     RegularSimpleFractal => crate::dessin_variant::simple_fractal::Regular,
     RoundedSimpleFractal => crate::dessin_variant::simple_fractal::Rounded,
     DeformedSimpleFractal => crate::dessin_variant::simple_fractal::Deformed,
+    PolarCurve => crate::dessin_variant::polar_curve::PolarCurve,
 }
 
 impl DessinVariant {
@@ -81,6 +85,7 @@ impl DessinVariant {
         (Self::RegularSimpleFractal, "regular simple fractal"),
         (Self::RoundedSimpleFractal, "rounded simple fractal"),
         (Self::DeformedSimpleFractal, "deformed simple fractal"),
+        (Self::PolarCurve, "polar curve"),
     ];
 }
 
@@ -89,13 +94,17 @@ impl DessinWithVariables {
         let mut changed = false;
 
         egui::TopBottomPanel::top("active dessin").show(ctx, |ui| {
-            ui.horizontal(|ui| {
-                for (variant, name) in DessinVariant::ALL {
-                    changed |= ui
-                        .selectable_value(&mut self.variant, *variant, *name)
-                        .changed();
-                }
-            });
+            egui::ScrollArea::horizontal()
+                .scroll_bar_visibility(ScrollBarVisibility::AlwaysHidden)
+                .show(ui, |ui| {
+                    ui.horizontal(|ui| {
+                        for (variant, name) in DessinVariant::ALL {
+                            changed |= ui
+                                .selectable_value(&mut self.variant, *variant, *name)
+                                .changed();
+                        }
+                    });
+                });
         });
 
         if changed {

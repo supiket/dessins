@@ -1,7 +1,7 @@
 use crate::{
     adjustable_dessin::AdjustableDessin,
     adjustable_variable::types::{F32Variant, Pt2, F32, U32},
-    shapes::{Segment, Shape, Shapes, NP},
+    shapes::{Segment, Shape, Shapes},
 };
 use adjustable_dessin_derive::DefaultAdjustableDessin;
 use nannou::prelude::*;
@@ -64,7 +64,7 @@ impl Default for FractalStar {
 
         let mut a0 = aa.clone();
         a0.set_value(-a0.get_value());
-        let p0 = Pt2::new(pt2((-ll.get_value()) / 2.0, (NP as f32) * (0.5)));
+        let p0 = Pt2::new(pt2((-ll.get_value()) / 2.0, 0.0));
 
         Self {
             n: U32::new(5, 3..=20),

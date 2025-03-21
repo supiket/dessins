@@ -1,4 +1,6 @@
-use crate::{adjustable_dessin::AdjustableDessin, shapes::Shapes};
+use crate::{
+    adjustable_dessin::AdjustableDessin, adjustable_variable::types::Context, shapes::Shapes,
+};
 use nannou::prelude::*;
 use raw_shape_program::*;
 use raw_shape_variant::*;
@@ -24,7 +26,12 @@ impl RawShape {
 }
 
 impl AdjustableDessin for RawShape {
-    fn update_variables(&mut self, ui: &mut egui::Ui, _time: Time<Virtual>) -> bool {
+    fn update_variables(
+        &mut self,
+        ui: &mut egui::Ui,
+        _osc_ctx: &Context,
+        _time: Time<Virtual>,
+    ) -> bool {
         let mut changed = false;
         changed |= self.shape_variant.update(ui);
         ui.separator();

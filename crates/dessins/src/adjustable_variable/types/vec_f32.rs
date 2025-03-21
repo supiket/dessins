@@ -32,12 +32,18 @@ impl VecF32 {
 
 impl AdjustableVariable for VecF32 {
     fn update(&mut self, params: UpdateVariableParams) -> bool {
-        let UpdateVariableParams { ui, name, time } = params;
+        let UpdateVariableParams {
+            ui,
+            osc_ctx,
+            name,
+            time,
+        } = params;
 
         let mut changed = false;
         for (index, value) in self.value.iter_mut().enumerate() {
             changed |= value.update(UpdateVariableParams {
                 ui,
+                osc_ctx,
                 name: format!("{}[{}]", name, index).to_string(),
                 time,
             })

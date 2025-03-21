@@ -7,6 +7,8 @@ use crate::{
 use bevy::reflect::Reflect;
 use nannou::prelude::*;
 
+use super::Context;
+
 #[derive(Clone, Debug, PartialEq, Reflect)]
 pub struct Pt2 {
     value: Point2,
@@ -38,12 +40,31 @@ impl Pt2 {
 
 impl AdjustableVariable for Pt2 {
     fn update(&mut self, params: UpdateVariableParams) -> bool {
-        let UpdateVariableParams { ui, name, time } = params;
+        let UpdateVariableParams {
+            ui,
+            osc_ctx,
+            name,
+            time,
+        } = params;
         let name_x = format!("{}.x", name);
         let name_y = format!("{}.y", name);
 
-        let x_changed = update(&mut self.value.x, ui, &name_x, time, &mut self.animation.x);
-        let y_changed = update(&mut self.value.y, ui, &name_y, time, &mut self.animation.y);
+        let x_changed = update(
+            &mut self.value.x,
+            ui,
+            &osc_ctx,
+            &name_x,
+            time,
+            &mut self.animation.x,
+        );
+        let y_changed = update(
+            &mut self.value.y,
+            ui,
+            &osc_ctx,
+            &name_y,
+            time,
+            &mut self.animation.y,
+        );
 
         x_changed | y_changed
     }
@@ -65,6 +86,7 @@ fn toggle_animation(value: f32, animation: &mut Option<Animation>, time: Time<Vi
 fn update(
     value: &mut f32,
     ui: &mut egui::Ui,
+    osc_ctx: &Context,
     name: &str,
     time: Time<Virtual>,
     animation: &mut Option<Animation>,
@@ -74,7 +96,7 @@ fn update(
 
     // add slider
     ui.label(name);
-    let mut changed = add_float_position(ui, value);
+    let mut changed = add_float_position(ui, osc_ctx, value);
 
     // add animate checkbox
     ui.checkbox(&mut animate_, "animate");

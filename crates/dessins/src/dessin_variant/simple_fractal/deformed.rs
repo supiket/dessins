@@ -1,6 +1,6 @@
 use crate::{
     adjustable_dessin::{update_from_reflect, AdjustableDessin},
-    adjustable_variable::types::{F32Variant, VecF32, VecPt2, U32},
+    adjustable_variable::types::{Context, F32Variant, VecF32, VecPt2, U32},
     shapes::{sign, Segment, Shape, Shapes, NP},
 };
 use nannou::prelude::*;
@@ -438,7 +438,12 @@ impl Deformed {
 }
 
 impl AdjustableDessin for Deformed {
-    fn update_variables(&mut self, ui: &mut egui::Ui, time: Time<Virtual>) -> bool {
+    fn update_variables(
+        &mut self,
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
+        time: Time<Virtual>,
+    ) -> bool {
         let mut changed = false;
 
         let deformation = self.deformation.clone();
@@ -476,7 +481,7 @@ impl AdjustableDessin for Deformed {
 
         changed |= deformation_changed;
         ui.separator();
-        changed |= update_from_reflect(self, ui, time);
+        changed |= update_from_reflect(self, ui, osc_ctx, time);
         ui.separator();
         changed
     }

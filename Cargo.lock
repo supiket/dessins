@@ -2131,6 +2131,7 @@ dependencies = [
  "bevy_nannou",
  "evalexpr",
  "nannou",
+ "nannou_osc",
  "wavegen",
 ]
 
@@ -3680,6 +3681,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "nannou_osc"
+version = "0.19.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "234e925dd17cf561de17e9838e1d4924e34d8a159e05a8f80efee964058b3b81"
+dependencies = [
+ "rosc",
+]
+
+[[package]]
 name = "nannou_wgpu"
 version = "0.19.0"
 source = "git+https://github.com/nannou-org/nannou.git?branch=bevy-refactor#c7e44053d20fee36cea8086719b04d1ee6b7e656"
@@ -4775,6 +4785,16 @@ dependencies = [
  "bitflags 2.9.0",
  "serde",
  "serde_derive",
+]
+
+[[package]]
+name = "rosc"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b2e63d9e6b0d090be1485cf159b1e04c3973d2d3e1614963544ea2ff47a4a981"
+dependencies = [
+ "byteorder",
+ "nom",
 ]
 
 [[package]]
