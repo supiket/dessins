@@ -63,6 +63,7 @@ dessin_with_variables! {
     RegularSimpleFractal => crate::dessin_variant::simple_fractal::Regular,
     RoundedSimpleFractal => crate::dessin_variant::simple_fractal::Rounded,
     DeformedSimpleFractal => crate::dessin_variant::simple_fractal::Deformed,
+    PolarCurve => crate::dessin_variant::polar_curve::PolarCurve,
 }
 
 impl DessinVariant {
@@ -84,6 +85,7 @@ impl DessinVariant {
         (Self::RegularSimpleFractal, "regular simple fractal"),
         (Self::RoundedSimpleFractal, "rounded simple fractal"),
         (Self::DeformedSimpleFractal, "deformed simple fractal"),
+        (Self::PolarCurve, "polar curve"),
     ];
 }
 
