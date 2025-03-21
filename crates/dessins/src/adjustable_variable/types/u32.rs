@@ -56,12 +56,17 @@ impl U32 {
 
 impl AdjustableVariable for U32 {
     fn update(&mut self, params: UpdateVariableParams) -> bool {
-        let UpdateVariableParams { ui, name, time } = params;
+        let UpdateVariableParams {
+            ui,
+            osc_ctx,
+            name,
+            time,
+        } = params;
         let mut animate = self.animation.is_some();
         let initial_animate = animate;
 
         // add slider
-        let mut changed = add_numeric(ui, &name, &mut self.value, self.range.clone());
+        let mut changed = add_numeric(ui, &osc_ctx, &name, &mut self.value, self.range.clone());
 
         // add animate checkbox
         ui.checkbox(&mut animate, "animate");

@@ -1,5 +1,5 @@
 use crate::{
-    adjustable_variable::{AdjustableVariable, UpdateVariableParams},
+    adjustable_variable::{types::Context, AdjustableVariable, UpdateVariableParams},
     animation::{Animation, AnimationVariant},
     shapes::NP,
     ui::{add_float_length, add_float_pi, add_float_position, float},
@@ -72,12 +72,17 @@ impl F32Variant {
         animation: &mut Option<Animation>,
         params: UpdateVariableParams,
     ) -> bool {
-        let UpdateVariableParams { ui, name, time } = params;
+        let UpdateVariableParams {
+            ui,
+            osc_ctx,
+            name,
+            time,
+        } = params;
         let mut animate = animation.is_some();
         let initial_animate = animate;
 
         // add slider
-        let mut changed = self.add_with_label(ui, &name, value);
+        let mut changed = self.add_with_label(ui, &osc_ctx, &name, value);
 
         // add animate checkbox
         ui.checkbox(&mut animate, "animate");
@@ -101,12 +106,18 @@ impl F32Variant {
 }
 
 impl F32Variant {
-    fn add_with_label(&self, ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_with_label(
+        &self,
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
+        label: &str,
+        value: &mut f32,
+    ) -> bool {
         match self {
-            Self::None(range) => Self::add_variant_none(ui, label, value, range.clone()),
-            Self::Position => Self::add_variant_position(ui, label, value),
-            Self::Length => Self::add_variant_length(ui, label, value),
-            Self::Angle => Self::add_variant_angle(ui, label, value),
+            Self::None(range) => Self::add_variant_none(ui, osc_ctx, label, value, range.clone()),
+            Self::Position => Self::add_variant_position(ui, osc_ctx, label, value),
+            Self::Length => Self::add_variant_length(ui, osc_ctx, label, value),
+            Self::Angle => Self::add_variant_angle(ui, osc_ctx, label, value),
         }
     }
 
@@ -126,26 +137,42 @@ impl F32Variant {
 
     fn add_variant_none(
         ui: &mut egui::Ui,
+        osc_ctx: &Context,
         label: &str,
         value: &mut f32,
         range: RangeInclusive<f32>,
     ) -> bool {
         ui.label(label);
-        ui.add(float(value, range)).changed()
+        ui.add(float(value, osc_ctx, range)).changed()
     }
 
-    fn add_variant_position(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_variant_position(
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
+        label: &str,
+        value: &mut f32,
+    ) -> bool {
         ui.label(label);
-        add_float_position(ui, value)
+        add_float_position(ui, osc_ctx, value)
     }
 
-    fn add_variant_length(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_variant_length(
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
+        label: &str,
+        value: &mut f32,
+    ) -> bool {
         ui.label(label);
-        add_float_length(ui, value)
+        add_float_length(ui, osc_ctx, value)
     }
 
-    fn add_variant_angle(ui: &mut egui::Ui, label: &str, value: &mut f32) -> bool {
+    fn add_variant_angle(
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
+        label: &str,
+        value: &mut f32,
+    ) -> bool {
         ui.label(label);
-        add_float_pi(ui, value)
+        add_float_pi(ui, osc_ctx, value)
     }
 }

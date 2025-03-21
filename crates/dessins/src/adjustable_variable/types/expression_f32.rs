@@ -70,7 +70,7 @@ impl ExpressionF32 {
         self.value
     }
 
-    fn evaluatable_ctx(context: &Context) -> HashMapContext {
+    pub fn evaluatable_ctx(context: &Context) -> HashMapContext {
         let mut ctx = HashMapContext::new();
         context.iter().for_each(|(k, v)| {
             ctx.set_value(k.to_string(), evalexpr::Value::Float(*v as f64))
@@ -82,7 +82,12 @@ impl ExpressionF32 {
 }
 
 impl ExpressionF32 {
-    fn add_textedit_with_label(&mut self, ui: &mut egui::Ui, label: &str) -> bool {
+    fn add_textedit_with_label(
+        &mut self,
+        ui: &mut egui::Ui,
+        osc_ctx: &Context,
+        label: &str,
+    ) -> bool {
         let mut changed = false;
         ui.label(label);
 
@@ -91,6 +96,36 @@ impl ExpressionF32 {
             .show(ui);
 
         let lost_focus = response.response.lost_focus();
+        let has_focus = response.response.has_focus();
+
+        let new_expr_input = lost_focus && ui.input(|i| i.key_pressed(egui::Key::Enter));
+        let possible_new_osc_ctx = !lost_focus && !has_focus;
+
+        if new_expr_input || possible_new_osc_ctx {
+            let mut new_osc_ctx = false;
+
+            osc_ctx.iter().for_each(|(k, v)| {
+                if self.ctx.get(k).is_none() {
+                    new_osc_ctx = true;
+                    self.ctx.insert(k, *v);
+                }
+
+                if let Some(self_v) = self.ctx.get(k) {
+                    if self_v != v {
+                        new_osc_ctx = true;
+                        self.ctx.insert(k, *v);
+                    }
+                }
+            });
+
+            if new_expr_input || new_osc_ctx {
+                let ctx = Self::evaluatable_ctx(&self.ctx);
+                if let Ok(value) = evalexpr::eval_number_with_context(&self.expr, &ctx) {
+                    self.value = value as f32;
+                    changed = true;
+                }
+            }
+        }
 
         response.response.on_hover_ui(|ui| {
             ui.label("default");
@@ -110,13 +145,6 @@ impl ExpressionF32 {
             });
         });
 
-        if lost_focus && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
-            let ctx = Self::evaluatable_ctx(&self.ctx);
-            if let Ok(value) = evalexpr::eval_number_with_context(&self.expr, &ctx) {
-                self.value = value as f32;
-                changed = true;
-            }
-        }
         changed
     }
 }
@@ -125,11 +153,12 @@ impl AdjustableVariable for ExpressionF32 {
     fn update(&mut self, params: UpdateVariableParams) -> bool {
         let UpdateVariableParams {
             ui,
+            osc_ctx,
             time: _time,
             name,
         } = params;
 
-        self.add_textedit_with_label(ui, &name)
+        self.add_textedit_with_label(ui, osc_ctx, &name)
     }
 }
 

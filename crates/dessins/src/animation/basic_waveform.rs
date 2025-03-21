@@ -1,4 +1,4 @@
-use crate::ui::add_numeric;
+use crate::{adjustable_variable::types::Context, ui::add_numeric};
 use bevy::reflect::Reflect;
 use nannou::prelude::*;
 use std::collections::HashMap;
@@ -93,7 +93,13 @@ impl BasicWaveform {
     }
 
     pub(crate) fn update_ui(&mut self, ui: &mut egui::Ui, values: &mut HashMap<String, f32>) {
-        add_numeric(ui, "frequency", &mut self.frequency, 0.0..=1.0);
+        add_numeric(
+            ui,
+            &Context::new(Default::default()),
+            "frequency",
+            &mut self.frequency,
+            0.0..=1.0,
+        );
         values.insert("frequency".to_string(), self.frequency);
     }
 

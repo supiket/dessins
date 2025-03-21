@@ -4,5 +4,6 @@ pub mod animation;
 pub mod dessin_variant;
 pub mod dessin_with_variables;
 pub mod model;
+pub mod osc;
 pub mod shapes;
 pub mod ui;
