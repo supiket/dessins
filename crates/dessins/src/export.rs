@@ -12,8 +12,6 @@ pub fn export_svg(points: &Shapes) {
     let filename = format!("{}.svg", uuid::Uuid::new_v4());
 
     let mut document = SVG::new()
-        // .set("viewBox", "-720 -720 720 720")
-        // .set("viewBox", "0 0 720 720")
         .set("viewBox", "-360 -360 720 720")
         .set("width", "2000px")
         .set("height", "2000px");
