@@ -15,7 +15,7 @@ fn main() {
 
     let default_plugins = DefaultPlugins.set(window_plugin);
 
-    let model = Model::new(DessinVariant::PolarCurve);
+    let model = Model::new(DessinVariant::RoundedSimpleFractal);
 
     App::new()
         .add_plugins((default_plugins, NannouPlugin, EguiPlugin))

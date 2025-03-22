@@ -1,6 +1,7 @@
 use crate::{
     adjustable_variable::types::Context,
     dessin_with_variables::{DessinVariant, DessinWithVariables},
+    export::add_export_svg_button,
     osc::Osc,
     shapes::{Shapes, WEIGHT},
 };
@@ -63,6 +64,8 @@ impl Model {
 
         egui::SidePanel::left("osc and variables").show(ctx, |ui| {
             egui::ScrollArea::vertical().show(ui, |ui| {
+                add_export_svg_button(ui, &self.points);
+                ui.separator();
                 osc_ctx = self.osc.update(ui);
                 ui.separator();
                 let res = self.active_dessin.variables.update(ui, &osc_ctx, time);
