@@ -20,4 +20,6 @@ bevy_nannou.workspace = true
 evalexpr.workspace = true
 nannou.workspace = true
 nannou_osc.workspace = true
+svg.workspace = true
+uuid.workspace = true
 wavegen.workspace = true
